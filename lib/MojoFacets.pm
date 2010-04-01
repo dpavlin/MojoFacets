@@ -3,6 +3,8 @@ package MojoFacets;
 use strict;
 use warnings;
 
+our $VERSION = '0.0001';
+
 use base 'Mojolicious';
 
 # This method will run once at server start
@@ -13,7 +15,7 @@ sub startup {
     my $r = $self->routes;
 
     # Default route
-    $r->route('/:controller/:action/:id')->to('example#welcome', id => 1);
+    $r->route('/:controller/:action/:id')->to('data#stats', id => 1);
 }
 
 1;
