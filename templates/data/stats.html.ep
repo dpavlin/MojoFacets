@@ -1,8 +1,22 @@
 % layout 'default';
 <h2><%= $message %></h2>
 
+<style type="text/css">
+.count {
+	color: #aaa;
+}
+.count:before {
+	content: "(";
+}
+.count:after {
+	content: ")";
+}
+</style>
+
 <ul>
 % foreach my $n ( keys %{ $stats->{column} } ) {
-<li><%= $n %> (<%= $stats->{column}->{$n}->{count} %>)
+<li>
+<%= $n %>
+<span class="count"><%= $stats->{column}->{$n}->{count} %></span>
 % }
 </ul>
