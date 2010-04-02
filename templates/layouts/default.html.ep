@@ -1,6 +1,9 @@
 <!doctype html><html>
-    <head><title>Welcome</title></head>
-    <body>
+<head>
+<meta charset=utf-8>
+<title>Mojo Facets <%= session 'title' %></title>
+</head>
+<body>
 
 <a href="<%= url_for( action => 'index' ) %>">load</a>
 <a href="<%= url_for( action => 'columns' ) %>">columns</a>
@@ -8,5 +11,5 @@
 
 <%== content %>
 
-	</body>
+</body>
 </html>

@@ -8,6 +8,7 @@ use base 'Mojolicious::Controller';
 use Data::Dump qw(dump);
 use File::Slurp;
 use JSON;
+use Encode;
 
 sub index {
 	my $self = shift;
@@ -34,7 +35,11 @@ sub load {
 	die "$path $!" unless -r $path;
 
 	# we could use Mojo::JSON here, but it's too slow
-	$data = from_json read_file $path;
+#	$data = from_json read_file $path;
+	$data = read_file $path;
+	Encode::_utf8_on($data);
+	warn "# json snippet: ", substr($data,0,200);
+	$data = from_json $data;
 
 	foreach my $e ( @{ $data->{items} } ) {
 		foreach my $n ( keys %$e ) {
