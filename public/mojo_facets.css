@@ -1,0 +1,9 @@
+.count {
+	color: #aaa;
+}
+.count:before {
+	content: "(";
+}
+.count:after {
+	content: ")";
+}

@@ -1,18 +1,6 @@
 % layout 'default';
 <h2><%= $message %></h2>
 
-<style type="text/css">
-.count {
-	color: #aaa;
-}
-.count:before {
-	content: "(";
-}
-.count:after {
-	content: ")";
-}
-</style>
-
 <form method=post action=/data/table >
 
 <ul>
