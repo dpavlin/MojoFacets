@@ -218,7 +218,18 @@ sub facet {
 		}
 	}
 
-	$self->render( name => $name, facet => $facet, checked => $checked );
+	my $sort = $self->param('sort') || 'c';
+
+	my @facet_names = sort {
+		$sort =~ m/a/i ? lc $a cmp lc $b :
+		$sort =~ m/d/i ? lc $b cmp lc $a :
+			$facet->{$b} <=> $facet->{$a}
+		;
+	} keys %$facet;
+
+	$self->render( name => $name, facet => $facet, checked => $checked,
+		facet_names => \@facet_names, sort => $sort,
+	);
 }
 
 sub _checked {
