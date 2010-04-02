@@ -34,6 +34,8 @@ sub load {
 	my $path = $self->app->home->rel_file( 'data/' . $self->param('path') );
 	die "$path $!" unless -r $path;
 
+	$self->session('path' => $self->param('path'));
+
 	# we could use Mojo::JSON here, but it's too slow
 #	$data = from_json read_file $path;
 	$data = read_file $path;
