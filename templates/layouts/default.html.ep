@@ -1,4 +1,12 @@
 <!doctype html><html>
     <head><title>Welcome</title></head>
-    <body><%== content %></body>
+    <body>
+
+<a href="<%= url_for( action => 'index' ) %>">load</a>
+<a href="<%= url_for( action => 'columns' ) %>">columns</a>
+<a href="<%= url_for( action => 'table' ) %>">table</a>
+
+<%== content %>
+
+	</body>
 </html>
