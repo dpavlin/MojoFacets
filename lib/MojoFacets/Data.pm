@@ -124,12 +124,17 @@ sub filter {
 
 	warn "# filter $name vals ",dump(@vals);
 
-
 	my $filters = $self->session('filters');
-	$filters->{$name} = [ @vals ];
+	if ( @vals ) {
+		$filters->{$name} = [ @vals ];
+	} else {
+		delete $filters->{$name};
+	}
 	$self->session( 'filters' => $filters );
 
 	warn "# filters ",dump($self->session('filters'));
+
+	$self->session( 'offset' => 0 );
 
 	$self->redirect_to('/data/table');
 }
@@ -144,23 +149,42 @@ sub table {
 	my $offset  = $self->_perm_scalar('offset', 0);
 	my $limit   = $self->_perm_scalar('limit', 20);
 
-	my @sorted = sort {
-		$a->{$order} cmp $b->{$order}
-	} @{ $data->{items} };
+	my $filters = $self->session('filters');
 
-	@sorted = splice @sorted, $offset, $limit;
+	my @sorted = sort {
+		( $a->{$order} || '' ) cmp ( $b->{$order} || '' ) # FIXME - multi-level sort
+	} 
+	grep {
+		my $i = $_;
+		my $pass = 1;
+		if ( $filters ) {
+			foreach my $n ( keys %$filters ) {
+				if ( ! defined $i->{$n} ) {
+					$pass = 0;
+					last;
+				}
+				foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
+					$pass = 0 unless grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
+				}
+			}
+		}
+		$pass;
+	}
+	@{ $data->{items} };
 
 #	warn "# sorted ", dump @sorted;
 
-	warn "$order $offset $limit";
+	my $rows = $#sorted + 1;
+
+	warn "$rows $offset $limit";
 
 	$self->render(
 		order => $order,
 		offset => $offset,
 		limit => $limit,
-		sorted => [ @sorted ],
+		sorted => [ splice @sorted, $offset, $limit ],
 		columns => [ @columns ],
-		rows => $#{ $data->{items} } + 1,
+		rows => $rows,
 	);
 
 }
