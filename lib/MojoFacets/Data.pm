@@ -139,4 +139,24 @@ sub table {
 
 }
 
+sub facet {
+	my $self = shift;
+
+	my $facet;
+	my $name = $self->param('name') || die "no name";
+
+	foreach my $i ( @{ $data->{items} } ) {
+		next unless exists $i->{$name};
+		if ( ref $i->{$name} eq 'ARRAY' ) {
+			$facet->{$_}++ foreach @{ $i->{$name} };
+		} else {
+			$facet->{ $i->{$name} }++;
+		}
+	}
+
+	warn "# facet $name ",dump $facet;
+
+	$self->render( name => $name, facet => $facet )
+}
+
 1;
