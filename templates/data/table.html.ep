@@ -30,7 +30,7 @@
 % }
 </div>
 
-<ul>
+<ul class=debug>
 <li>rows: <%= $rows %> offset: <%= $offset %> limit: <%= $limit %>
 <li>columns: <%= join(',',@$columns) %>
 <li>filters: <%= dumper session 'filters' %>

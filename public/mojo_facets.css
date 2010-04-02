@@ -7,3 +7,12 @@
 .count:after {
 	content: ")";
 }
+
+
+.debug {
+	color: #aaa;
+}
+
+.debug:hover {
+	color: #000;
+}
