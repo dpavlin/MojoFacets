@@ -4,8 +4,6 @@
 <form method=post action=/data/table >
 
 <ul>
-% my $checked;
-% if ( session('columns') ) { $checked->{$_}++ foreach @{ session('columns') } }
 % foreach my $n ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } keys %$stats ) {
 <li>
 <label>

@@ -2,10 +2,21 @@
 
 <%#= dumper $facet %>
 
+<form method=post action=/data/filter >
+<input type=hidden name=filter_name value="<%= $name %>">
+<input type=submit value="Filter <%= $name %>">
+
 <ul>
 % foreach my $n ( sort { $facet->{$b} <=> $facet->{$a} } keys %$facet ) {
 <li>
+<label>
+<input type=checkbox name="filter_vals" value="<%= $n %>" <%= $checked->{$n} ? 'checked' : '' %>>
 <%= $n %>
 <span class="count"><%= $facet->{$n} %></span>
+</label>
 % }
 </ul>
+
+<input type=submit value="Filter <%= $name %>">
+
+</form>

@@ -73,6 +73,7 @@ sub columns {
     $self->render(
 		message => 'Select columns to display',
 		stats => $stats,
+		checked => $self->_checked( $self->_perm_array('columns') ),
 	);
 }
 
@@ -83,8 +84,12 @@ sub _perm_array {
 
 	if ( @array ) {
 		$self->session($name => [ @array ]);
-	} else {
-		@array = @{ $self->session($name) };
+	} elsif ( my $session = $self->session($name) ) {
+		if ( ref $session eq 'ARRAY' ) {
+			@array = @$session;
+		} else {
+			die "$name not array ",dump($session);
+		}
 	}
 	warn "# $name ",dump @array;
 	return @array;
@@ -109,6 +114,24 @@ sub _perm_scalar {
 
 	warn "# $name ",dump $scalar;
 	return $scalar;
+}
+
+sub filter {
+	my $self = shift;
+
+	my $name = $self->param('filter_name') || die "name?";
+	my @vals = $self->param('filter_vals');
+
+	warn "# filter $name vals ",dump(@vals);
+
+
+	my $filters = $self->session('filters');
+	$filters->{$name} = [ @vals ];
+	$self->session( 'filters' => $filters );
+
+	warn "# filters ",dump($self->session('filters'));
+
+	$self->redirect_to('/data/table');
 }
 
 sub table {
@@ -142,6 +165,7 @@ sub table {
 
 }
 
+
 sub facet {
 	my $self = shift;
 
@@ -159,7 +183,22 @@ sub facet {
 
 #	warn "# facet $name ",dump $facet;
 
-	$self->render( name => $name, facet => $facet )
+	my $checked;
+	if ( my $f = $self->session('filters') ) {
+		if ( defined $f->{$name} ) {
+			$checked = $self->_checked( @{ $f->{$name} } );
+		}
+	}
+
+	$self->render( name => $name, facet => $facet, checked => $checked );
+}
+
+sub _checked {
+	my $self = shift;
+	my $checked;
+	$checked->{$_}++ foreach @_;
+	warn "# _checked ",dump($checked);
+	return $checked;
 }
 
 1;

@@ -1,7 +1,5 @@
 % layout 'default';
 
-columns: <%= join(',',@$columns) %>
-
 <table border=1>
 
 <tr>
@@ -32,3 +30,8 @@ columns: <%= join(',',@$columns) %>
 % }
 </div>
 
+<ul>
+<li>rows: <%= $rows %> offset: <%= $offset %> limit: <%= $limit %>
+<li>columns: <%= join(',',@$columns) %>
+<li>filters: <%= dumper session 'filters' %>
+</ul>
