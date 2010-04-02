@@ -67,16 +67,50 @@ sub columns {
 	);
 }
 
+sub _perm_array {
+    my ($self,$name) = @_;
+
+	my @array = $self->param($name);
+
+	if ( @array ) {
+		$self->session($name => [ @array ]);
+	} else {
+		@array = $self->session($name);
+	}
+	warn "# $name ",dump @array;
+	return @array;
+}
+
+sub _perm_scalar {
+    my ($self,$name,$default) = @_;
+
+	my $scalar = $self->param($name);
+
+	if ( defined $scalar ) {
+		$self->session($name => $scalar);
+	} else {
+		$scalar = $self->session($name);
+	}
+
+	if ( ! defined $scalar ) {
+		$scalar = $default;
+		die "no default for $name" unless defined $scalar;
+		$self->session($name => $scalar);
+	}
+
+	warn "# $name ",dump $scalar;
+	return $scalar;
+}
+
 sub table {
     my $self = shift;
 
 	$self->redirect_to('/data/index') unless $data->{items};
 
-	my @columns = $self->param('columns');
-
-	my $order  = $self->param('order') || $columns[0];
-	my $offset = $self->param('offset') || 0;
-	my $limit  = $self->param('limit') || 10;
+	my @columns = $self->_perm_array('columns');
+	my $order   = $self->_perm_scalar('order', $columns[0]);
+	my $offset  = $self->_perm_scalar('offset', 0);
+	my $limit   = $self->_perm_scalar('limit', 20);
 
 	my @sorted = sort {
 		$a->{$order} cmp $b->{$order}
@@ -84,7 +118,7 @@ sub table {
 
 	@sorted = splice @sorted, $offset, $limit;
 
-	warn "# sorted ", dump @sorted;
+#	warn "# sorted ", dump @sorted;
 
 	warn "$order $offset $limit";
 
