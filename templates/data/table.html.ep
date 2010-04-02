@@ -2,11 +2,12 @@
 
 columns: <%= join(',',@$columns) %>
 
-<table>
+<table border=1>
 
 <tr>
 % foreach my $n ( @$columns ) {
-<th><%= $n %></th>
+<th><%= $n %>&nbsp;<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>">#</a>
+</th>
 % }
 </tr>
 
