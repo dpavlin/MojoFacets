@@ -13,10 +13,17 @@
 }
 </style>
 
+<form method=post action=/data/table >
+
 <ul>
-% foreach my $n ( keys %{ $stats->{column} } ) {
+% foreach my $n ( keys %$stats ) {
 <li>
+<input type=checkbox name=columns value="<%= $n %>" <%= param($n) ? 'checked' : '' %>>
 <%= $n %>
-<span class="count"><%= $stats->{column}->{$n}->{count} %></span>
+<span class="count"><%= $stats->{$n}->{count} %></span>
 % }
 </ul>
+
+<input type=submit>
+
+</form>

@@ -1,0 +1,23 @@
+% layout 'default';
+
+columns: <%= join(',',@$columns) %>
+
+<table>
+
+<tr>
+% foreach my $n ( @$columns ) {
+<th><%= $n %></th>
+% }
+</tr>
+
+% foreach my $row ( @$sorted ) {
+<tr>
+% foreach my $col ( @$columns ) {
+<td><%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %></td>
+% }
+</tr>
+% }
+
+</table>
+
+

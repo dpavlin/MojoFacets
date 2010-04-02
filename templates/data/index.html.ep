@@ -1,0 +1,18 @@
+% layout 'default';
+<h2>Select data file to load</h2>
+
+<form method=post action=/data/load >
+
+<ul>
+% foreach my $n ( @$files ) {
+<li>
+<label>
+<input type=radio name=path value=<%= $n %> >
+<%= $n %>
+</label>
+% }
+</ul>
+
+<input type=submit value="Load">
+
+</form>

@@ -15,7 +15,7 @@ sub startup {
     my $r = $self->routes;
 
     # Default route
-    $r->route('/:controller/:action/:id')->to('data#stats', id => 1);
+    $r->route('/:controller/:action/:id')->to('data#index', id => 1);
 }
 
 1;
