@@ -43,6 +43,8 @@ sub load {
 	warn "# json snippet: ", substr($data,0,200);
 	$data = from_json $data;
 
+	$stats = {};
+
 	foreach my $e ( @{ $data->{items} } ) {
 		foreach my $n ( keys %$e ) {
 			$stats->{$n}->{count}++;
@@ -154,7 +156,7 @@ sub facet {
 		}
 	}
 
-	warn "# facet $name ",dump $facet;
+#	warn "# facet $name ",dump $facet;
 
 	$self->render( name => $name, facet => $facet )
 }
