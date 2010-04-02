@@ -1,0 +1,11 @@
+% layout 'default';
+
+<%= dumper $facet %>
+
+<ul>
+% foreach my $n ( sort { $b cmp $a } keys %$facet ) {
+<li>
+<%= $n %>
+<span class="count"><%= $facet->{$n} %></span>
+% }
+</ul>
