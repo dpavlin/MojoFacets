@@ -75,7 +75,7 @@ sub _perm_array {
 	if ( @array ) {
 		$self->session($name => [ @array ]);
 	} else {
-		@array = $self->session($name);
+		@array = @{ $self->session($name) };
 	}
 	warn "# $name ",dump @array;
 	return @array;

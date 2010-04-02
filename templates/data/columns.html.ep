@@ -16,10 +16,11 @@
 <form method=post action=/data/table >
 
 <ul>
+% my $checked; $checked->{$_}++ foreach @{ session('columns') };
 % foreach my $n ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } keys %$stats ) {
 <li>
 <label>
-<input type=checkbox name=columns value="<%= $n %>" <%= param($n) ? 'checked' : '' %>>
+<input type=checkbox name=columns value="<%= $n %>" <%= $checked->{$n} ? 'checked' : '' %>>
 <%= $n %>
 <span class="count"><%= $stats->{$n}->{count} %></span>
 </label>
