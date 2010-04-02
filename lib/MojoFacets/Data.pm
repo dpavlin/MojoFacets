@@ -139,6 +139,29 @@ sub filter {
 	$self->redirect_to('/data/table');
 }
 
+sub _filter_item {
+	my ( $self, $filters, $i ) = @_;
+	my $pass = 1;
+	foreach my $n ( keys %$filters ) {
+		if ( ! defined $i->{$n} ) {
+			$pass = 0;
+			last;
+		}
+		foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
+			$pass = 0 unless grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
+		}
+	}
+	return $pass;
+}
+
+sub _data_items {
+	my $self = shift;
+	my $filters = $self->session('filters');
+	grep {
+		$filters ? $self->_filter_item( $filters, $_ ) : 1;
+ 	} @{ $data->{items} };
+}
+
 sub table {
     my $self = shift;
 
@@ -149,28 +172,9 @@ sub table {
 	my $offset  = $self->_perm_scalar('offset', 0);
 	my $limit   = $self->_perm_scalar('limit', 20);
 
-	my $filters = $self->session('filters');
-
 	my @sorted = sort {
 		( $a->{$order} || '' ) cmp ( $b->{$order} || '' ) # FIXME - multi-level sort
-	} 
-	grep {
-		my $i = $_;
-		my $pass = 1;
-		if ( $filters ) {
-			foreach my $n ( keys %$filters ) {
-				if ( ! defined $i->{$n} ) {
-					$pass = 0;
-					last;
-				}
-				foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
-					$pass = 0 unless grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
-				}
-			}
-		}
-		$pass;
-	}
-	@{ $data->{items} };
+	} $self->_data_items;
 
 #	warn "# sorted ", dump @sorted;
 
@@ -196,7 +200,7 @@ sub facet {
 	my $facet;
 	my $name = $self->param('name') || die "no name";
 
-	foreach my $i ( @{ $data->{items} } ) {
+	foreach my $i ( $self->_data_items ) {
 		next unless exists $i->{$name};
 		if ( ref $i->{$name} eq 'ARRAY' ) {
 			$facet->{$_}++ foreach @{ $i->{$name} };
