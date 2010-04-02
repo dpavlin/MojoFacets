@@ -137,6 +137,7 @@ sub table {
 		limit => $limit,
 		sorted => [ @sorted ],
 		columns => [ @columns ],
+		rows => $#{ $data->{items} } + 1,
 	);
 
 }

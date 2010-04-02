@@ -21,4 +21,14 @@ columns: <%= join(',',@$columns) %>
 
 </table>
 
+<div class=pager>
+% foreach my $p ( 0 .. int( $rows / $limit ) ) {
+% my $o = $p * $limit;
+%	if ( $o == $offset ) {
+<b><%= $p + 1 %></b>
+%	} else {
+<a href="<%= url_for( action => 'table' )->query( offset => $p * $limit ) %>"><%= $p + 1 %></a>
+%	}
+% }
+</div>
 
