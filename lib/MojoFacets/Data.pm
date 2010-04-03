@@ -48,10 +48,19 @@ sub load {
 	foreach my $e ( @{ $data->{items} } ) {
 		foreach my $n ( keys %$e ) {
 			$stats->{$n}->{count}++;
-			$stats->{$n}->{number}++
-				if $e->{$n} =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
-			$stats->{$n}->{array} += $#{ $e->{$n} } + 1
-				if ref $e->{$n} eq 'ARRAY';
+			if ( ref $e->{$n} eq 'ARRAY' ) {
+
+				$stats->{$n}->{array} += $#{ $e->{$n} } + 1;
+
+				foreach my $x ( @{$e->{$n}} ) {
+					$stats->{$n}->{numeric}++
+						if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
+				}
+
+			} else {
+				$stats->{$n}->{numeric}++
+					if $e->{$n} =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
+			}
 		}
 	}
 
