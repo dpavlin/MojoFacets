@@ -17,3 +17,7 @@
 <input type=submit>
 
 </form>
+
+<pre class=debug>
+$stats = <%= dumper $stats %>
+</pre>
