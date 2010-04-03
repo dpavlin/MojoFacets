@@ -229,15 +229,25 @@ sub facet {
 
 	my $sort = $self->param('sort') || 'c';
 
+	# sort facet numerically if more >50% elements are numeric
+	my $numeric = defined $stats->{$name}->{numeric} &&
+		$stats->{$name}->{numeric} > $stats->{$name}->{count} / 2;
+
 	my @facet_names = sort {
-		$sort =~ m/a/i ? lc $a cmp lc $b :
-		$sort =~ m/d/i ? lc $b cmp lc $a :
-			$facet->{$b} <=> $facet->{$a}
-		;
+		if ( $sort =~ m/a/i ) {
+			$numeric ? $a <=> $b : lc $a cmp lc $b;
+		} elsif ( $sort =~ m/d/i ) {
+			$numeric ? $b <=> $a : lc $b cmp lc $a;
+		} elsif ( $sort =~ m/c/i ) {
+			$facet->{$b} <=> $facet->{$a};
+		} else {
+			warn "unknown sort: $sort";
+			$a cmp $b;
+		}
 	} keys %$facet;
 
 	$self->render( name => $name, facet => $facet, checked => $checked,
-		facet_names => \@facet_names, sort => $sort,
+		facet_names => \@facet_names, sort => $sort, numeric => $numeric,
 	);
 }
 

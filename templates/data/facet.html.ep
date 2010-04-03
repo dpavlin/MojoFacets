@@ -30,6 +30,8 @@ sort:
 <a href="<%= url_for->query( name => $name, sort => 'c' ) %>">count</a>
 % }
 
+value:
+
 % if ( $sort eq 'a' ) {
 <b>ascending</b>
 % } else {
@@ -41,3 +43,5 @@ sort:
 % } else {
 <a href="<%= url_for->query( name => $name, sort => 'd' ) %>">desceding</a>
 % }
+
+<%= $numeric ? 'numeric' : '' %>
