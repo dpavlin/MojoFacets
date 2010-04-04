@@ -79,9 +79,20 @@ sub load {
 sub columns {
     my $self = shift;
 
+
+	my @columns;
+	@columns = @{ $self->session('columns') } if $self->session('columns');
+
+	foreach my $c ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } keys %$stats ) {
+		push @columns, $c unless grep { /^\Q$c\E$/ } @columns;
+	}
+
+	$self->redirect_to( '/data/index' ) unless @columns;
+
     $self->render(
 		message => 'Select columns to display',
 		stats => $stats,
+		columns => \@columns,
 		checked => $self->_checked( $self->_perm_array('columns') ),
 	);
 }

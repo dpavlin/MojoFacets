@@ -1,10 +1,28 @@
-% layout 'default';
-<h2><%= $message %></h2>
+% layout 'ui';
+
+<style type="text/css">
+/*
+#sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+#sortable li span { position: absolute; margin-left: -1.3em; }
+*/
+</style>
+<script type="text/javascript">
+$(function() {
+	$("#sortable").sortable();
+	$("#sortable").disableSelection();
+});
+</script>
+
+
+
+
+<h2>Select and reorder columns</h2>
 
 <form method=post action=/data/table >
 
-<ul>
-% foreach my $n ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } keys %$stats ) {
+<ul id="sortable">
+% foreach my $n ( @$columns ) {
 <li>
 <label>
 <input type=checkbox name=columns value="<%= $n %>" <%= $checked->{$n} ? 'checked' : '' %>>
@@ -19,5 +37,6 @@
 </form>
 
 <pre class=debug>
+$columns = <%= dumper $columns %>
 $stats = <%= dumper $stats %>
 </pre>
