@@ -188,6 +188,7 @@ sub table {
 	$self->redirect_to('/data/index') unless $data->{items};
 
 	my @columns = $self->_perm_array('columns');
+	$self->redirect_to('/data/columns') unless @columns;
 	my $order   = $self->_perm_scalar('order', $columns[0]);
 	my $offset  = $self->_perm_scalar('offset', 0);
 	my $limit   = $self->_perm_scalar('limit', 20);
