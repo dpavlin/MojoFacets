@@ -30,8 +30,20 @@
 % }
 </div>
 
+% my $filters = session('filters');
+% if ( keys %$filters ) {
+<div class=filters>
+<h2>Filters active</h2>
+<ul>
+%  foreach my $n ( keys %$filters ) {
+<li><a href="<%= url_for( action => 'facet' )->query( remove => $n ) %>"><%= $n %></a>
+<%= join(', ', @{ $filters->{$n} }) %>
+%  }
+</ul>
+</div>
+% }
+
 <ul class=debug>
 <li>rows: <%= $rows %> offset: <%= $offset %> limit: <%= $limit %>
 <li>columns: <%= join(',',@$columns) %>
-<li>filters: <%= dumper session 'filters' %>
 </ul>

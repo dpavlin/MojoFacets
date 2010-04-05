@@ -218,6 +218,13 @@ sub table {
 sub facet {
 	my $self = shift;
 
+	if ( my $remove = $self->param('remove') ) {
+		my $f = $self->session('filters');
+		delete $f->{$remove};
+		$self->session( 'filters' => $f );
+		$self->redirect_to( '/data/table' );
+	}
+
 	my $facet;
 	my $name = $self->param('name') || die "no name";
 
