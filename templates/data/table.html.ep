@@ -17,11 +17,28 @@ div.filters:hover ul {
 }
 </style>
 
+<div class=info>
+<b><%= $rows %></b> items 
+
+% my $filters = session('filters');
+% my @filters_active = keys %$filters;
+% if ( @filters_active ) {
+filter <span class=count><%= $#filters_active + 1 %></span>
+%  foreach my $n ( @filters_active ) {
+<a href="<%= url_for( action => 'facet' )->query( remove => $n ) %>"
+	title="<%= join(', ', @{ $filters->{$n} }) %>"><%= $n %></a>
+%  }
+% }
+
+showing <%= $offset + 1 %>-<%= $offset + $limit %>
+
+</div>
+
 <table border=1>
 
 <tr>
 % foreach my $n ( @$columns ) {
-<th><%= $n %>&nbsp;<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>">#</a>
+<th><%= $n %>&nbsp;<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? '&diams;' : '&loz;' %></a>
 </th>
 % }
 </tr>
@@ -46,20 +63,6 @@ div.filters:hover ul {
 %	}
 % }
 </div>
-
-% my $filters = session('filters');
-% my @filters_active = keys %$filters;
-% if ( @filters_active ) {
-<div class=filters>
-Filters <span class=count><%= $#filters_active + 1 %></span>
-<ul>
-%  foreach my $n ( @filters_active ) {
-<li><a href="<%= url_for( action => 'facet' )->query( remove => $n ) %>"
-	title="<%= join(', ', @{ $filters->{$n} }) %>"><%= $n %></a>
-%  }
-</ul>
-</div>
-% }
 
 <ul class=debug>
 <li>rows: <%= $rows %> offset: <%= $offset %> limit: <%= $limit %>
