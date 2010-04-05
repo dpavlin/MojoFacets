@@ -14,6 +14,11 @@ WriteMakefile(
     VERSION_FROM => 'lib/MojoFacets.pm',
     AUTHOR       => 'Dobrica Pavlinusic <dpavlin@rot13.org>',
     EXE_FILES => ['script/mojo_facets'],
-    PREREQ_PM => { 'Mojo' => '0.9003' },
+    PREREQ_PM => {
+		'Mojo' => '0.9003',
+		'Data::Dump' => 0,
+		'File::Slurp' => 0,
+		'JSON' => 0,
+	},
     test => {TESTS => 't/*.t t/*/*.t t/*/*/*.t'}
 );
