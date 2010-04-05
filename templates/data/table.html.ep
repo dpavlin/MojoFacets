@@ -1,5 +1,22 @@
 % layout 'default';
 
+<style type="text/css">
+div.filters {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 10;
+	margin: 0;
+	background: #eee;
+}
+div.filters ul {
+	display: none;
+}
+div.filters:hover ul {
+	display: block;
+}
+</style>
+
 <table border=1>
 
 <tr>
@@ -31,13 +48,14 @@
 </div>
 
 % my $filters = session('filters');
-% if ( keys %$filters ) {
+% my @filters_active = keys %$filters;
+% if ( @filters_active ) {
 <div class=filters>
-<h2>Filters active</h2>
+Filters <span class=count><%= $#filters_active + 1 %></span>
 <ul>
-%  foreach my $n ( keys %$filters ) {
-<li><a href="<%= url_for( action => 'facet' )->query( remove => $n ) %>"><%= $n %></a>
-<%= join(', ', @{ $filters->{$n} }) %>
+%  foreach my $n ( @filters_active ) {
+<li><a href="<%= url_for( action => 'facet' )->query( remove => $n ) %>"
+	title="<%= join(', ', @{ $filters->{$n} }) %>"><%= $n %></a>
 %  }
 </ul>
 </div>
