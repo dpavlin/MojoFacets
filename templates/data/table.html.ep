@@ -23,11 +23,12 @@ div.filters:hover ul {
 % my $filters = session('filters');
 % my @filters_active = keys %$filters;
 % if ( @filters_active ) {
-filter <span class=count><%= $#filters_active + 1 %></span>
+filter 
 %  foreach my $n ( @filters_active ) {
 <a href="<%= url_for( action => 'facet' )->query( remove => $n ) %>"
 	title="<%= join(', ', @{ $filters->{$n} }) %>"><%= $n %></a>
 %  }
+<span class=count><%= $#filters_active + 1 %> active click to remove</span>
 % }
 
 showing <%= $offset + 1 %>-<%= $offset + $limit %>
