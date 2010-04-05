@@ -163,12 +163,15 @@ sub _filter_item {
 	my ( $self, $filters, $i ) = @_;
 	my $pass = 1;
 	foreach my $n ( keys %$filters ) {
+		# filter must exists in element
 		if ( ! defined $i->{$n} ) {
 			$pass = 0;
 			last;
 		}
+		# and match any of values in element
+		$pass = 0;
 		foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
-			$pass = 0 unless grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
+			$pass ||= 1 if grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
 		}
 	}
 	return $pass;
