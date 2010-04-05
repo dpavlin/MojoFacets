@@ -197,18 +197,24 @@ sub table {
 	my @columns = $self->_perm_array('columns');
 	$self->redirect_to('/data/columns') unless @columns;
 	my $order   = $self->_perm_scalar('order', $columns[0]);
+	my $sort    = $self->_perm_scalar('sort', 'a');
 	my $offset  = $self->_perm_scalar('offset', 0);
 	my $limit   = $self->_perm_scalar('limit', 20);
 
+	# FIXME - multi-level sort
+	my $numeric = $self->_is_numeric($order);
 	my @sorted = sort {
-		( $a->{$order} || '' ) cmp ( $b->{$order} || '' ) # FIXME - multi-level sort
+		my ($v1,$v2) = ( $a->{$order}->[0], $b->{$order}->[0] );
+		($v1,$v2) = ($v2,$v1) if $sort eq 'd';
+		$numeric
+			? $v1 <=> $v2
+			: ( $v1 || '' ) cmp ( $v2 || '' )
+			;
 	} $self->_data_items;
 
 #	warn "# sorted ", dump @sorted;
 
 	my $rows = $#sorted + 1;
-
-	warn "$rows $offset $limit";
 
 	$self->render(
 		order => $order,
@@ -217,10 +223,26 @@ sub table {
 		sorted => [ splice @sorted, $offset, $limit ],
 		columns => [ @columns ],
 		rows => $rows,
+		numeric => { map { $_, $self->_is_numeric($_) } @columns },
 	);
 
 }
 
+
+sub order {
+	my $self = shift;
+	$self->session('order', $self->param('order'));
+	$self->session('sort', $self->param('sort'));
+	$self->redirect_to('/data/table');
+}
+
+sub _is_numeric {
+	my ( $self, $name ) = @_;
+
+	# sort facet numerically if more >50% elements are numeric
+	defined $stats->{$name}->{numeric} &&
+		$stats->{$name}->{numeric} > $stats->{$name}->{count} / 2;
+}
 
 sub facet {
 	my $self = shift;
@@ -256,8 +278,7 @@ sub facet {
 	my $sort = $self->param('sort') || 'c';
 
 	# sort facet numerically if more >50% elements are numeric
-	my $numeric = defined $stats->{$name}->{numeric} &&
-		$stats->{$name}->{numeric} > $stats->{$name}->{count} / 2;
+	my $numeric = $self->_is_numeric($name);
 
 	my @facet_names = sort {
 		if ( $sort =~ m/a/i ) {

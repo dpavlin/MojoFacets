@@ -1,19 +1,11 @@
 % layout 'default';
 
 <style type="text/css">
-div.filters {
-	position: absolute;
-	top: 0;
-	right: 0;
-	z-index: 10;
-	margin: 0;
-	background: #eee;
+th {
+	white-space: nowrap;
 }
-div.filters ul {
-	display: none;
-}
-div.filters:hover ul {
-	display: block;
+td.numeric {
+	text-align: right;
 }
 </style>
 
@@ -39,7 +31,14 @@ showing <%= $offset + 1 %>-<%= $offset + $limit %>
 
 <tr>
 % foreach my $n ( @$columns ) {
-<th><%= $n %>&nbsp;<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? '&diams;' : '&loz;' %></a>
+<th>
+<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? '&diams;' : '&loz;' %></a>
+% if ( session('order') ne $n ) {
+<a href="<%= url_for( action => 'order' )->query( order => $n ) %>"><%= $n %></a>
+% } else {
+<a href="<%= url_for( action => 'order' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
+<%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
+% }
 </th>
 % }
 </tr>
@@ -47,7 +46,7 @@ showing <%= $offset + 1 %>-<%= $offset + $limit %>
 % foreach my $row ( @$sorted ) {
 <tr>
 % foreach my $col ( @$columns ) {
-<td><%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %></td>
+<td<%= $numeric->{$col} ? ' class=numeric' : '' %>><%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %></td>
 % }
 </tr>
 % }
@@ -68,4 +67,6 @@ showing <%= $offset + 1 %>-<%= $offset + $limit %>
 <ul class=debug>
 <li>rows: <%= $rows %> offset: <%= $offset %> limit: <%= $limit %>
 <li>columns: <%= join(',',@$columns) %>
+<li>numeric: <%= dumper $numeric %>
+<li>order: <%= session('order') %> sort: <%= session('sort') %>
 </ul>
