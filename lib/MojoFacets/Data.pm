@@ -169,9 +169,13 @@ sub _filter_item {
 			last;
 		}
 		# and match any of values in element
-		$pass = 0;
+		my $have_values = 0;
 		foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
-			$pass ||= 1 if grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
+			$have_values ||= 1 if grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
+		}
+		if ( ! $have_values ) {
+			$pass = 0;
+			last;
 		}
 	}
 	return $pass;
