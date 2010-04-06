@@ -9,6 +9,7 @@ use Data::Dump qw(dump);
 use File::Slurp;
 use JSON;
 use Encode;
+use locale;
 
 sub index {
 	my $self = shift;
