@@ -205,7 +205,7 @@ sub table {
 	# FIXME - multi-level sort
 	my $numeric = $self->_is_numeric($order);
 	my @sorted = sort {
-		my ($v1,$v2) = ( $a->{$order}->[0], $b->{$order}->[0] );
+		my ($v1,$v2) = ( join('', @{$a->{$order}}), join(' ', @{$b->{$order}}) );
 		($v1,$v2) = ($v2,$v1) if $sort eq 'd';
 		$numeric
 			? $v1 <=> $v2
