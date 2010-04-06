@@ -1,0 +1,9 @@
+Mojo Facets - server side facet browsing using Mojolicious and jQuery UI
+
+
+Put JSON file from Simile Exhibit project in data/
+
+Start with:
+
+LANG=hr_HR.utf8 ./script/mojo_facets daemon --reload
+
