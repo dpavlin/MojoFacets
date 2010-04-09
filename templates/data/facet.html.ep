@@ -8,6 +8,8 @@
 
 <%= include 'all_checkboxes' %>
 
+<%= include 'sorting' %>
+
 <ul>
 % foreach my $n ( @$facet_names ) {
 <li>
@@ -24,26 +26,3 @@
 </form>
 
 
-sort:
-
-% if ( $sort eq 'c' ) {
-<b>count</b>
-% } else {
-<a href="<%= url_for->query( name => $name, sort => 'c' ) %>">count</a>
-% }
-
-value:
-
-% if ( $sort eq 'a' ) {
-<b>ascending</b>
-% } else {
-<a href="<%= url_for->query( name => $name, sort => 'a' ) %>">asceding</a>
-% }
-
-% if ( $sort eq 'd' ) {
-<b>desceding</b>
-% } else {
-<a href="<%= url_for->query( name => $name, sort => 'd' ) %>">desceding</a>
-% }
-
-<%= $numeric ? 'numeric' : '' %>
