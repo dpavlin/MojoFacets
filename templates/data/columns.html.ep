@@ -8,14 +8,12 @@
 */
 </style>
 <script type="text/javascript">
+
 $(document).ready(function() {
 	$("#sortable").sortable();
 	$("#sortable").disableSelection();
 });
 
-function all_checkboxes(checked) {
-    $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', checked);
-}
 </script>
 
 
@@ -25,8 +23,9 @@ function all_checkboxes(checked) {
 
 <form method=post action=/data/table >
 
-<a href="#" onClick="all_checkboxes(true); return false;">all</a>
-<a href="#" onClick="all_checkboxes(false); return false;">none</a>
+<input type=submit value="Select">
+
+<%= include 'all_checkboxes' %>
 
 <ul id="sortable">
 % foreach my $n ( @$columns ) {
@@ -39,7 +38,7 @@ function all_checkboxes(checked) {
 % }
 </ul>
 
-<input type=submit>
+<input type=submit value="Select">
 
 </form>
 

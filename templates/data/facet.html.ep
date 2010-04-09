@@ -1,10 +1,12 @@
-% layout 'default';
+% layout 'ui';
 
 <%#= dumper $facet %>
 
 <form method=post action=/data/filter >
 <input type=hidden name=filter_name value="<%= $name %>">
 <input type=submit value="Filter <%= $name %>">
+
+<%= include 'all_checkboxes' %>
 
 <ul>
 % foreach my $n ( @$facet_names ) {

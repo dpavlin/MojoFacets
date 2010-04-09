@@ -1,0 +1,9 @@
+<script type="text/javascript">
+function all_checkboxes(checked) {
+    $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', checked);
+}
+</script>
+
+<a href="#" onClick="all_checkboxes(true); return false;">all</a>
+<a href="#" onClick="all_checkboxes(false); return false;">none</a>
+
