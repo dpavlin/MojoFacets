@@ -202,6 +202,9 @@ sub table {
 	my $offset  = $self->_perm_scalar('offset', 0);
 	my $limit   = $self->_perm_scalar('limit', 20);
 
+	# fix offset when changing limit
+	$offset = int( $offset / $limit ) * $limit;
+
 	# FIXME - multi-level sort
 	my $numeric = $self->_is_numeric($order);
 	my @sorted = sort {

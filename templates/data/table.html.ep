@@ -9,7 +9,7 @@ td.numeric {
 }
 </style>
 
-<div class=info>
+<form class=info>
 <b><%= $rows %></b> items 
 
 % my $filters = session('filters');
@@ -23,9 +23,19 @@ filter
 <span class=count><%= $#filters_active + 1 %> active click to remove</span>
 % }
 
-showing <%= $offset + 1 %>-<%= $offset + $limit %>
+showing 
 
-</div>
+<select name=limit>
+% foreach my $on_page ( 10,20,50,100,1000 ) {
+<option <%= $limit == $on_page ? 'selected' : '' %>><%= $on_page %></option>
+% }
+</select>
+
+on this page <%= $offset + 1 %>-<%= $offset + $limit %>
+
+<input type=submit value="refresh">
+
+</form>
 
 <table border=1>
 
