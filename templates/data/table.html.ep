@@ -31,7 +31,9 @@ showing
 % }
 </select>
 
-on this page <%= $offset + 1 %>-<%= $offset + $limit %>
+items
+
+<span class=count><%= $offset + 1 %>-<%= $offset + $limit %></span>
 
 <input type=submit value="refresh">
 
