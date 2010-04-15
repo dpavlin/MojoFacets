@@ -213,9 +213,11 @@ sub table {
 
 	# FIXME - multi-level sort
 	my $numeric = $self->_is_numeric($order);
+	my $missing = $numeric ? 0 : '';
+	no warnings qw(numeric);
 	my @sorted = sort {
-		my $v1 = exists $a->{$order} ? join('', @{$a->{$order}}) : '';
-		my $v2 = exists $b->{$order} ? join('', @{$b->{$order}}) : '';
+		my $v1 = exists $a->{$order} ? join('', @{$a->{$order}}) : $missing;
+		my $v2 = exists $b->{$order} ? join('', @{$b->{$order}}) : $missing;
 		($v1,$v2) = ($v2,$v1) if $sort eq 'd';
 		$numeric ? $v1 <=> $v2 : $v1 cmp $v2 ;
 	} $self->_data_items;
