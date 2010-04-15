@@ -164,15 +164,21 @@ sub _filter_item {
 	my ( $self, $filters, $i ) = @_;
 	my $pass = 1;
 	foreach my $n ( keys %$filters ) {
-		# filter must exists in element
-		if ( ! defined $i->{$n} ) {
-			$pass = 0;
-			last;
+		my @filter_values = @{ $filters->{$n} };
+		my $include_missing = grep { /^_missing/ } @filter_values;
+		if ( ! exists $i->{$n} ) {
+			if ( $include_missing ) {
+				$pass = 1;
+				next;
+			} else {
+				$pass = 0;
+				last;
+			}
 		}
 		# and match any of values in element
 		my $have_values = 0;
 		foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
-			$have_values ||= 1 if grep { m/^\Q$v\E$/ } @{ $filters->{$n} };
+			$have_values ||= 1 if grep { m/^\Q$v\E$/ } @filter_values;
 		}
 		if ( ! $have_values ) {
 			$pass = 0;
@@ -208,12 +214,10 @@ sub table {
 	# FIXME - multi-level sort
 	my $numeric = $self->_is_numeric($order);
 	my @sorted = sort {
-		my ($v1,$v2) = ( join('', @{$a->{$order}}), join(' ', @{$b->{$order}}) );
+		my $v1 = exists $a->{$order} ? join('', @{$a->{$order}}) : '';
+		my $v2 = exists $b->{$order} ? join('', @{$b->{$order}}) : '';
 		($v1,$v2) = ($v2,$v1) if $sort eq 'd';
-		$numeric
-			? $v1 <=> $v2
-			: ( $v1 || '' ) cmp ( $v2 || '' )
-			;
+		$numeric ? $v1 <=> $v2 : $v1 cmp $v2 ;
 	} $self->_data_items;
 
 #	warn "# sorted ", dump @sorted;
@@ -262,8 +266,9 @@ sub facet {
 	my $name = $self->param('name') || die "no name";
 
 	foreach my $i ( $self->_data_items ) {
-		next unless exists $i->{$name};
-		if ( ref $i->{$name} eq 'ARRAY' ) {
+		if ( ! exists $i->{$name} ) {
+			$facet->{ _missing }++;
+		} elsif ( ref $i->{$name} eq 'ARRAY' ) {
 			$facet->{$_}++ foreach @{ $i->{$name} };
 		} else {
 			$facet->{ $i->{$name} }++;
