@@ -1,8 +1,12 @@
 % layout 'default';
 
 <style type="text/css">
+table {
+	border-collapse: collapse;
+}
 th {
 	white-space: nowrap;
+	background: #eee;
 }
 td.numeric {
 	text-align: right;
