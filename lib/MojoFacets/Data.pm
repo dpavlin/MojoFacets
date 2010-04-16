@@ -157,7 +157,7 @@ sub filter {
 
 	$self->session( 'offset' => 0 );
 
-	$self->redirect_to('/data/table');
+	$self->redirect_to('/data/items');
 }
 
 sub _filter_item {
@@ -196,7 +196,7 @@ sub _data_items {
  	} @{ $data->{items} };
 }
 
-sub table {
+sub items {
     my $self = shift;
 
 	$self->redirect_to('/data/index') unless $data->{items};
@@ -243,7 +243,7 @@ sub order {
 	my $self = shift;
 	$self->session('order', $self->param('order'));
 	$self->session('sort', $self->param('sort'));
-	$self->redirect_to('/data/table');
+	$self->redirect_to('/data/items');
 }
 
 sub _is_numeric {
@@ -261,7 +261,7 @@ sub facet {
 		my $f = $self->session('filters');
 		delete $f->{$remove};
 		$self->session( 'filters' => $f );
-		$self->redirect_to( '/data/table' );
+		$self->redirect_to( '/data/items' );
 	}
 
 	my $facet;

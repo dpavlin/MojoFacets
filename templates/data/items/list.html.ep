@@ -1,0 +1,10 @@
+
+% foreach my $row ( @$sorted ) {
+<ul>
+% foreach my $col ( @$columns ) {
+%  next unless exists $row->{$col};
+<li><%= $col %>: <%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %>
+% }
+</ul>
+% }
+

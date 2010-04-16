@@ -1,0 +1,25 @@
+<table border=1>
+
+<tr>
+% foreach my $n ( @$columns ) {
+<th>
+<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? '&diams;' : '&loz;' %></a>
+% if ( session('order') ne $n ) {
+<a href="<%= url_for( action => 'order' )->query( order => $n ) %>"><%= $n %></a>
+% } else {
+<a href="<%= url_for( action => 'order' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
+<%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
+% }
+</th>
+% }
+</tr>
+
+% foreach my $row ( @$sorted ) {
+<tr>
+% foreach my $col ( @$columns ) {
+<td<%= $numeric->{$col} ? ' class=numeric' : '' %>><%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %></td>
+% }
+</tr>
+% }
+
+</table>

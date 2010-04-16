@@ -8,7 +8,7 @@
 
 <a href="<%= url_for( action => 'index' ) %>">load</a>
 <a href="<%= url_for( action => 'columns' ) %>">columns</a>
-<a href="<%= url_for( action => 'table' ) %>">table</a>
+<a href="<%= url_for( action => 'items' ) %>">items</a>
 
 <%== content %>
 
