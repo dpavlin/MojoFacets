@@ -3,7 +3,7 @@
 <ul>
 % foreach my $col ( @$columns ) {
 %  next unless exists $row->{$col};
-<li><%= $col %>: <%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %>
+<li><tt><%= $col %></tt> <%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %>
 % }
 </ul>
 % }
