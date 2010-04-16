@@ -9,6 +9,11 @@
 }
 
 
+.admin {
+	background: #ffc;
+	padding: 0.25em;
+}
+
 .debug {
 	color: #aaa;
 }

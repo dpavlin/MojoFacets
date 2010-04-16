@@ -1,0 +1,12 @@
+<div class=admin>
+
+<a href="<%= url_for( action => 'index' ) %>">load</a>
+<a href="<%= url_for( action => 'columns' ) %>">columns</a>
+items:
+% foreach my $show ( glob 'templates/data/items/*.html.ep' ) {
+%  $show =~ s{^.+/([^/]+)\.html\.ep$}{$1};
+<a href="<%= url_for( action => 'items' )->query( show => $show ) %>"><%= $show %></a>
+% }
+
+</div>
+
