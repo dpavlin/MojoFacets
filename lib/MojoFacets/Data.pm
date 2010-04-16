@@ -207,6 +207,7 @@ sub items {
 	my $sort    = $self->_perm_scalar('sort', 'a');
 	my $offset  = $self->_perm_scalar('offset', 0);
 	my $limit   = $self->_perm_scalar('limit', 20);
+	$self->_perm_scalar('show', 'table');
 
 	# fix offset when changing limit
 	$offset = int( $offset / $limit ) * $limit;
