@@ -56,10 +56,11 @@ sub load {
 
 		my @header = split(/\|/, shift @lines);
 		warn "# header ", dump( @header );
+		$self->session( 'header' => [ @header ] );
 		foreach my $line ( @lines ) {
 			my @v = split(/\|/, $line);
 			my $item;
-			$item->{ $header[$_] || "f_$_" } = $v[$_] foreach ( 0 .. $#v );
+			$item->{ $header[$_] || "f_$_" } = [ $v[$_] ] foreach ( 0 .. $#v );
 			push @{ $data->{items} }, $item;
 		}
 	} else {
@@ -93,6 +94,11 @@ sub load {
 			if $stats->{$n}->{array} == $stats->{$n}->{count};
 	}
 
+	$self->session( 'header' => [
+		sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} }
+		grep { defined $stats->{$_}->{count} } keys %$stats
+	] ) unless $self->session( 'header' );
+
 	warn dump($stats);
 
 	$self->redirect_to( '/data/columns' );
@@ -102,15 +108,14 @@ sub load {
 sub columns {
     my $self = shift;
 
+	$self->redirect_to( '/data/index' ) unless $self->session('header');
 
 	my @columns;
 	@columns = grep { defined $stats->{$_}->{count} } @{ $self->session('columns') } if $self->session('columns');
 
-	foreach my $c ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } grep { defined $stats->{$_}->{count} } keys %$stats ) {
+	foreach my $c ( @{ $self->session( 'header' ) } ) {
 		push @columns, $c unless grep { /^\Q$c\E$/ } @columns;
 	}
-
-	$self->redirect_to( '/data/index' ) unless @columns;
 
     $self->render(
 		message => 'Select columns to display',
