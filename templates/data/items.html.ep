@@ -37,7 +37,11 @@ showing
 
 items
 
+% if ( $offset + $limit > $rows ) {
+<span class=count>all</span>
+% } else {
 <span class=count><%= $offset + 1 %>-<%= $offset + $limit %></span>
+% }
 
 <input type=submit value="refresh">
 
