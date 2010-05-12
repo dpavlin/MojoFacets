@@ -46,9 +46,9 @@ sub load {
 	# we could use Mojo::JSON here, but it's too slow
 #	$data = from_json read_file $path;
 	$data = read_file $path;
-	Encode::_utf8_on($data);
 	warn "# data snippet: ", substr($data,0,200);
 	if ( $path =~ m/\.js/ ) {
+		Encode::_utf8_on($data);
 		$data = from_json $data;
 	} elsif ( $path =~ m/\.txt/ ) {
 		my @lines = split(/\r?\n/, $data);
@@ -62,15 +62,22 @@ sub load {
 		$self->session( 'columns' => [ @header ] );
 		while ( my $line = shift @lines ) {
 			chomp $line;
-			$line =~ s/\^//g;
 			my @v = split(/\|/, $line);
-			while ( $multiline && $#v < $#header ) {
-				$line = shift @lines;
-				chomp $line;
+			while ( @lines && $#v < $#header ) {
+				$line = $lines[0];
 				$line =~ s/\^//g;
-				push @v, split(/\|/, $line);
+				chomp $line;
+				my @more_v = split(/\|/, $line);
+				if ( $#v + $#more_v > $#header ) {
+					warn "short line: ",dump( @v );
+					last;
+				}
+				shift @lines;
+				$v[ $#v ] .= shift @more_v;
+				push @v, @more_v if @more_v;
+
 				if ( $#v > $#header ) {
-					warn "# splice $#header ", dump( @v );
+					die "# splice $#header ", dump( @v );
 					@v = splice @v, 0, $#header;
 				}
 			}
