@@ -54,12 +54,22 @@ sub load {
 		my @lines = split(/\r?\n/, $data);
 		$data = { items => [] };
 
-		my @header = split(/\|/, shift @lines);
+		my $headers = shift @lines;
+		my $multiline = $headers =~ s/\^//g;
+		my @header = split(/\|/, $headers );
 		warn "# header ", dump( @header );
 		$self->session( 'header' => [ @header ] );
 		$self->session( 'columns' => [ @header ] );
-		foreach my $line ( @lines ) {
+		while ( my $line = shift @lines ) {
+			chomp $line;
+			$line =~ s/\^//g;
 			my @v = split(/\|/, $line);
+			while ( $multiline && $#v < $#header ) {
+				$line = shift @lines;
+				chomp $line;
+				$line =~ s/\^//g;
+				push @v, split(/\|/, $line);
+			}
 			my $item;
 			$item->{ $header[$_] || "f_$_" } = [ $v[$_] ] foreach ( 0 .. $#v );
 			push @{ $data->{items} }, $item;
