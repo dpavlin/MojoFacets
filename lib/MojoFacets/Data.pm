@@ -112,6 +112,8 @@ sub load {
 
 	warn dump($stats);
 
+	$self->session( 'filters' => undef );
+
 	$self->redirect_to( '/data/columns' );
 }
 
