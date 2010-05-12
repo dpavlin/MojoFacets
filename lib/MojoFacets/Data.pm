@@ -82,9 +82,9 @@ sub columns {
 
 
 	my @columns;
-	@columns = @{ $self->session('columns') } if $self->session('columns');
+	@columns = grep { defined $stats->{$_}->{count} } @{ $self->session('columns') } if $self->session('columns');
 
-	foreach my $c ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } keys %$stats ) {
+	foreach my $c ( sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} } grep { defined $stats->{$_}->{count} } keys %$stats ) {
 		push @columns, $c unless grep { /^\Q$c\E$/ } @columns;
 	}
 
