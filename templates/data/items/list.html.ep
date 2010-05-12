@@ -2,8 +2,10 @@
 % foreach my $row ( @$sorted ) {
 <ul>
 % foreach my $col ( @$columns ) {
-%  next unless exists $row->{$col};
-<li><tt><%= $col %></tt> <%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %>
+%  next unless defined $row->{$col};
+%  my $v = ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col};
+%  next if $v =~ m/^\s*$/;
+<li><tt><%= $col %></tt> <%= $v %>
 % }
 </ul>
 % }
