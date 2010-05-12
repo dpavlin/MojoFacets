@@ -69,6 +69,10 @@ sub load {
 				chomp $line;
 				$line =~ s/\^//g;
 				push @v, split(/\|/, $line);
+				if ( $#v > $#header ) {
+					warn "# splice $#header ", dump( @v );
+					@v = splice @v, 0, $#header;
+				}
 			}
 			my $item;
 			$item->{ $header[$_] || "f_$_" } = [ $v[$_] ] foreach ( 0 .. $#v );
