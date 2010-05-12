@@ -51,7 +51,7 @@ sub load {
 	if ( $path =~ m/\.js/ ) {
 		$data = from_json $data;
 	} elsif ( $path =~ m/\.txt/ ) {
-		my @lines = split(/\n/, $data);
+		my @lines = split(/\r?\n/, $data);
 		$data = { items => [] };
 
 		my @header = split(/\|/, shift @lines);
