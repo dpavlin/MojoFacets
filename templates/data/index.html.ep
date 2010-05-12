@@ -4,11 +4,15 @@
 <form method=post action=/data/load >
 
 <ul>
+% my $current = session('path');
 % foreach my $n ( @$files ) {
 <li>
 <label>
-<input type=radio name=path value=<%= $n %> >
-<%= $n %>
+%  if ( $n eq $current ) {
+<input type=radio disabled> <b><%= $n %></b>
+%  } else {
+<input type=radio name=path value=<%= $n %> > <%= $n %>
+%  }
 </label>
 % }
 </ul>
