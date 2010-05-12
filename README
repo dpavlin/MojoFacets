@@ -1,9 +1,16 @@
 Mojo Facets - server side facet browsing using Mojolicious and jQuery UI
 
 
-Put JSON file from Simile Exhibit project in data/
+Data sources:
+
+Put JSON file from Simile Exhibit project in data/ with extension .js or .json
+
+Alternative format is pipe (|) separated text files with extension .txt
+First column is always header with field names
+Multi-line values should be wrapped in ^multi-line-text^
+
 
 Start with:
 
-LANG=hr_HR.utf8 ./script/mojo_facets daemon --reload
+  LANG=hr_HR.utf8 ./script/mojo_facets daemon --reload
 
