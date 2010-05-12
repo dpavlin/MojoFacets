@@ -10,6 +10,7 @@ use File::Slurp;
 use JSON;
 use Encode;
 use locale;
+use File::Find;
 
 sub index {
 	my $self = shift;
@@ -17,11 +18,16 @@ sub index {
 	my $path = $self->app->home->rel_dir('data');
 	die "no data dir $path" unless -d $path;
 
-	opendir(my $dir, $path) || die $!;
-	my @files = 
-		grep { -f "$path/$_" && $_ =~ m/\.js(on)?$/ }
-		readdir $dir;
-	close($dir);
+	my @files;
+	find( sub {
+		my $file = $File::Find::name;
+		if ( -f $file && $file =~ m/\.(js(on)?|txt)$/ ) {
+			$file =~ s/$path\/*//;
+			push @files, $file;
+		} else {
+			warn "IGNORE: $file\n";
+		}
+	}, $path);
 
 	$self->render( files => [ @files ] );
 }
@@ -41,8 +47,24 @@ sub load {
 #	$data = from_json read_file $path;
 	$data = read_file $path;
 	Encode::_utf8_on($data);
-	warn "# json snippet: ", substr($data,0,200);
-	$data = from_json $data;
+	warn "# data snippet: ", substr($data,0,200);
+	if ( $path =~ m/\.js/ ) {
+		$data = from_json $data;
+	} elsif ( $path =~ m/\.txt/ ) {
+		my @lines = split(/\n/, $data);
+		$data = { items => [] };
+
+		my @header = split(/\|/, shift @lines);
+		warn "# header ", dump( @header );
+		foreach my $line ( @lines ) {
+			my @v = split(/\|/, $line);
+			my $item;
+			$item->{ $header[$_] || "f_$_" } = $v[$_] foreach ( 0 .. $#v );
+			push @{ $data->{items} }, $item;
+		}
+	} else {
+		warn "file format unknown $path";
+	}
 
 	$stats = {};
 
