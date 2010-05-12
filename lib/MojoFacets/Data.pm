@@ -50,6 +50,7 @@ sub load {
 	if ( $path =~ m/\.js/ ) {
 		Encode::_utf8_on($data);
 		$data = from_json $data;
+		$self->session( 'header' => 0 ); # generate later
 	} elsif ( $path =~ m/\.txt/ ) {
 		my @lines = split(/\r?\n/, $data);
 		$data = { items => [] };
