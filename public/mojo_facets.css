@@ -21,3 +21,8 @@
 .debug:hover {
 	color: #000;
 }
+
+li label:hover {
+	background: #ff8;
+}	
+
