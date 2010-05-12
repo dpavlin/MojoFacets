@@ -57,6 +57,7 @@ sub load {
 		my @header = split(/\|/, shift @lines);
 		warn "# header ", dump( @header );
 		$self->session( 'header' => [ @header ] );
+		$self->session( 'columns' => [ @header ] );
 		foreach my $line ( @lines ) {
 			my @v = split(/\|/, $line);
 			my $item;
