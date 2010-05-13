@@ -67,6 +67,7 @@ sub _load_path {
 		@header = split(/\|/, $header_line );
 		warn "# header ", dump( @header );
 		while ( my $line = shift @lines ) {
+			$line =~ s/\^//g;
 			chomp $line;
 			my @v = split(/\|/, $line);
 			while ( @lines && $#v < $#header ) {
