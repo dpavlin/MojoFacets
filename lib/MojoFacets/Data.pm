@@ -283,7 +283,15 @@ sub _filter_item {
 
 sub _data_items {
 	my $self = shift;
-	my $filters = $self->session('filters');
+	my $all_filters = $self->session('filters');
+	warn "# all_filters ",dump($all_filters);
+	my $filters;
+	$filters->{ $_ } = $all_filters->{ $_ }
+		foreach (
+			grep { defined $all_filters->{ $_ } }
+			@{ $self->_loaded('header') }
+		);
+	warn "# filters ",dump($filters);
  	my $data = $self->_loaded( 'data' );
 	grep {
 		$filters ? $self->_filter_item( $filters, $_ ) : 1;
