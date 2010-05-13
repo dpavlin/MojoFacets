@@ -156,8 +156,6 @@ sub load {
 	$self->session( 'header' => $loaded->{$path}->{header} );
 	$self->session( 'columns' => $loaded->{$path}->{header} );
 
-	$self->session( 'filters' => {} );
-
 	$self->redirect_to( '/data/columns' );
 }
 
