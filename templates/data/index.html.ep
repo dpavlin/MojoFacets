@@ -3,20 +3,25 @@
 
 <form method=post action=/data/load >
 
-<ul>
-% my $current = session('path');
+<table>
+<tr><th>name</th><th>bytes</th></tr>
 % foreach my $n ( @$files ) {
-<li>
+<tr><td>
 <label>
-%  if ( $n eq $current ) {
-<input type=radio disabled> <b><%= $n %></b>
-%  } else {
-<input type=radio name=path value=<%= $n %> > <%= $n %>
-%  }
+<input name=path  type=radio    value="<%= $n %>" <%= session('path') eq $n ? 'disabled' : '' %>>
+<%= $n %>
 </label>
+</td><td align=right><%= $size->{$n} %>
+</td><td><input name=paths type=checkbox value="<%= $n %>" <%= defined $loaded->{$n}->{stats} ? 'checked' : '' %>>
+</td><td>
+%  if ( defined $loaded->{$n}->{header} ) {
+<%= join("\n",@{ $loaded->{$n}->{header} }) %>
+%  }
+</td></tr>
 % }
-</ul>
+</table>
 
 <input type=submit value="Load">
 
+<pre class=debug><%= dumper $loaded %></pre>
 </form>

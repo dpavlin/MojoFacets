@@ -12,6 +12,8 @@ use Encode;
 use locale;
 use File::Find;
 
+our $loaded;
+
 sub index {
 	my $self = shift;
 
@@ -29,38 +31,41 @@ sub index {
 		}
 	}, $path);
 
-	$self->render( files => [ @files ] );
+	@files = sort { lc $a cmp lc $b } @files;
+	my $size;
+	$size->{$_} = -s "$path/$_" foreach @files;
+
+	$self->render(
+		files => [ @files ],
+		size => $size,
+		loaded => $loaded,
+	);
 }
 
-our $data;
-our $stats;
+sub _load_path {
+	my ( $self, $path ) = @_;
 
-sub load {
-	my $self = shift;
+	return if defined $loaded->{$path}->{data};
 
-	my $path = $self->app->home->rel_file( 'data/' . $self->param('path') );
-	die "$path $!" unless -r $path;
-
-	$self->session('path' => $self->param('path'));
+	my $full_path = $self->app->home->rel_file( 'data/' . $path );
+	die "$full_path $!" unless -r $full_path;
 
 	# we could use Mojo::JSON here, but it's too slow
 #	$data = from_json read_file $path;
-	$data = read_file $path;
+	my $data = read_file $full_path;
 	warn "# data snippet: ", substr($data,0,200);
+	my @header;
 	if ( $path =~ m/\.js/ ) {
 		Encode::_utf8_on($data);
 		$data = from_json $data;
-		$self->session( 'header' => 0 ); # generate later
 	} elsif ( $path =~ m/\.txt/ ) {
 		my @lines = split(/\r?\n/, $data);
 		$data = { items => [] };
 
-		my $headers = shift @lines;
-		my $multiline = $headers =~ s/\^//g;
-		my @header = split(/\|/, $headers );
+		my $header_line = shift @lines;
+		my $multiline = $header_line =~ s/\^//g;
+		@header = split(/\|/, $header_line );
 		warn "# header ", dump( @header );
-		$self->session( 'header' => [ @header ] );
-		$self->session( 'columns' => [ @header ] );
 		while ( my $line = shift @lines ) {
 			chomp $line;
 			my @v = split(/\|/, $line);
@@ -90,7 +95,7 @@ sub load {
 		warn "file format unknown $path";
 	}
 
-	$stats = {};
+	my $stats;
 
 	foreach my $e ( @{ $data->{items} } ) {
 		foreach my $n ( keys %$e ) {
@@ -117,12 +122,38 @@ sub load {
 			if $stats->{$n}->{array} == $stats->{$n}->{count};
 	}
 
-	$self->session( 'header' => [
+	@header =
 		sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} }
 		grep { defined $stats->{$_}->{count} } keys %$stats
-	] ) unless $self->session( 'header' );
+		unless @header;
 
 	warn dump($stats);
+
+	$loaded->{ $path } = {
+		header => [ @header ],
+		stats  => $stats,
+		full_path => $full_path,
+		size => -s $full_path,
+		data => $data,
+	};
+
+}
+
+
+sub load {
+	my $self = shift;
+
+	my @paths = $self->param('paths');
+	warn "# paths ", dump @paths;
+	$self->_load_path( $_ ) foreach @paths;
+
+ 	my $path = $self->param('path') || $self->redirect_to( '/data/index' );
+	warn "# path $path\n";
+	$self->session('path' => $path);
+	$self->_load_path( $path );
+
+	$self->session( 'header' => $loaded->{$path}->{header} );
+	$self->session( 'columns' => $loaded->{$path}->{header} );
 
 	$self->session( 'filters' => {} );
 
@@ -130,10 +161,21 @@ sub load {
 }
 
 
+sub _loaded {
+	my ( $self, $name ) = @_;
+	my $path = $self->session('path');
+	die "$path $name doesn't exist in loaded ",dump( $loaded )
+		unless defined $loaded->{$path}->{$name};
+	return $loaded->{$path}->{$name};
+}
+
+
+
+
 sub columns {
     my $self = shift;
 
-	$self->redirect_to( '/data/index' ) unless $self->session('header');
+	my $stats = $self->_loaded( 'stats' ); # || $self->redirect_to( '/data/index' );
 
 	my @columns;
 	@columns = grep { defined $stats->{$_}->{count} } @{ $self->session('columns') } if $self->session('columns');
@@ -243,6 +285,7 @@ sub _filter_item {
 sub _data_items {
 	my $self = shift;
 	my $filters = $self->session('filters');
+ 	my $data = $self->_loaded( 'data' );
 	grep {
 		$filters ? $self->_filter_item( $filters, $_ ) : 1;
  	} @{ $data->{items} };
@@ -251,7 +294,7 @@ sub _data_items {
 sub items {
     my $self = shift;
 
-	$self->redirect_to('/data/index') unless $data->{items};
+	$self->redirect_to('/data/index') unless defined $loaded->{ $self->session('path') };
 
 	my @columns = $self->_perm_array('columns');
 	$self->redirect_to('/data/columns') unless @columns;
@@ -301,6 +344,8 @@ sub order {
 
 sub _is_numeric {
 	my ( $self, $name ) = @_;
+
+	my $stats = $self->_loaded( 'stats' );
 
 	# sort facet numerically if more >50% elements are numeric
 	defined $stats->{$name}->{numeric} &&

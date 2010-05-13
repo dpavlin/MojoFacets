@@ -22,7 +22,10 @@
 	color: #000;
 }
 
-li label:hover {
+li label:hover, td label:hover {
 	background: #ff8;
 }	
 
+td label {
+	white-space: nowrap;
+}
