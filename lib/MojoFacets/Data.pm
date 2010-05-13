@@ -62,6 +62,7 @@ sub load {
 		$self->session( 'header' => [ @header ] );
 		$self->session( 'columns' => [ @header ] );
 		while ( my $line = shift @lines ) {
+			$line =~ s/\^//g;
 			chomp $line;
 			my @v = split(/\|/, $line);
 			while ( @lines && $#v < $#header ) {
