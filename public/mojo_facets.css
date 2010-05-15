@@ -8,6 +8,15 @@
 	content: ")";
 }
 
+/* index columns */
+span.c {
+	background: #eee;
+	font-size: 70%;
+	padding: 0 0.5em;
+}
+span.f {
+	font-weight: bold;
+}
 
 .admin {
 	background: #ffc;

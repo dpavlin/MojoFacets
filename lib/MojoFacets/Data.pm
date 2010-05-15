@@ -40,6 +40,7 @@ sub index {
 		files => [ @files ],
 		size => $size,
 		loaded => $loaded,
+		filters => $filters,
 	);
 }
 

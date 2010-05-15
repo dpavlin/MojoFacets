@@ -4,7 +4,7 @@
 <form method=post action=/data/load >
 
 <table>
-<tr><th>name</th><th>bytes</th></tr>
+<tr><th>name</th><th title="on disk">bytes</th><th title="loaded in memory">m</th><th>columns</th></tr>
 % foreach my $n ( @$files ) {
 <tr><td>
 <label>
@@ -15,7 +15,9 @@
 </td><td><input name=paths type=checkbox value="<%= $n %>" <%= defined $loaded->{$n}->{stats} ? 'checked' : '' %>>
 </td><td>
 %  if ( defined $loaded->{$n}->{header} ) {
-<%= join(" | ",@{ $loaded->{$n}->{header} }) %>
+%    foreach my $n ( @{ $loaded->{$n}->{header} } ) {
+<span class="c <%== $filters->{$n} ? 'f' : '' %>"><%= $n %></span>
+%    }
 %  }
 </td></tr>
 % }
@@ -24,4 +26,5 @@
 <input type=submit value="Load">
 
 <pre class=debug><%= dumper $loaded %></pre>
+<pre class=debug><%= dumper $filters %></pre>
 </form>
