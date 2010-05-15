@@ -81,7 +81,7 @@ sub _load_path {
 					last;
 				}
 				shift @lines;
-				$v[ $#v ] .= shift @more_v;
+				$v[ $#v ] .= shift @more_v if @more_v;
 				push @v, @more_v if @more_v;
 
 				if ( $#v > $#header ) {
@@ -170,6 +170,13 @@ sub _loaded {
 }
 
 
+sub _checked {
+	my $self = shift;
+	my $checked;
+	$checked->{$_}++ foreach @_;
+	warn "# _checked ",dump($checked);
+	return $checked;
+}
 
 
 sub columns {
@@ -252,33 +259,48 @@ sub filter {
 	$self->redirect_to('/data/items');
 }
 
-sub _filter_item {
-	my ( $self, $filters, $i ) = @_;
-	my $pass = 1;
-	foreach my $n ( keys %$filters ) {
-		my @filter_values = @{ $filters->{$n} };
-		my $include_missing = grep { /^_missing/ } @filter_values;
-		if ( ! exists $i->{$n} ) {
-			if ( $include_missing ) {
-				$pass = 1;
-				next;
-			} else {
+
+sub _data_items {
+	my $self = shift;
+	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
+ 	my $data = $self->_loaded( 'data' );
+
+	my $filters = $self->_current_filters;
+	my $filter_value;
+	foreach my $f ( keys %$filters ) {
+		foreach my $n ( @{ $filters->{$f} } ) {
+			$filter_value->{$f}->{$n} = 1;
+		}
+	}
+ 	my @items = @{ $data->{items} };
+	@items = grep {
+		my $i = $_;
+		my $pass = 1;
+		foreach my $n ( keys %$filter_value ) {
+			if ( ! exists $i->{$n} ) {
+				if ( defined $filter_value->{$n}->{_missing} ) {
+					$pass = 1;
+					next;
+				} else {
+					$pass = 0;
+					last;
+				}
+			}
+			# and match any of values in element
+			my $have_values = 0;
+			foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
+				$have_values ||= 1 if defined $filter_value->{$n}->{$v};
+			}
+			if ( ! $have_values ) {
 				$pass = 0;
 				last;
 			}
 		}
-		# and match any of values in element
-		my $have_values = 0;
-		foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
-			$have_values ||= 1 if grep { m/^\Q$v\E$/ } @filter_values;
-		}
-		if ( ! $have_values ) {
-			$pass = 0;
-			last;
-		}
-	}
-	return $pass;
+		$pass;
+	} @items if $filter_value;
+	return @items;
 }
+
 
 sub _current_filters {
 	my $self = shift;
@@ -292,15 +314,6 @@ sub _current_filters {
 	return $current_filters;
 }
 
-sub _data_items {
-	my $self = shift;
-	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
- 	my $data = $self->_loaded( 'data' );
-	my $current_filters = $self->_current_filters;
-	grep {
-		$filters ? $self->_filter_item( $current_filters, $_ ) : 1;
- 	} @{ $data->{items} };
-}
 
 sub items {
 	my $self = shift;
@@ -418,12 +431,5 @@ sub facet {
 	);
 }
 
-sub _checked {
-	my $self = shift;
-	my $checked;
-	$checked->{$_}++ foreach @_;
-	warn "# _checked ",dump($checked);
-	return $checked;
-}
 
 1;
