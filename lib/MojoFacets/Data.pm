@@ -238,15 +238,16 @@ sub filter {
 
 	warn "# filter $name vals ",dump(@vals);
 
-	my $filters = $self->session('filters');
+	my $path = $self->session('path');
+	my $filters = $loaded->{$path}->{filters};
 	if ( @vals ) {
 		$filters->{$name} = [ @vals ];
 	} else {
 		delete $filters->{$name};
 	}
-	$self->session( 'filters' => $filters );
+	$loaded->{$path}->{filters} = $filters;
 
-	warn "# filters ",dump($self->session('filters'));
+	warn "# filters ",dump($filters);
 
 	$self->session( 'offset' => 0 );
 
@@ -283,7 +284,8 @@ sub _filter_item {
 
 sub _data_items {
 	my $self = shift;
-	my $all_filters = $self->session('filters');
+	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
+	my $all_filters = $loaded->{$path}->{filters};
 	warn "# all_filters ",dump($all_filters);
 	my $filters;
 	$filters->{ $_ } = $all_filters->{ $_ }
@@ -362,10 +364,10 @@ sub _is_numeric {
 sub facet {
 	my $self = shift;
 
+	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
+
 	if ( my $remove = $self->param('remove') ) {
-		my $f = $self->session('filters');
-		delete $f->{$remove};
-		$self->session( 'filters' => $f );
+		delete $loaded->{$path}->{filters}->{$remove};
 		$self->redirect_to( '/data/items' );
 	}
 
@@ -385,7 +387,7 @@ sub facet {
 #	warn "# facet $name ",dump $facet;
 
 	my $checked;
-	if ( my $f = $self->session('filters') ) {
+	if ( my $f = $loaded->{$path}->{filters} ) {
 		if ( defined $f->{$name} ) {
 			$checked = $self->_checked( @{ $f->{$name} } );
 		}
