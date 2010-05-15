@@ -13,6 +13,7 @@ use locale;
 use File::Find;
 
 our $loaded;
+our $filters;
 
 sub index {
 	my $self = shift;
@@ -238,14 +239,11 @@ sub filter {
 
 	warn "# filter $name vals ",dump(@vals);
 
-	my $path = $self->session('path');
-	my $filters = $loaded->{$path}->{filters};
 	if ( @vals ) {
 		$filters->{$name} = [ @vals ];
 	} else {
 		delete $filters->{$name};
 	}
-	$loaded->{$path}->{filters} = $filters;
 
 	warn "# filters ",dump($filters);
 
@@ -282,28 +280,33 @@ sub _filter_item {
 	return $pass;
 }
 
+sub _current_filters {
+	my $self = shift;
+	my $current_filters;
+	$current_filters->{ $_ } = $filters->{ $_ }
+		foreach (
+			grep { defined $filters->{ $_ } }
+			@{ $self->_loaded('header') }
+		);
+	warn "# current_filters ",dump($current_filters);
+	return $current_filters;
+}
+
 sub _data_items {
 	my $self = shift;
 	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
-	my $all_filters = $loaded->{$path}->{filters};
-	warn "# all_filters ",dump($all_filters);
-	my $filters;
-	$filters->{ $_ } = $all_filters->{ $_ }
-		foreach (
-			grep { defined $all_filters->{ $_ } }
-			@{ $self->_loaded('header') }
-		);
-	warn "# filters ",dump($filters);
  	my $data = $self->_loaded( 'data' );
+	my $current_filters = $self->_current_filters;
 	grep {
-		$filters ? $self->_filter_item( $filters, $_ ) : 1;
+		$filters ? $self->_filter_item( $current_filters, $_ ) : 1;
  	} @{ $data->{items} };
 }
 
 sub items {
-    my $self = shift;
+	my $self = shift;
 
-	$self->redirect_to('/data/index') unless defined $loaded->{ $self->session('path') };
+	my $path = $self->session('path');
+	$self->redirect_to('/data/index') unless defined $loaded->{ $path };
 
 	my @columns = $self->_perm_array('columns');
 	$self->redirect_to('/data/columns') unless @columns;
@@ -339,6 +342,7 @@ sub items {
 		columns => [ @columns ],
 		rows => $rows,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
+		filters => $self->_current_filters,
 	);
 
 }
@@ -367,7 +371,7 @@ sub facet {
 	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
 
 	if ( my $remove = $self->param('remove') ) {
-		delete $loaded->{$path}->{filters}->{$remove};
+		delete $filters->{$remove};
 		$self->redirect_to( '/data/items' );
 	}
 
@@ -387,10 +391,8 @@ sub facet {
 #	warn "# facet $name ",dump $facet;
 
 	my $checked;
-	if ( my $f = $loaded->{$path}->{filters} ) {
-		if ( defined $f->{$name} ) {
-			$checked = $self->_checked( @{ $f->{$name} } );
-		}
+	if ( defined $filters->{$name} ) {
+		$checked = $self->_checked( @{ $filters->{$name} } );
 	}
 
 	my $sort = $self->param('sort') || 'c';

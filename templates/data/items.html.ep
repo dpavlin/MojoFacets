@@ -16,7 +16,6 @@ td.numeric {
 <form class=info>
 <b><%= $rows %></b> items 
 
-% my $filters = session('filters');
 % my @filters_active = keys %$filters;
 % if ( @filters_active ) {
 filter 
