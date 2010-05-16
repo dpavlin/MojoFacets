@@ -1,8 +1,8 @@
 var data = {
-	min_x: 0,
-	max_x: 0,
-	min_y: 0,
-	max_y: 0,
+	min_x: Number.MAX_VALUE,
+	max_x: Number.MIN_VALUE,
+	min_y: Number.MAX_VALUE,
+	max_y: Number.MIN_VALUE,
 	x_data: [],
 	y_data: [],
 	y_labels: [],
