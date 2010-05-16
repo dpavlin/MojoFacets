@@ -53,4 +53,47 @@ div.col_opts {
 
 .chart {
 	float: right;
+	position: relative;
 }
+
+.labels-x,
+.labels-y {
+	position: absolute;
+	left: 0;
+	top: 0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.labels-x li,
+.labels-y li {
+	position: absolute;
+	bottom: 0;
+	color: #555;
+	font-size: 75%;
+}
+
+.labels-y li span.line {
+	position: absolute;
+	border: 0 solid #ccc;
+}
+.labels-x li {
+	margin-top: 5px;
+	bottom: -1.5em;
+}
+.labels-y li {
+	width: 100%;
+}
+.labels-y li span.label {
+	right: 100%;
+	position: absolute;
+	margin-right: 5px;
+}
+.labels-y li span.line {
+	border-top-width: 1px;
+	width: 100%;
+}
+
