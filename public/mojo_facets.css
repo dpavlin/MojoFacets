@@ -45,3 +45,9 @@ li label:hover, td label:hover {
 td label {
 	white-space: nowrap;
 }
+
+
+div.col_opts {
+	font-size: 70%;
+}
+

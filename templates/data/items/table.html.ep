@@ -3,13 +3,15 @@
 <tr>
 % foreach my $n ( @$columns ) {
 <th>
-<a href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? '&diams;' : '&loz;' %></a>
 % if ( session('order') ne $n ) {
 <a href="<%= url_for( action => 'order' )->query( order => $n ) %>"><%= $n %></a>
 % } else {
 <a href="<%= url_for( action => 'order' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
 <%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
 % }
+<div class="col_opts">
+<a title="filter by this facet" href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? $#{ $filters->{$n} } + 1 . ' selected' : 'filter' %></a>
+</div>
 </th>
 % }
 </tr>
