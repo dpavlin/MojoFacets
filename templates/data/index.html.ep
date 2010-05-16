@@ -27,6 +27,7 @@
 
 <input type=submit value="Load">
 
+</form>
+
 <pre class=debug><%= dumper $loaded %></pre>
 <pre class=debug><%= dumper $filters %></pre>
-</form>
