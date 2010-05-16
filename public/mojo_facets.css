@@ -17,6 +17,9 @@ span.c {
 span.f {
 	font-weight: bold;
 }
+span.h {
+	color: #666;
+}
 
 .admin {
 	background: #ffc;
