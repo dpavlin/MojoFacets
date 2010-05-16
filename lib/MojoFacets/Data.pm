@@ -156,9 +156,14 @@ sub load {
 	$self->_load_path( $path );
 
 	$self->session( 'header' => $loaded->{$path}->{header} );
-	$self->session( 'columns' => $loaded->{$path}->{header} );
-
-	$self->redirect_to( '/data/columns' );
+	if ( ! defined $loaded->{$path}->{columns} ) {
+		$self->session( 'columns' => $loaded->{$path}->{header} );
+		$self->redirect_to( '/data/columns' );
+	} else {
+		$self->session( 'columns' => $loaded->{$path}->{columns} );
+		$self->redirect_to( '/data/items' );
+	}
+		
 }
 
 
@@ -204,9 +209,11 @@ sub _perm_array {
     my ($self,$name) = @_;
 
 	my @array = $self->param($name);
+	my $path  = $self->session('path');
 
 	if ( @array ) {
 		$self->session($name => [ @array ]);
+		$loaded->{$path}->{$name} = [ @array ];
 	} elsif ( my $session = $self->session($name) ) {
 		if ( ref $session eq 'ARRAY' ) {
 			@array = @$session;
