@@ -69,7 +69,7 @@ ctx.beginPath();
 for( var i in data.x_data ) {
 	var x = Math.ceil( ( data.x_data[i] - data.min_x ) / data.x_range * data.width  );
 	var y = Math.ceil( ( data.y_data[i] - data.min_y ) / data.y_range * data.height );
-	console.debug( i, x, y );
+//	console.debug( i, x, y );
 	ctx.lineTo( x, -y );
 	data.x_px.push( x );
 }
@@ -80,10 +80,15 @@ ctx.closePath();
 var labels_x = $('<ul class="labels-x"></ul>')
 	.css({ width: data.width, height: data.height, position: 'absolute' });
 
+var x_pos = 0;
+
 for( var i in data.x_data ) {
+	if ( Math.abs( data.x_px[i] - x_pos ) > 20 ) {
+		x_pos = data.x_px[i];
 		$('<li><span class="line"></span><span class="label">' + data.x_data[i] + '</span></li>')
-			.css({ left: data.x_px[i] })
+			.css({ left: x_pos })
 			.appendTo(labels_x);
+	}
 }
 labels_x.appendTo(canvasContain);
 
