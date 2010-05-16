@@ -10,14 +10,14 @@
 
 <%= include 'sorting' %>
 
-<ul>
+<ul id=facet>
 % foreach my $n ( @$facet_names ) {
 <li>
 <label>
 <input type=checkbox name="filter_vals" value="<%= $n %>" <%= $checked->{$n} ? 'checked' : '' %>>
 <%= $n %>
-<span class="count"><%= $facet->{$n} %></span>
 </label>
+<span class="count"><%= $facet->{$n} %></span>
 % }
 </ul>
 
@@ -26,3 +26,4 @@
 </form>
 
 
+<script type="text/javascript" src="/facet_graph.js"></script>
