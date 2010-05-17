@@ -21,5 +21,9 @@ value:
 <a href="<%= url_for->query( name => $name, sort => 'd' ) %>">desceding</a>
 % }
 
-<%= $numeric ? 'numeric' : '' %>
+% if ( $numeric && $sort =~ m/^[ad]$/ ) {
+<span id=numeric>numeric</span><!-- hint to facet_graph.js -->
+% } else {
+numeric
+% }
 
