@@ -45,7 +45,10 @@ while( y_pos < data.max_y - y_inc ) {
 data.y_labels.push( data.max_y );
 
 data.numeric = $('span#numeric').length;
-data.x_inc = Math.round( data.width / data.x_range );
+data.x_inc = data.numeric
+	? Math.round( data.width / data.x_range )
+	: data.width / data.x_data.length
+	;
 
 console.debug( 'data', data );
 
@@ -74,7 +77,6 @@ for( var i in data.x_data ) {
 	var x = data.x_data[i];
 	if ( data.numeric ) x = Math.ceil( ( x - data.min_x ) / data.x_range * data.width  );
 	var y = Math.ceil( ( data.y_data[i] - data.min_y ) / data.y_range * data.height );
-//	console.debug( i, x, y );
 	if ( data.numeric ) {
 		ctx.lineTo( x, -y );
 		data.x_px.push( x );
