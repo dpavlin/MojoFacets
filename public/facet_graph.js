@@ -44,6 +44,9 @@ while( y_pos < data.max_y - y_inc ) {
 }
 data.y_labels.push( data.max_y );
 
+data.numeric = $('span#numeric').length;
+data.x_inc = Math.round( data.width / data.x_range );
+
 console.debug( 'data', data );
 
 var canvas = $('<canvas/>');
@@ -62,16 +65,25 @@ var ctx = canvas[0].getContext('2d');
 ctx.translate( 0, data.height ); // start at bottom left
 ctx.lineWidth = 2;
 ctx.strokeStyle = '#ff8800';
+ctx.fillStyle = '#ffcc88';
 
 ctx.moveTo( 0, 0 );
 ctx.beginPath();
 
 for( var i in data.x_data ) {
-	var x = Math.ceil( ( data.x_data[i] - data.min_x ) / data.x_range * data.width  );
+	var x = data.x_data[i];
+	if ( data.numeric ) x = Math.ceil( ( x - data.min_x ) / data.x_range * data.width  );
 	var y = Math.ceil( ( data.y_data[i] - data.min_y ) / data.y_range * data.height );
 //	console.debug( i, x, y );
-	ctx.lineTo( x, -y );
-	data.x_px.push( x );
+	if ( data.numeric ) {
+		ctx.lineTo( x, -y );
+		data.x_px.push( x );
+	} else {
+		var x_px = i * data.x_inc;
+		console.debug( x_px, y );
+		ctx.fillRect( x_px, 0, data.x_inc, -y );
+		ctx.strokeRect( x_px, 0, data.x_inc, -y );
+	}
 }
 
 ctx.stroke();
