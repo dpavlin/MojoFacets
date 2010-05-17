@@ -1,9 +1,47 @@
-<script type="text/javascript">
-function all_checkboxes(checked) {
-    $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', checked);
-}
-</script>
+<a id="all"  href="#">all</a>
+<a id="none" href="#">none</a>
 
-<a href="#" onClick="all_checkboxes(true); return false;">all</a>
-<a href="#" onClick="all_checkboxes(false); return false;">none</a>
+<input type=text name=filter_regex>
+<a id="included" href="#">included</a>
+<a id="excluded" href="#">excluded</a>
+
+
+<script type="text/javascript">
+
+$('a#all').click( function(){
+    $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+});
+
+$('a#none').click( function(){
+    $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', false);
+});
+
+$('a#included').click( function(){
+    $("label.included input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+}).hide();
+
+$('a#excluded').click( function(){
+    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+}).hide();
+
+$('input[name=filter_regex]').change( function(e) {
+	console.debug( this, e );
+	var r = new RegExp( this.value ,'i');
+	var included = 0;
+	var excluded = 0;
+    $("input[type='checkbox']:not([disabled='disabled'])").each( function(i,element){
+		if ( r.test( this.value ) ) {
+			$(this).parent().removeClass('excluded').addClass('included');
+			included++;
+		} else {
+			$(this).parent().removeClass('included').addClass('excluded');
+			excluded++;
+		}
+	});
+
+	$('a#included').text('+' + included).show();
+	$('a#excluded').text('-' + excluded).show();
+});
+
+</script>
 

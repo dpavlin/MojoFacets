@@ -97,3 +97,10 @@ div.col_opts {
 	width: 100%;
 }
 
+label.included {
+	color: #080;
+}
+
+label.excluded {
+	color: #800;
+}
