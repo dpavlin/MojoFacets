@@ -103,19 +103,21 @@ sub _load_path {
 	foreach my $e ( @{ $data->{items} } ) {
 		foreach my $n ( keys %$e ) {
 			$stats->{$n}->{count}++;
+			my @v;
 			if ( ref $e->{$n} eq 'ARRAY' ) {
-
 				$stats->{$n}->{array} += $#{ $e->{$n} } + 1;
-
-				foreach my $x ( @{$e->{$n}} ) {
-					$stats->{$n}->{numeric}++
-						if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
-				}
-
+				@v = @{ $e->{$n} };
 			} else {
-				$stats->{$n}->{numeric}++
-					if $e->{$n} =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
+				@v = ( $e->{$n} );
 			}
+
+			foreach my $x ( @v ) {
+				$stats->{$n}->{numeric}++
+					if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
+				$stats->{$n}->{empty}++
+					if $x =~ m/^\s*$/;
+			}
+
 		}
 	}
 
@@ -382,8 +384,10 @@ sub _is_numeric {
 	my $stats = $self->_loaded( 'stats' );
 
 	# sort facet numerically if more >50% elements are numeric
+	my $count = $stats->{$name}->{count};
+	$count   -= $stats->{$name}->{empty} if defined $stats->{$name}->{empty};
 	defined $stats->{$name}->{numeric} &&
-		$stats->{$name}->{numeric} > $stats->{$name}->{count} / 2;
+		$stats->{$name}->{numeric} > $count / 2;
 }
 
 sub facet {
