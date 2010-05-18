@@ -1,8 +1,8 @@
 var data = {
-	min_x: Number.MAX_VALUE,
-	max_x: Number.MIN_VALUE,
-	min_y: Number.MAX_VALUE,
-	max_y: Number.MIN_VALUE,
+	x_min: Number.MAX_VALUE,
+	x_max: Number.MIN_VALUE,
+	y_min: Number.MAX_VALUE,
+	y_max: Number.MIN_VALUE,
 	x_data: [],
 	y_data: [],
 	x_px: [],
@@ -16,35 +16,35 @@ var ul = $('ul#facet');
 ul.find('li label').each( function(){
 	var v = parseFloat( $(this).text() );
 	if ( isNaN(v) ) v = 0;
-	if ( v > data.max_x ) data.max_x = v;
-	if ( v < data.min_x ) data.min_x = v;
+	if ( v > data.x_max ) data.x_max = v;
+	if ( v < data.x_min ) data.x_min = v;
 	data.x_data.push( v );
 });
 
 ul.find('li span.count').each( function(){
 	var v = parseFloat( $(this).text() ); // FIXME not numeric!
 	if ( isNaN(v) ) v = 0;
-	if ( v > data.max_y ) data.max_y = v;
-	if ( v < data.min_y ) data.min_y = v;
+	if ( v > data.y_max ) data.y_max = v;
+	if ( v < data.y_min ) data.y_min = v;
 	data.y_data.push( v );
 });
 
-data.min_y = 0; // XXX force to 0, because it's count
+data.y_min = 0; // XXX force to 0, because it's count
 
-data.x_range = data.max_x - data.min_x;
-data.y_range = data.max_y - data.min_y;
+data.x_range = data.x_max - data.x_min;
+data.y_range = data.y_max - data.y_min;
 
 
 var y_num_labels = Math.round( data.height / 20 ); // padding between vertical labels
 var y_inc = Math.ceil( data.y_range / y_num_labels );
 
-var y_pos = data.min_y;
-var y_last_pos = Math.ceil( data.max_y - y_inc / 2 );
+var y_pos = data.y_min;
+var y_last_pos = Math.ceil( data.y_max - y_inc / 2 );
 while( y_pos < y_last_pos ) {
 	data.y_labels.push( y_pos );
 	y_pos += y_inc;
 }
-data.y_labels.push( data.max_y );
+data.y_labels.push( data.y_max );
 
 data.numeric = $('span#numeric').length;
 data.x_inc = data.numeric
@@ -77,8 +77,8 @@ ctx.beginPath();
 
 for( var i in data.x_data ) {
 	var x = data.x_data[i];
-	if ( data.numeric ) x = Math.ceil( ( x - data.min_x ) / data.x_range * data.width  );
-	var y = Math.ceil( ( data.y_data[i] - data.min_y ) / data.y_range * data.height );
+	if ( data.numeric ) x = Math.ceil( ( x - data.x_min ) / data.x_range * data.width  );
+	var y = Math.ceil( ( data.y_data[i] - data.y_min ) / data.y_range * data.height );
 	if ( data.numeric ) {
 		ctx.lineTo( x, -y );
 		data.x_px.push( x );
@@ -99,13 +99,13 @@ var labels_x = $('<ul class="labels-x"></ul>')
 	.css({ width: data.width, height: data.height, position: 'absolute' });
 
 for( var x_pos = 0; x_pos < data.width; x_pos += data.x_inc ) {
-	var x_val = ( x_pos / data.width * data.x_range ) + data.min_x;
+	var x_val = ( x_pos / data.width * data.x_range ) + data.x_min;
 	$('<li><span class="label">' + x_val + '</span></li>')
 		.css({ left: x_pos })
 		.appendTo(labels_x);
 }
 
-$('<li><span class="label">' + data.max_x + '</span></li>')
+$('<li><span class="label">' + data.x_max + '</span></li>')
 		.css({ right: 0 })
 		.appendTo(labels_x);
 
@@ -118,7 +118,7 @@ var labels_y = $('<ul class="labels-y"></ul>')
 
 for( var i in data.y_labels ) {
 		$('<li><span class="line"></span><span class="label">' + data.y_labels[i] + '</span></li>')
-			.css({ bottom: Math.ceil( ( data.y_labels[i] - data.min_y ) / data.y_range * data.height ) })
+			.css({ bottom: Math.ceil( ( data.y_labels[i] - data.y_min ) / data.y_range * data.height ) })
 			.appendTo(labels_y);
 }
 labels_y.appendTo(canvasContain);
