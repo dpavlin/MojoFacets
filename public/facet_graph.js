@@ -38,7 +38,8 @@ var y_num_labels = Math.round( data.height / 20 ); // padding between vertical l
 var y_inc = Math.ceil( data.y_range / y_num_labels );
 
 var y_pos = data.min_y;
-while( y_pos < data.max_y - y_inc ) {
+var y_last_pos = Math.ceil( data.max_y - y_inc / 2 );
+while( y_pos < y_last_pos ) {
 	data.y_labels.push( y_pos );
 	y_pos += y_inc;
 }
