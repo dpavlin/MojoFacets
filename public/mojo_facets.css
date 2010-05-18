@@ -91,6 +91,7 @@ div.col_opts {
 	right: 100%;
 	position: absolute;
 	margin-right: 5px;
+	margin-top: -0.5em;
 }
 .labels-y li span.line {
 	border-top-width: 1px;
