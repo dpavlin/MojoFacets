@@ -102,6 +102,7 @@ function draw_labels(class_name,axis,size,css_pos,last_css_pos) {
 		.css({ width: data.width, height: data.height, position: 'absolute' });
 
 	axis.num_labels = Math.round( size / axis.label_spacing );
+	if ( axis.num_labels > axis.range ) axis.num_labels = axis.range;
 	axis.inc = Math.ceil( axis.range / axis.num_labels );
 	axis.inc_px = Math.ceil( size / axis.num_labels );
 
