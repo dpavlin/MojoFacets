@@ -111,7 +111,7 @@ var labels_y = $('<ul class="labels-y"></ul>')
 
 for( var i in data.y_labels ) {
 		$('<li><span class="line"></span><span class="label">' + data.y_labels[i] + '</span></li>')
-			.css({ bottom: Math.ceil( data.y_labels[i] / data.y_range * data.height ) })
+			.css({ bottom: Math.ceil( ( data.y_labels[i] - data.min_y ) / data.y_range * data.height ) })
 			.appendTo(labels_y);
 }
 labels_y.appendTo(canvasContain);
