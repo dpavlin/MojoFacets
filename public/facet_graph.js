@@ -93,20 +93,25 @@ for( var i in data.x_data ) {
 ctx.stroke();
 ctx.closePath();
 
+if ( data.numeric ) {
+
 var labels_x = $('<ul class="labels-x"></ul>')
 	.css({ width: data.width, height: data.height, position: 'absolute' });
 
-var x_pos = 0;
-
-for( var i in data.x_data ) {
-	if ( data.numeric && ( i == 0 || Math.abs( data.x_px[i] - x_pos ) > 20 ) ) {
-		x_pos = data.x_px[i];
-		$('<li><span class="line"></span><span class="label">' + data.x_data[i] + '</span></li>')
-			.css({ left: x_pos })
-			.appendTo(labels_x);
-	}
+for( var x_pos = 0; x_pos < data.width; x_pos += data.x_inc ) {
+	var x_val = ( x_pos / data.width * data.x_range ) + data.min_x;
+	$('<li><span class="label">' + x_val + '</span></li>')
+		.css({ left: x_pos })
+		.appendTo(labels_x);
 }
+
+$('<li><span class="label">' + data.max_x + '</span></li>')
+		.css({ right: 0 })
+		.appendTo(labels_x);
+
 labels_x.appendTo(canvasContain);
+
+} // data.numeric
 
 var labels_y = $('<ul class="labels-y"></ul>')
 	.css({ width: data.width, height: data.height, position: 'absolute' });
