@@ -4,8 +4,12 @@ var data = {
 		max: Number.MIN_VALUE,
 		range: 0,
 		inc: 0,
+		inc_bar: 0,
+		inc_px: 0,
 		data: [],
 		px: [],
+		num_labels: 0,
+		label_spacing: 30,
 	},
 	y: {
 		min: Number.MAX_VALUE,
@@ -15,6 +19,8 @@ var data = {
 		inc: 0,
 		num_labels: 0,
 		labels: [],
+		num_labels: 0,
+		label_spacing: 25,
 	},
 	width: 600,
 	height: 400,
@@ -44,22 +50,12 @@ data.x.range = data.x.max - data.x.min;
 data.y.range = data.y.max - data.y.min;
 
 
-var y_num_labels = Math.round( data.height / 20 ); // padding between vertical labels
-data.y.inc = Math.ceil( data.y.range / y_num_labels );
-
-var y_last_pos = Math.ceil( data.y.max - data.y.inc / 2 );
-for( var y_pos = data.y.min; y_pos < y_last_pos; y_pos += data.y.inc ) {
-	data.y.labels.push( y_pos );
-}
-data.y.labels.push( data.y.max );
 
 data.numeric = $('span#numeric').length;
-data.x.inc = data.numeric
+data.x.inc_bar = data.numeric
 	? Math.round( data.width / data.x.range )
 	: data.width / data.x.data.length
 	;
-
-console.debug( 'data', data );
 
 var canvas = $('<canvas/>');
 
@@ -90,42 +86,43 @@ for( var i in data.x.data ) {
 		ctx.lineTo( x, -y );
 		data.x.px.push( x );
 	} else {
-		var x_px = i * data.x.inc;
+		var x_px = i * data.x.inc_bar;
 		console.debug( x_px, y );
-		ctx.fillRect( x_px, 0, data.x.inc, -y );
-		ctx.strokeRect( x_px, 0, data.x.inc, -y );
+		ctx.fillRect( x_px, 0, data.x.inc_bar, -y );
+		ctx.strokeRect( x_px, 0, data.x.inc_bar, -y );
 	}
 }
 
 ctx.stroke();
 ctx.closePath();
 
-if ( data.numeric ) {
+function draw_labels(class_name,axis,size,css_pos,last_css_pos) {
 
-var labels_x = $('<ul class="labels-x"></ul>')
-	.css({ width: data.width, height: data.height, position: 'absolute' });
+	var labels = $('<ul class="'+class_name+'"></ul>')
+		.css({ width: data.width, height: data.height, position: 'absolute' });
 
-for( var x_pos = 0; x_pos < data.width; x_pos += data.x.inc ) {
-	var x_val = ( x_pos / data.width * data.x.range ) + data.x.min;
-	$('<li><span class="label">' + x_val + '</span></li>')
-		.css({ left: x_pos })
-		.appendTo(labels_x);
+	axis.num_labels = Math.round( size / axis.label_spacing );
+	axis.inc = Math.ceil( axis.range / axis.num_labels );
+	axis.inc_px = Math.ceil( size / axis.num_labels );
+
+	var pos = 0;
+	for( var val = axis.min; val < axis.max ; val += axis.inc ) {
+		$('<li style="'+css_pos+': '+pos+'px"><span class="line"></span><span class="label">' + val + '</span></li>')
+			.appendTo(labels);
+		pos += axis.inc_px;
+	}
+
+	$('<li style="'+last_css_pos+'"><span class="line"></span><span class="label">' + axis.max + '</span></li>')
+		.appendTo(labels);
+
+	labels.appendTo(canvasContain);
+
 }
 
-$('<li><span class="label">' + data.x.max + '</span></li>')
-		.css({ right: 0 })
-		.appendTo(labels_x);
+if ( data.numeric )  draw_labels( 'labels-x', data.x, data.width, 'left', 'right:0px' );
 
-labels_x.appendTo(canvasContain);
+draw_labels( 'labels-y', data.y, data.height, 'bottom', 'bottom:'+data.height+'px' );
 
-} // data.numeric
 
-var labels_y = $('<ul class="labels-y"></ul>')
-	.css({ width: data.width, height: data.height, position: 'absolute' });
+console.debug( 'data', data );
 
-for( var i in data.y.labels ) {
-		$('<li><span class="line"></span><span class="label">' + data.y.labels[i] + '</span></li>')
-			.css({ bottom: Math.ceil( ( data.y.labels[i] - data.y.min ) / data.y.range * data.height ) })
-			.appendTo(labels_y);
-}
-labels_y.appendTo(canvasContain);
