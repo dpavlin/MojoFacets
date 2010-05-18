@@ -5,7 +5,6 @@ var data = {
 		range: 0,
 		inc: 0,
 		inc_bar: 0,
-		inc_px: 0,
 		data: [],
 		px: [],
 		num_labels: 0,
@@ -17,8 +16,6 @@ var data = {
 		range: 0,
 		data: [],
 		inc: 0,
-		num_labels: 0,
-		labels: [],
 		num_labels: 0,
 		label_spacing: 25,
 	},
@@ -104,13 +101,11 @@ function draw_labels(class_name,axis,size,css_pos,last_css_pos) {
 	axis.num_labels = Math.round( size / axis.label_spacing );
 	if ( axis.num_labels > axis.range ) axis.num_labels = axis.range;
 	axis.inc = Math.ceil( axis.range / axis.num_labels );
-	axis.inc_px = Math.ceil( size / axis.num_labels );
 
-	var pos = 0;
 	for( var val = axis.min; val < axis.max ; val += axis.inc ) {
+		var pos = Math.ceil( ( val - axis.min ) / axis.range * size );
 		$('<li style="'+css_pos+': '+pos+'px"><span class="line"></span><span class="label">' + val + '</span></li>')
 			.appendTo(labels);
-		pos += axis.inc_px;
 	}
 
 	$('<li style="'+last_css_pos+'"><span class="line"></span><span class="label">' + axis.max + '</span></li>')
