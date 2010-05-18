@@ -23,7 +23,7 @@ value:
 
 % if ( $numeric && $sort =~ m/^[ad]$/ ) {
 <span id=numeric>numeric</span><!-- hint to facet_graph.js -->
-% } else {
+% } elsif ( $numeric ) {
 numeric
 % }
 
