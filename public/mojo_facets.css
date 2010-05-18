@@ -79,6 +79,7 @@ div.col_opts {
 .labels-y li span.line {
 	position: absolute;
 	border: 0 solid #ccc;
+	opacity: 0.7;
 }
 .labels-x li {
 	margin-top: 5px;
