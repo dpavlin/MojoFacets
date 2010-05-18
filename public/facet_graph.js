@@ -98,7 +98,7 @@ var labels_x = $('<ul class="labels-x"></ul>')
 var x_pos = 0;
 
 for( var i in data.x_data ) {
-	if ( Math.abs( data.x_px[i] - x_pos ) > 20 ) {
+	if ( data.numeric && ( i == 0 || Math.abs( data.x_px[i] - x_pos ) > 20 ) ) {
 		x_pos = data.x_px[i];
 		$('<li><span class="line"></span><span class="label">' + data.x_data[i] + '</span></li>')
 			.css({ left: x_pos })
