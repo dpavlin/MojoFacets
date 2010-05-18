@@ -29,6 +29,7 @@ ul.find('li span.count').each( function(){
 	data.y_data.push( v );
 });
 
+data.min_y = 0; // XXX force to 0, because it's count
 
 data.x_range = data.max_x - data.min_x;
 data.y_range = data.max_y - data.min_y;
