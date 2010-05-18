@@ -54,6 +54,7 @@ div.col_opts {
 .chart {
 	float: right;
 	position: relative;
+	margin-top: 1em;
 }
 
 .labels-x,
