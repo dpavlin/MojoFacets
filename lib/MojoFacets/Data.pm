@@ -273,11 +273,11 @@ sub filter {
 
 
 sub _data_items {
-	my $self = shift;
+	my ( $self, $all ) = shift;
 	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
  	my $data = $self->_loaded( 'data' );
 
-	return @{ $data->{items} } if defined $self->session('all');
+	return @{ $data->{items} } if $all;
 
 	my $filters = $self->_current_filters;
 	my $filter_value;
@@ -407,7 +407,9 @@ sub facet {
 	my $facet;
 	my $name = $self->param('name') || die "no name";
 
-	foreach my $i ( $self->_data_items ) {
+	my $all = $self->_perm_scalar('all', 0);
+
+	foreach my $i ( $self->_data_items($all) ) {
 		if ( ! exists $i->{$name} ) {
 			$facet->{ _missing }++;
 		} elsif ( ref $i->{$name} eq 'ARRAY' ) {
@@ -420,7 +422,6 @@ sub facet {
 #	warn "# facet $name ",dump $facet;
 
 	my $checked;
-	my $all = $self->_perm_scalar('all', 0);
 	my @facet_names =
 		  $all                      ? keys %$facet
 		: defined $filters->{$name} ? @{ $filters->{$name} }
