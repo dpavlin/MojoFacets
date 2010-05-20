@@ -277,6 +277,8 @@ sub _data_items {
 	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
  	my $data = $self->_loaded( 'data' );
 
+	return @{ $data->{items} } if defined $self->session('all');
+
 	my $filters = $self->_current_filters;
 	my $filter_value;
 	foreach my $f ( keys %$filters ) {
@@ -418,13 +420,13 @@ sub facet {
 #	warn "# facet $name ",dump $facet;
 
 	my $checked;
-	my @facet_names;
-	if ( defined $filters->{$name} ) {
-		@facet_names = @{ $filters->{$name} };
-		$checked = $self->_checked( @facet_names );
-	} else {
-		@facet_names = keys %$facet;
-	}
+	my $all = $self->_perm_scalar('all', 0);
+	my @facet_names =
+		  $all                      ? keys %$facet
+		: defined $filters->{$name} ? @{ $filters->{$name} }
+		: keys %$facet;
+
+	$checked = $self->_checked( @{ $filters->{$name} } ) if defined $filters->{$name};
 
 	my $sort = $self->param('sort') || 'c';
 

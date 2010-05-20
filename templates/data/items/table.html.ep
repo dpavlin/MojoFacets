@@ -10,10 +10,10 @@
 <%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
 % }
 <div class="col_opts">
-<a title="filter by this facet" href="<%= url_for( action => 'facet' )->query( name => $n ) %>">
+<a title="filter by this facet" href="<%= url_for( action => 'facet' )->query( name => $n, all => 0 ) %>">
 % if ( defined $filters->{$n} ) {
 <%= $#{ $filters->{$n} } + 1 %></a>&nbsp;
-<a title="show all values" href="<%= url_for( action => 'facet' )->query( name => $n, show => 'all' ) %>">all
+<a title="show all values" href="<%= url_for( action => 'facet' )->query( name => $n, all => 1 ) %>">all
 % } else {
 filter
 % }
