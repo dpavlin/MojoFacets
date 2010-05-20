@@ -244,7 +244,7 @@ sub _perm_scalar {
 		$self->session($name => $scalar);
 	}
 
-	warn "# $name ",dump $scalar;
+	warn "# _perm_scalar $name ",dump $scalar;
 	return $scalar;
 }
 
