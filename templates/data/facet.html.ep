@@ -1,7 +1,5 @@
 % layout 'ui';
 
-<%#= dumper $facet %>
-
 <form method=post action=/data/filter >
 <input type=hidden name=filter_name value="<%= $name %>">
 <input type=submit value="Filter <%= $name %>">
@@ -25,5 +23,7 @@
 
 </form>
 
-
 <script type="text/javascript" src="/facet_graph.js"></script>
+
+<pre class=debug><%= dumper $facet %></pre>
+
