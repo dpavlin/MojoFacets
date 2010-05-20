@@ -3,6 +3,7 @@
 <form method=post action=/data/filter >
 <input type=hidden name=filter_name value="<%= $name %>">
 <input type=submit value="Filter <%= $name %>">
+<span class=count><%= $#{ $facet_names } + 1 %></span>
 
 <%= include 'all_checkboxes' %>
 
