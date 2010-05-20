@@ -109,3 +109,8 @@ label.excluded,
 a#excluded {
 	color: #800;
 }
+
+/* delimiter for repeatable data */
+span.d {
+	color: #ccc;
+}

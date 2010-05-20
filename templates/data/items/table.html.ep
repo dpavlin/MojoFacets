@@ -10,7 +10,14 @@
 <%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
 % }
 <div class="col_opts">
-<a title="filter by this facet" href="<%= url_for( action => 'facet' )->query( name => $n ) %>"><%== $filters->{$n} ? $#{ $filters->{$n} } + 1 . ' selected' : 'filter' %></a>
+<a title="filter by this facet" href="<%= url_for( action => 'facet' )->query( name => $n ) %>">
+% if ( defined $filters->{$n} ) {
+<%= $#{ $filters->{$n} } + 1 %></a>&nbsp;
+<a title="show all values" href="<%= url_for( action => 'facet' )->query( name => $n, show => 'all' ) %>">all
+% } else {
+filter
+% }
+</a>
 </div>
 </th>
 % }
@@ -19,7 +26,20 @@
 % foreach my $row ( @$sorted ) {
 <tr>
 % foreach my $col ( @$columns ) {
-<td<%= $numeric->{$col} ? ' class=numeric' : '' %>><%= ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col} %></td>
+<td<%= $numeric->{$col} ? ' class=numeric' : '' %>>
+%  if ( ref $row->{$col} eq 'ARRAY' ) {
+%   foreach ( @{ $row->{$col} } ) {
+<%= $_ %>
+%    if ( $#{ $row->{$col} } ) {
+<span class=d>&para;</span>
+%    }
+%   }
+%  } elsif ( ref $row->{$col} ) {
+<pre class=debug><%= dumper $row->{$col} %></pre>
+%  } else {
+<%= $row->{$col} %>
+%  }
+</td>
 % }
 </tr>
 % }
