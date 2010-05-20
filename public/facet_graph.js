@@ -75,7 +75,13 @@ ctx.fillStyle = '#ffcc88';
 ctx.moveTo( 0, 0 );
 ctx.beginPath();
 
-for( var i in data.x.data ) {
+var elements = data.x.data.length;
+var step = elements / data.width;
+console.debug( elements, step );
+if ( step < 1 ) step = 1;
+var i_float = 0;
+while( i_float < elements ) {
+	var i = i_float.toFixed();
 	var x = data.x.data[i];
 	if ( data.numeric ) x = Math.ceil( ( x - data.x.min ) / data.x.range * data.width  );
 	var y = Math.ceil( ( data.y.data[i] - data.y.min ) / data.y.range * data.height );
@@ -88,6 +94,7 @@ for( var i in data.x.data ) {
 		ctx.fillRect( x_px, 0, data.x.inc_bar, -y );
 		ctx.strokeRect( x_px, 0, data.x.inc_bar, -y );
 	}
+	i_float += step;
 }
 
 ctx.stroke();
