@@ -28,9 +28,10 @@ filter
 % foreach my $col ( @$columns ) {
 <td<%= $numeric->{$col} ? ' class=numeric' : '' %>>
 %  if ( ref $row->{$col} eq 'ARRAY' ) {
-%   foreach ( @{ $row->{$col} } ) {
-<%= $_ %>
-%    if ( $#{ $row->{$col} } ) {
+%   my $last = $#{ $row->{$col} };
+%   foreach ( 0 .. $last ) {
+<%= $row->{$col}->[$_] %>
+%    if ( $_ < $last ) {
 <span class=d>&para;</span>
 %    }
 %   }
@@ -40,8 +41,8 @@ filter
 <%= $row->{$col} %>
 %  }
 </td>
-% }
+% } # columns
 </tr>
-% }
+% } # sorted
 
 </table>
