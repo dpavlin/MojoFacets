@@ -182,7 +182,7 @@ sub _checked {
 	my $self = shift;
 	my $checked;
 	$checked->{$_}++ foreach @_;
-	warn "# _checked ",dump($checked);
+#	warn "# _checked ",dump($checked);
 	return $checked;
 }
 
@@ -418,8 +418,12 @@ sub facet {
 #	warn "# facet $name ",dump $facet;
 
 	my $checked;
+	my @facet_names;
 	if ( defined $filters->{$name} ) {
-		$checked = $self->_checked( @{ $filters->{$name} } );
+		@facet_names = @{ $filters->{$name} };
+		$checked = $self->_checked( @facet_names );
+	} else {
+		@facet_names = keys %$facet;
 	}
 
 	my $sort = $self->param('sort') || 'c';
@@ -427,7 +431,7 @@ sub facet {
 	# sort facet numerically if more >50% elements are numeric
 	my $numeric = $self->_is_numeric($name);
 
-	my @facet_names = sort {
+	@facet_names = sort {
 		if ( $sort =~ m/a/i ) {
 			$numeric ? $a <=> $b : lc $a cmp lc $b;
 		} elsif ( $sort =~ m/d/i ) {
@@ -438,7 +442,7 @@ sub facet {
 			warn "unknown sort: $sort";
 			$a cmp $b;
 		}
-	} keys %$facet;
+	} @facet_names;
 
 	$self->render( name => $name, facet => $facet, checked => $checked,
 		facet_names => \@facet_names, sort => $sort, numeric => $numeric,
