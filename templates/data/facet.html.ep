@@ -25,5 +25,7 @@
 
 <script type="text/javascript" src="/facet_graph.js"></script>
 
+% if ( $#$facet_names < 100 ) {
 <pre class=debug><%= dumper $facet %></pre>
+% }
 
