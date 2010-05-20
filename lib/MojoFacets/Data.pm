@@ -258,7 +258,9 @@ sub filter {
 
 	if ( @vals ) {
 		$filters->{$name} = [ @vals ];
+		warn "# filter + $name $#vals\n";
 	} else {
+		warn "# filter - $name\n";
 		delete $filters->{$name};
 	}
 
