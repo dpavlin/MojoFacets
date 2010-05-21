@@ -12,6 +12,8 @@
 %  } else {
 <a id=checked-count href="<%= url_for->query( name => $name, all => 0 ) %>" title="reload selected facets"><%= $checked_count %></a>
 %  }
+% } else {
+<span id=checked-count>-</span>
 % }
 <span id=facet-count title="total"><%= $facet_count %></span>
 </span>
