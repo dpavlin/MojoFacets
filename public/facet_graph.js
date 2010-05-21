@@ -90,7 +90,7 @@ while( i_float < elements ) {
 		data.x.px.push( x );
 	} else {
 		var x_px = i * data.x.inc_bar;
-		console.debug( x_px, y );
+//		console.debug( x_px, y );
 		ctx.fillRect( x_px, 0, data.x.inc_bar, -y );
 		ctx.strokeRect( x_px, 0, data.x.inc_bar, -y );
 	}
