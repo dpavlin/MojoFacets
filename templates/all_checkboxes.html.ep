@@ -26,25 +26,35 @@ $('a#all').click( function(){
 
 $('a#none').click( function(){
     $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', false);
-	$('#checked-count').text( '-' );
+	$('#checked-count').text( 0 );
 });
 
+function update_checked_count(full) {
+	var count = $('#checked-count');
+	var nr = -1;
+	if ( full ) {
+		nr = $("label input[type='checkbox']:checked").length;
+	} else {
+		nr = parseInt( count.text() );
+		if ( this.checked ) {
+			nr++;
+		} else {
+			nr--;
+		}
+	}
+	count.text( nr );
+}
+
+$("input[type='checkbox']").bind( 'click', update_checked_count );
+
 $('a#included').click( function(){
-	var count = 0;
-    $("label.included input[type='checkbox']:not([disabled='disabled'])").each( function() {
-		this.checked = true;
-		count++;
-	});
-	$('#checked-count').text( count );
+    $("label.included input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+	update_checked_count(1);
 }).hide();
 
 $('a#excluded').click( function(){
-	var count = 0;
-    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").each( function() {
-		this.checked = true;
-		count++;
-	});
-	$('#checked-count').text( count );
+    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', false);
+	update_checked_count(1);
 }).hide();
 
 $('input[name=filter_regex]').change( function(e) {
@@ -62,9 +72,11 @@ $('input[name=filter_regex]').change( function(e) {
 		}
 	});
 
-	$('a#included').text('+' + included).show();
-	$('a#excluded').text('-' + excluded).show();
+	$('a#included').text(included).show();
+	$('a#excluded').text(excluded).show();
 });
+
+update_checked_count(1);
 
 }); // document.ready
 
