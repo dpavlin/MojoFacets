@@ -21,18 +21,30 @@ $('label span.hint').position({
 
 $('a#all').click( function(){
     $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+	 $('#checked-count').text( $('#facet-count').text() );
 });
 
 $('a#none').click( function(){
     $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', false);
+	$('#checked-count').text( '-' );
 });
 
 $('a#included').click( function(){
-    $("label.included input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+	var count = 0;
+    $("label.included input[type='checkbox']:not([disabled='disabled'])").each( function() {
+		this.checked = true;
+		count++;
+	});
+	$('#checked-count').text( count );
 }).hide();
 
 $('a#excluded').click( function(){
-    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+	var count = 0;
+    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").each( function() {
+		this.checked = true;
+		count++;
+	});
+	$('#checked-count').text( count );
 }).hide();
 
 $('input[name=filter_regex]').change( function(e) {
