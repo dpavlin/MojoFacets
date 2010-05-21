@@ -8,6 +8,10 @@
 	content: ")";
 }
 
+span.sort-by {
+	float: right;
+}
+
 /* index columns */
 span.c {
 	background: #eee;

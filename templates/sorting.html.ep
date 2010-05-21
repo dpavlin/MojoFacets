@@ -1,4 +1,6 @@
 
+<span class=sort-by>
+
 sort:
 
 % if ( $sort eq 'c' ) {
@@ -26,4 +28,6 @@ value:
 % } elsif ( $numeric ) {
 numeric
 % }
+
+</span>
 
