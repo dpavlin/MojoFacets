@@ -1,12 +1,23 @@
 <a id="all"  href="#">all</a>
 <a id="none" href="#">none</a>
 
+<label for=filter_regex>regex:
 <input type=text name=filter_regex>
+<span class=hint>tab or click outside to apply</span>
 <a id="included" href="#">included</a>
 <a id="excluded" href="#">excluded</a>
+</label>
 
 
 <script type="text/javascript">
+
+$(document).ready( function(){
+
+$('label span.hint').position({
+	my: 'left bottom',
+	at: 'left top',
+	of: $('label input'),
+});
 
 $('a#all').click( function(){
     $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
@@ -42,6 +53,8 @@ $('input[name=filter_regex]').change( function(e) {
 	$('a#included').text('+' + included).show();
 	$('a#excluded').text('-' + excluded).show();
 });
+
+}); // document.ready
 
 </script>
 

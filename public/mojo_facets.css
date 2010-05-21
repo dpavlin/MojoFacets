@@ -8,6 +8,20 @@
 	content: ")";
 }
 
+label span.hint {
+	display: none;
+	position: absolute;
+	background: #fff;
+	color: #888;
+	z-index: 100;
+	padding: 3px;
+}
+
+label:hover span.hint {
+	display: block;
+}
+
+
 span.sort-by {
 	float: right;
 }
