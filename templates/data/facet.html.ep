@@ -3,7 +3,18 @@
 <form method=post action=/data/filter >
 <input type=hidden name=filter_name value="<%= $name %>">
 <input type=submit value="Filter <%= $name %>">
-<span class=count><%= $#{ $facet_names } + 1 %></span>
+<span class=count>
+% my $checked_count = scalar keys %$checked;
+% my $facet_count = $#{ $facet_names } + 1;
+% if ( $checked_count ) {
+%  if ( $checked_count == $facet_count ) {
+<a id=checked-count href="<%= url_for->query( name => $name, all => 1 ) %>" title="reload all facets">all</a>
+%  } else {
+<a id=checked-count href="<%= url_for->query( name => $name, all => 0 ) %>" title="reload selected facets"><%= $checked_count %></a>
+%  }
+% }
+<span id=facet-count title="total"><%= $facet_count %></span>
+</span>
 
 <%= include 'all_checkboxes' %>
 
