@@ -1,2 +1,22 @@
-%# layout 'default';
+% layout 'default';
+
+% my $action = $uid;
+% $action =~ s/^.+\.([^\.]+)$/$1/;
+% $action = url_for( controller => 'data', action => $action );
+<form action=<%= $action %>>
+<input type=submit value="<%= $action %>">
+% my $params = $change->{params};
+<ul>
+% while ( @$params ) {
+%	my $n = shift @$params;
+%	my $v = shift @$params;
+<li><label>
+<%= $n %>
+<input type=checkbox name="<%= $n %>" value="<%= $v %>" checked>
+<%= $v %>
+</label>
+% }
+</ul>
+</form>
+
 <pre class=debug><%= dumper $change %></pre>

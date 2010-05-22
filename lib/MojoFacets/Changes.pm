@@ -27,7 +27,7 @@ sub index {
 sub view {
 	my $self = shift;
 	my $uid = $self->param('uid');
-	$self->render( change => retrieve( "/tmp/changes/$uid" ) );
+	$self->render( change => retrieve( "/tmp/changes/$uid" ), uid => $uid );
 }
 
 1;
