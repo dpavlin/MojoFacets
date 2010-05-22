@@ -1,2 +1,11 @@
 % layout 'default';
 <h2><%= $message %></h2>
+
+<ul>
+% foreach my $change ( @$changes ) {
+<li>
+<a href="<%= url_for( controller => $change->[1], action => $change->[2] ) %>">
+<%= $change->[0] %> <%= $change->[2] %>
+</a>
+% }
+</ul>
