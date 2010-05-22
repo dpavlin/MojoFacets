@@ -53,7 +53,7 @@ $('a#included').click( function(){
 }).hide();
 
 $('a#excluded').click( function(){
-    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', false);
+    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
 	update_checked_count(1);
 }).hide();
 
