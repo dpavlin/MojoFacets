@@ -14,18 +14,19 @@ use Time::HiRes qw(time);
 
 sub save_tx {
 	my ($self,$tx) = @_;
-	warn "# before_dispatch req ",dump($tx->req->url, $tx->req->params);
+#	warn "## before_dispatch req ",dump($tx->req->url, $tx->req->params);
 	my $parts = $tx->req->url->path->parts;
-	warn "## parts ",dump( $parts );
+	warn "# parts ",dump( $parts );
 	if ( $parts->[0] eq 'data' ) {
+		if ( my $params = $tx->req->params ) {
 
-		my $path = '/tmp/changes/';
-		mkdir $path unless -e $path;
-		$path .= sprintf '%.4f.%s', time(), join('.', @$parts);
-		store $tx->req->params, $path;
-	#	$self->log->info( "$path ", -s $path, " bytes\n" );
-		warn "$path ", -s $path, " bytes\n";
+			my $path = '/tmp/changes/';
+			mkdir $path unless -e $path;
+			$path .= sprintf '%.4f.%s', time(), join('.', @$parts);
 
+			store $params, $path;
+			warn "$path ", -s $path, " bytes\n";
+		}
 	}
 }
 
