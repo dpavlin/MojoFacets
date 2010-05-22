@@ -48,6 +48,10 @@ span.h {
 	font-weight: bold;
 }
 
+.admin .changes {
+	float: right;
+}
+
 .debug {
 	color: #aaa;
 }
