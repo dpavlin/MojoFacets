@@ -1,4 +1,4 @@
-% layout 'default';
+% layout 'ui';
 
 <style type="text/css">
 table {
