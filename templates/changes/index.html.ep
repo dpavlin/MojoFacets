@@ -8,3 +8,6 @@
 <a href="<%= url_for( controller => 'changes', action => 'view' )->query( uid => $change->{uid} ) %>"><%= $change->{action} %></a>
 % }
 </ul>
+
+% my $more = ( $#$changes ) * 10;
+Show <a href="<%= url_for( controller => 'changes', action => 'index' )->query( max => $more ) %>"><%= $more %> changes</a>
