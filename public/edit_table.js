@@ -2,9 +2,13 @@ $(document).ready( function() {
 
 var cell_blur = function() {
 	console.debug( 'cell_blur'
-		, this
-		, $(this).val()
+//		, this
+//		, $(this).val()
 	);
+
+	// FIXME primary key is fixed to 1st column
+	var pk = $('table tr th:nth(0) > a').text();
+	var id = $(this).parent().siblings(':nth(0)').text()
 
 	var x = $(this).parent().attr('cellIndex');
 	var y = $(this).parent().parent().attr('rowIndex');
@@ -19,7 +23,7 @@ var cell_blur = function() {
 	$(this).replaceWith( content );
 
 	var name = $('table tr th:nth('+x+') > a').text();
-	console.info( x, y, name, content );
+	console.info( x, y, pk, id, name, content );
 }
 
 var cell_click = function(event) {
