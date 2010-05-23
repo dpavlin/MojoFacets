@@ -40,6 +40,8 @@ $(document).ready(function() {
 
 <input type=submit value="Select">
 
+from <input type=text name=path value="<%= session('path') %>" readonly>
+
 </form>
 
 <pre class=debug>
