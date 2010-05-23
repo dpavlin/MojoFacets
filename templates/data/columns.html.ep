@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 <h2>Select and reorder columns</h2>
 
-<form method=post action=/data/items >
+<form method=post>
 
 <input type=submit value="Select">
 

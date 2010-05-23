@@ -190,6 +190,11 @@ sub _checked {
 sub columns {
     my $self = shift;
 
+	if ( $self->param('columns') ) {
+		$self->_perm_array('columns');
+		$self->redirect_to('/data/items');
+	}
+
 	my $stats = $self->_loaded( 'stats' ); # || $self->redirect_to( '/data/index' );
 
 	my @columns;
