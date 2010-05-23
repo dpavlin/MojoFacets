@@ -5,14 +5,21 @@ var cell_blur = function() {
 		, this
 		, $(this).val()
 	);
+
+	var x = $(this).parent().attr('cellIndex');
+	var y = $(this).parent().parent().attr('rowIndex');
+
 	var content = $(this).val();
 	if ( 0 ) { // leave delimiters in edited cells visible
 		var vals = content.split('¶');
 		content = vals.join('<span class=d>¶</span>');
 	}
+
 //	var cell = $('<td>'+content+'</td>');
 	$(this).replaceWith( content );
-	console.info( content );
+
+	var name = $('table tr th:nth('+x+') > a').text();
+	console.info( x, y, name, content );
 }
 
 var cell_click = function(event) {
