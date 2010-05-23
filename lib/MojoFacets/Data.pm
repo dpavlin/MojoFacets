@@ -279,7 +279,6 @@ sub filter {
 
 sub _data_items {
 	my ( $self, $all ) = @_;
-	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
  	my $data = $self->_loaded( 'data' );
 
 	return @{ $data->{items} } if $all == 1;
@@ -333,6 +332,38 @@ sub _current_filters {
 	return $current_filters;
 }
 
+sub _data_sorted_by {
+	my ( $self, $order ) = @_;
+
+	my $path = $self->session('path');
+
+	if ( defined $loaded->{$path}->{sorted}->{$order} ) {
+		return $loaded->{$path}->{sorted}->{$order};
+	}
+
+ 	my $data = $self->_loaded( 'data' );
+	my $numeric = $self->_is_numeric($order);
+	my $missing = $numeric ? 0 : '';
+	no warnings qw(numeric);
+	my $nr = 0;
+	my @sorted = map {
+		$_->[0]
+	} sort {
+		if ( $numeric ) {
+			$a->[1] <=> $b->[1]
+		} else {
+			$a->[1] cmp $b->[1]
+		}
+	} map {
+		[ $nr++, exists $_->{$order} ? join('', @{$_->{$order}}) : $missing ]
+	} @{ $data->{items} }
+	;
+
+	warn "sorted $order"; # ,dump( @sorted );
+
+	$loaded->{$path}->{sorted}->{$order} = [ @sorted ];
+}
+
 
 sub items {
 	my $self = shift;
@@ -351,26 +382,24 @@ sub items {
 	# fix offset when changing limit
 	$offset = int( $offset / $limit ) * $limit;
 
-	# FIXME - multi-level sort
-	my $numeric = $self->_is_numeric($order);
-	my $missing = $numeric ? 0 : '';
-	no warnings qw(numeric);
-	my @sorted = sort {
-		my $v1 = exists $a->{$order} ? join('', @{$a->{$order}}) : $missing;
-		my $v2 = exists $b->{$order} ? join('', @{$b->{$order}}) : $missing;
-		($v1,$v2) = ($v2,$v1) if $sort eq 'd';
-		$numeric ? $v1 <=> $v2 : $v1 cmp $v2 ;
-	} $self->_data_items;
+	my $sorted = $self->_data_sorted_by( $order );
 
-#	warn "# sorted ", dump @sorted;
+	my $rows = $#$sorted + 1;
 
-	my $rows = $#sorted + 1;
+	my @sorted;
+	foreach my $i ( 0 .. $limit ) {
+		my $pos = $sort eq 'a' ? ( $i + $offset ) : ( $#$sorted - $i - $offset );
+		last unless defined $sorted->[$pos];
+		push @sorted, $loaded->{$path}->{data}->{items}->[ $sorted->[$pos] ];
+	}
+
+#	warn "# sorted ", dump $sorted;
 
 	$self->render(
 		order => $order,
 		offset => $offset,
 		limit => $limit,
-		sorted => [ splice @sorted, $offset, $limit ],
+		sorted => [ @sorted ],
 		columns => [ @columns ],
 		rows => $rows,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
