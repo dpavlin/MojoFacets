@@ -1,3 +1,4 @@
+
 <table border=1>
 
 <tr>
@@ -46,3 +47,6 @@ filter
 % } # sorted
 
 </table>
+
+<script type="text/javascript" src="/edit_table.js"></script>
+
