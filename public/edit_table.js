@@ -14,16 +14,19 @@ var cell_blur = function() {
 	var y = $(this).parent().parent().attr('rowIndex');
 
 	var content = $(this).val();
-	if ( 0 ) { // leave delimiters in edited cells visible
-		var vals = content.split('¶');
-		content = vals.join('<span class=d>¶</span>');
-	}
-
-//	var cell = $('<td>'+content+'</td>');
-	$(this).replaceWith( content );
+//	$(this).replaceWith( content );
 
 	var name = $('table tr th:nth('+x+') > a').text();
 	console.info( x, y, pk, id, name, content );
+
+	var update = $(this);
+
+	$.post( '/data/edit', { pk: pk, id: id, name: name, content: content } , function(data) {
+		console.debug( data );
+		var vals = content.split('¶');
+		data = vals.join('<span class=d>¶</span>');
+		update.replaceWith( data );
+	});
 }
 
 var cell_click = function(event) {

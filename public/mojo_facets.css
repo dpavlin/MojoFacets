@@ -136,3 +136,7 @@ a#excluded {
 span.d {
 	color: #ccc;
 }
+
+.saved {
+	background: #ffe;
+}

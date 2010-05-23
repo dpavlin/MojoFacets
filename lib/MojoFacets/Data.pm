@@ -452,5 +452,13 @@ sub facet {
 	);
 }
 
+sub edit {
+	my $self = shift;
+	my $content = $self->param('content');
+
+	$self->render(
+		content => $content
+	);
+}
 
 1;
