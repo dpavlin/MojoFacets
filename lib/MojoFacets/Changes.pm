@@ -16,7 +16,7 @@ sub index {
 	foreach my $path ( sort { $b cmp $a } glob '/tmp/changes/*' ) {
 		if ( $path =~ m{/((\d+\.\d+)\.data\.(.+))$} ) {
 			push @$changes, { uid => $1, t => $2, action => $3 };
-			last if $#$changes > $max;
+			last if $#$changes >= $max;
 		} else {
 			warn "ignore: $path\n";
 		}
