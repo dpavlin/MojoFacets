@@ -21,7 +21,10 @@ var cell_blur = function() {
 
 	var update = $(this);
 
-	$.post( '/data/edit', { pk: pk, id: id, name: name, content: content } , function(data) {
+	$.post( '/data/edit', {
+		path: document.title, pk: pk, id: id,
+		name: name, content: content
+	} , function(data) {
 		console.debug( data );
 		var vals = content.split('¶');
 		data = vals.join('<span class=d>¶</span>');
