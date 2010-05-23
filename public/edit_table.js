@@ -10,9 +10,9 @@ var cell_blur = function() {
 		var vals = content.split('¶');
 		content = vals.join('<span class=d>¶</span>');
 	}
-	var cell = $('<td>'+content+'</td>');
-	$(this).replaceWith( cell );
-	console.info( cell );
+//	var cell = $('<td>'+content+'</td>');
+	$(this).replaceWith( content );
+	console.info( content );
 }
 
 var cell_click = function(event) {
