@@ -10,20 +10,27 @@ use Storable;
 sub index {
 	my $self = shift;
 
-	my $max = $self->param('max') || 10;
+	my $max = $self->param('max') || 50;
+	my $action_regex = join('|', $self->param('action_filter'));
+	warn "# action_regex $action_regex\n";
+
+	my $actions;
 
 	my $changes;
 	foreach my $path ( sort { $b cmp $a } glob '/tmp/changes/*' ) {
 		if ( $path =~ m{/((\d+\.\d+)\.data\.(.+))$} ) {
-			push @$changes, { uid => $1, t => $2, action => $3 };
-			last if $#$changes >= $max;
+			my ( $uid, $t, $action ) = ( $1, $2, $3 );
+			$actions->{$action}++;
+			next if $action_regex && $action !~ m/^($action_regex)$/;
+			push @$changes, { uid => $uid, t => $t, action => $action }
+				if $#$changes < $max;
 		} else {
 			warn "ignore: $path\n";
 		}
 	}
 
 	# Render template "changes/index.html.ep" with message
-	$self->render(message => 'Latest Changes', changes => $changes );
+	$self->render(message => 'Latest Changes', changes => $changes, actions => $actions );
 }
 
 

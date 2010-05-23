@@ -1,6 +1,19 @@
 % layout 'default';
 <h2><%= $message %></h2>
 
+<form class=action_filter>
+<input type=submit value="Filter changes">
+<ul>
+% foreach my $type ( sort keys %$actions ) {
+<li><label>
+<input type=checkbox name=action_filter value="<%= $type %>">
+<%= $type %><span class=count><%= $actions->{$type} %></span>
+</label>
+% }
+</ul>
+<input type=submit value="Filter changes">
+</form>
+
 <ul>
 % foreach my $change ( @$changes ) {
 <li>
@@ -11,3 +24,4 @@
 
 % my $more = ( $#$changes ) * 10;
 Show <a href="<%= url_for( controller => 'changes', action => 'index' )->query( max => $more ) %>"><%= $more %> changes</a>
+

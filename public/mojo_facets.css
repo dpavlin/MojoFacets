@@ -140,3 +140,7 @@ span.d {
 .saved {
 	background: #ffe;
 }
+
+form.action_filter {
+	float: right;
+}
