@@ -259,14 +259,45 @@ sub filter {
 	my $name = $self->param('filter_name') || die "name?";
 	my @vals = $self->param('filter_vals');
 
-	warn "# filter $name vals ",dump(@vals);
+#	warn "# filter $name vals ",dump(@vals);
+
+	my $path = $self->session('path');
 
 	if ( @vals ) {
 		$filters->{$name} = [ @vals ];
 		warn "# filter + $name $#vals\n";
+
+		my $filter_hash;
+		$filter_hash->{$_}++ foreach @vals;
+
+		warn "# filter_hash ",dump( $filter_hash );
+
+		my $items = $self->_loaded('data')->{items};
+
+		my $include_missing = defined $filter_hash->{_missing};
+		my $filtered_items;
+
+		foreach my $i ( 0 .. $#$items ) {
+
+			if ( defined $items->[$i]->{$name} ) {
+				foreach my $v ( @{ $items->[$i]->{$name} } ) {
+					if ( defined $filter_hash->{ $v } ) {
+						$filtered_items->{$i}++;
+					}
+				}
+			} elsif ( $include_missing ) {
+				$filtered_items->{$i}++;
+			}
+		}
+
+		warn "# filter $name ",dump($filtered_items);
+
+		$loaded->{$path}->{filters}->{$name} = $filtered_items;
+
 	} else {
 		warn "# filter - $name\n";
 		delete $filters->{$name};
+		delete $loaded->{$path}->{filters}->{$name};
 	}
 
 	warn "# filters ",dump($filters);
@@ -384,14 +415,29 @@ sub items {
 
 	my $sorted = $self->_data_sorted_by( $order );
 
-	my $rows = $#$sorted + 1;
+	my $path_filters = $loaded->{$path}->{filters};
+	my @filter_names = keys %$path_filters;
 
-	my @sorted;
-	foreach my $i ( 0 .. $limit ) {
-		my $pos = $sort eq 'a' ? ( $i + $offset ) : ( $#$sorted - $i - $offset );
-		last unless defined $sorted->[$pos];
-		push @sorted, $loaded->{$path}->{data}->{items}->[ $sorted->[$pos] ];
+	my @filtered;
+	foreach my $i ( 0 .. $#$sorted ) {
+		my $pos = $sort eq 'd' ? $sorted->[$i] : $sorted->[ $#$sorted - $i ];
+
+		my $skip = 0;
+		foreach ( @filter_names ) {
+			$skip ||= 1 if ! defined $path_filters->{$_}->{$pos};
+		}
+		next if $skip;
+
+		push @filtered, $pos;
 	}
+
+	my $sorted_items;
+	my $data = $self->_loaded('data');
+	foreach ( $offset .. $offset + $limit ) {
+		last unless defined $filtered[$_];
+		push @$sorted_items, $data->{items}->[ $filtered[$_] ];
+	}
+
 
 #	warn "# sorted ", dump $sorted;
 
@@ -399,9 +445,9 @@ sub items {
 		order => $order,
 		offset => $offset,
 		limit => $limit,
-		sorted => [ @sorted ],
+		sorted => $sorted_items,
 		columns => [ @columns ],
-		rows => $rows,
+		rows => $#filtered + 1,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
 		filters => $self->_current_filters,
 	);
