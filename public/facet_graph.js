@@ -1,3 +1,12 @@
+$(document).ready( function() {
+
+var count = parseInt( $('#facet-count').text() );
+if ( count > 5000 ) {
+	console.debug( 'skip graph', count );
+	return;
+}
+console.debug( 'drawing graph', count );
+
 var data = {
 	x: {
 		min: Number.MAX_VALUE,
@@ -129,3 +138,4 @@ draw_labels( 'labels-y', data.y, data.height, 'bottom', 'bottom:'+data.height+'p
 
 console.debug( 'data', data );
 
+}); // document.ready
