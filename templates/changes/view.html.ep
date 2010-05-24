@@ -3,7 +3,7 @@
 % my $action = $uid;
 % $action =~ s/^.+\.([^\.]+)$/$1/;
 % $action = url_for( controller => 'data', action => $action );
-<form action=<%= $action %>>
+<form method=post action=<%= $action %>>
 <input type=submit value="<%= $action %>">
 % my $params = $change->{params};
 <ul>
