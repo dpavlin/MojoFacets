@@ -3,6 +3,8 @@
 
 <form method=post action=/data/load >
 
+<input type=submit value="Load">
+
 <table>
 <tr><th>name</th><th title="on disk">bytes</th><th>items</th><th title="loaded in memory">m</th><th>columns</th></tr>
 % foreach my $n ( @$files ) {
