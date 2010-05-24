@@ -481,6 +481,7 @@ sub facet {
 
 	if ( my $remove = $self->param('remove') ) {
 		delete $filters->{$remove};
+		delete $loaded->{$path}->{filters}->{$remove};
 		$self->redirect_to( '/data/items' );
 	}
 
