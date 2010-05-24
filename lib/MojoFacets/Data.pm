@@ -300,7 +300,7 @@ sub filter {
 		delete $loaded->{$path}->{filters}->{$name};
 	}
 
-	warn "# filters ",dump($filters);
+	#warn "# filters ",dump($filters);
 
 	$self->session( 'offset' => 0 );
 
