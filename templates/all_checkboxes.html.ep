@@ -67,7 +67,7 @@ $('a#excluded').click( function(){
 	update_checked_count(1);
 });
 
-$('input[name=filter_regex]').change( function(e) {
+$('input[name=filter_regex]').focusout( function(e) {
 	console.debug( this, e );
 	var r = new RegExp( this.value ,'i');
 	var included = 0;
