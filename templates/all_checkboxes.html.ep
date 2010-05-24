@@ -5,8 +5,8 @@
 <label for=filter_regex>regex:
 <input type=text name=filter_regex>
 <span class=hint>tab or click outside to apply</span>
-<a id="included" href="#">included</a>
-<a id="excluded" href="#">excluded</a>
+<a id="included" href="#" style="display:none">included</a>
+<a id="excluded" href="#" style="display:none">excluded</a>
 </label>
 
 
@@ -60,12 +60,12 @@ $("input[type='checkbox']").bind( 'click', update_checked_count );
 $('a#included').click( function(){
     $("label.included input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
 	update_checked_count(1);
-}).hide();
+});
 
 $('a#excluded').click( function(){
     $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
 	update_checked_count(1);
-}).hide();
+});
 
 $('input[name=filter_regex]').change( function(e) {
 	console.debug( this, e );
