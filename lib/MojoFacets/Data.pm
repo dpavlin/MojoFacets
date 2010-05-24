@@ -429,7 +429,7 @@ sub items {
 	if ( $filters ) {
 		foreach my $name ( keys %$filters ) {
 			if ( ! defined $loaded->{$path}->{stats}->{ $name } ) {
-				warn "skip filter $name not found in data set\n";
+				warn "skip filter $name not found in $path\n";
 				next;
 			}
 			push @filter_names, $name;
