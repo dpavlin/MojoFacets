@@ -547,7 +547,7 @@ sub facet {
 		} elsif ( $sort =~ m/d/i ) {
 			$numeric ? $b <=> $a : lc $b cmp lc $a;
 		} elsif ( $sort =~ m/c/i ) {
-			$facet->{$b} <=> $facet->{$a};
+			( $facet->{$b} || -1 ) <=> ( $facet->{$a} || -1 )
 		} else {
 			warn "unknown sort: $sort";
 			$a cmp $b;

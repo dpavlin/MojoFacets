@@ -26,10 +26,12 @@
 % foreach my $n ( @$facet_names ) {
 <li>
 <label>
-<input type=checkbox name="filter_vals" value="<%= $n %>" <%= $checked->{$n} ? 'checked' : '' %>>
+<input type=checkbox name="filter_vals" value="<%= $n %>" <%= $checked->{$n} && defined $facet->{$n} ? 'checked' : '' %>>
 <%= $n %>
 </label>
+%  if ( defined $facet->{$n} ) {
 <span class="count"><%= $facet->{$n} %></span>
+%  }
 % }
 </ul>
 
