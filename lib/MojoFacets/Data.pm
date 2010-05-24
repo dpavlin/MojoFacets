@@ -228,7 +228,7 @@ sub _perm_array {
 			die "$name not array ",dump($session);
 		}
 	}
-	warn "# $name ",dump @array;
+	#warn "# $name ",dump @array;
 	return @array;
 }
 
@@ -259,41 +259,10 @@ sub filter {
 	my $name = $self->param('filter_name') || die "name?";
 	my @vals = $self->param('filter_vals');
 
-#	warn "# filter $name vals ",dump(@vals);
-
 	my $path = $self->session('path');
 
 	if ( @vals ) {
-		$filters->{$name} = [ @vals ];
-		warn "# filter + $name $#vals\n";
-
-		my $filter_hash;
-		$filter_hash->{$_}++ foreach @vals;
-
-		warn "# filter_hash ",dump( $filter_hash );
-
-		my $items = $self->_loaded('data')->{items};
-
-		my $include_missing = defined $filter_hash->{_missing};
-		my $filtered_items;
-
-		foreach my $i ( 0 .. $#$items ) {
-
-			if ( defined $items->[$i]->{$name} ) {
-				foreach my $v ( @{ $items->[$i]->{$name} } ) {
-					if ( defined $filter_hash->{ $v } ) {
-						$filtered_items->{$i}++;
-					}
-				}
-			} elsif ( $include_missing ) {
-				$filtered_items->{$i}++;
-			}
-		}
-
-		warn "# filter $name ",dump($filtered_items);
-
-		$loaded->{$path}->{filters}->{$name} = $filtered_items;
-
+		$self->_filter_on_data( $name, @vals );
 	} else {
 		warn "# filter - $name\n";
 		delete $filters->{$name};
@@ -307,6 +276,47 @@ sub filter {
 	$self->redirect_to('/data/items');
 }
 
+sub _filter_on_data {
+	my ( $self, $name, @vals ) = @_;
+
+	my $path = $self->session('path');
+
+	if ( ! defined $loaded->{$path}->{stats}->{ $name } ) {
+		warn "filter $name not found in data set";
+		return;
+	}
+
+	$filters->{$name} = [ @vals ];
+	warn "_filter_on_data $name ", $#vals + 1, " values on $path\n";
+
+	my $filter_hash;
+	$filter_hash->{$_}++ foreach @vals;
+
+	#warn "# filter_hash ",dump( $filter_hash );
+
+	my $items = $self->_loaded('data')->{items};
+
+	my $include_missing = defined $filter_hash->{_missing};
+	my $filtered_items;
+
+	foreach my $i ( 0 .. $#$items ) {
+
+		if ( defined $items->[$i]->{$name} ) {
+			foreach my $v ( @{ $items->[$i]->{$name} } ) {
+				if ( defined $filter_hash->{ $v } ) {
+					$filtered_items->{$i}++;
+				}
+			}
+		} elsif ( $include_missing ) {
+			$filtered_items->{$i}++;
+		}
+	}
+
+	#warn "# filter $name ",dump($filtered_items);
+
+	$loaded->{$path}->{filters}->{$name} = $filtered_items;
+	warn "generated ", scalar keys %$filtered_items, " filtered items\n";
+}
 
 sub _data_items {
 	my ( $self, $all ) = @_;
@@ -359,7 +369,7 @@ sub _current_filters {
 			grep { defined $filters->{ $_ } }
 			@{ $self->_loaded('header') }
 		);
-	warn "# current_filters ",dump($current_filters);
+	#warn "# current_filters ",dump($current_filters);
 	return $current_filters;
 }
 
@@ -415,8 +425,23 @@ sub items {
 
 	my $sorted = $self->_data_sorted_by( $order );
 
+	my @filter_names;
+	if ( $filters ) {
+		foreach my $name ( keys %$filters ) {
+			if ( ! defined $loaded->{$path}->{stats}->{ $name } ) {
+				warn "skip filter $name not found in data set\n";
+				next;
+			}
+			push @filter_names, $name;
+		}
+		warn "filter_names ",dump( @filter_names );
+		foreach my $name ( @filter_names ) {
+			next if ref $loaded->{$path}->{filters}->{$name} eq 'ARRAY';
+			$self->_filter_on_data( $name, @{ $filters->{$name} } );
+		}
+	}
+
 	my $path_filters = $loaded->{$path}->{filters};
-	my @filter_names = keys %$path_filters;
 
 	my @filtered;
 	foreach my $i ( 0 .. $#$sorted ) {
