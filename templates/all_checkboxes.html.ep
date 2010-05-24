@@ -1,4 +1,5 @@
 <a id="all"  href="#">all</a>
+<a id="toggle" href="#">toggle</a>
 <a id="none" href="#">none</a>
 
 <label for=filter_regex>regex:
@@ -27,6 +28,15 @@ $('a#all').click( function(){
 $('a#none').click( function(){
     $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', false);
 	$('#checked-count').text( 0 );
+});
+
+$('a#toggle').click( function(){
+	var count = 0;
+    $("input[type='checkbox']:not([disabled='disabled'])").each( function() {
+		this.checked = ! this.checked;
+		if ( this.checked ) count++;
+	});
+	$('#checked-count').text( count );
 });
 
 function update_checked_count(full) {
