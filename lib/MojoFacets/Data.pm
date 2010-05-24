@@ -160,12 +160,13 @@ sub load {
 	$self->session( 'header' => $loaded->{$path}->{header} );
 	if ( ! defined $loaded->{$path}->{columns} ) {
 		$self->session( 'columns' => $loaded->{$path}->{header} );
+		$self->session( 'order'   => $loaded->{$path}->{header}->[0] );
 		$self->redirect_to( '/data/columns' );
 	} else {
 		$self->session( 'columns' => $loaded->{$path}->{columns} );
+		$self->session( 'order'   => $loaded->{$path}->{columns}->[0] );
 		$self->redirect_to( '/data/items' );
 	}
-		
 }
 
 
