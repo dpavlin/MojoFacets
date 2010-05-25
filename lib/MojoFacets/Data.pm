@@ -450,8 +450,10 @@ sub items {
 	foreach my $i ( 0 .. $#$sorted ) {
 		my $pos = $sort_descending ? $sorted->[$i] : $sorted->[ $#$sorted - $i ];
 
-		push @filtered, $pos;
-		next if $#filter_names == -1;
+		if ( $#filter_names == -1 ) {
+			push @filtered, $pos;
+			next;
+		}
 
 		my $skip = 0;
 		foreach ( @filter_names ) {
