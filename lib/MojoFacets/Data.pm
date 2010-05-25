@@ -444,9 +444,14 @@ sub items {
 
 	my $path_filters = $loaded->{$path}->{filters};
 
+	my $sort_descending = $sort eq 'd';
+
 	my @filtered;
 	foreach my $i ( 0 .. $#$sorted ) {
-		my $pos = $sort eq 'd' ? $sorted->[$i] : $sorted->[ $#$sorted - $i ];
+		my $pos = $sort_descending ? $sorted->[$i] : $sorted->[ $#$sorted - $i ];
+
+		push @filtered, $pos;
+		next if $#filter_names == -1;
 
 		my $skip = 0;
 		foreach ( @filter_names ) {
@@ -465,7 +470,7 @@ sub items {
 	}
 
 
-#	warn "# sorted ", dump $sorted;
+	warn "# sorted_items ", $#$sorted_items + 1;
 
 	$self->render(
 		order => $order,

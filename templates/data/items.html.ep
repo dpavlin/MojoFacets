@@ -48,7 +48,7 @@ items
 
 </form>
 
-<%= include 'data/items/' . session('show'), filters => $filters %>
+<%= include 'data/items/' . session('show') %>
 
 <div class=pager>
 % foreach my $p ( 0 .. int( $rows / $limit ) ) {
