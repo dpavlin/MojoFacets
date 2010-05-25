@@ -370,6 +370,8 @@ sub _data_sorted_by {
 
 	my $path = $self->session('path');
 
+	warn "_data_sorted_by $order from $path";
+
 	if ( defined $loaded->{$path}->{sorted}->{$order} ) {
 		return $loaded->{$path}->{sorted}->{$order};
 	}
@@ -467,7 +469,7 @@ sub items {
 	my $filtered = $loaded->{$path}->{filtered}->{$filtered_names}
 		if defined $loaded->{$path}->{filtered}->{$filtered_names};
 
-	warn "filtered_names $filtered_names",dump( $filtered ) if $filtered;
+	warn "filtered_names $filtered_names", $#$filtered + 1, " items" if $filtered;
 
 	my $sorted_items;
 	my $data = $self->_loaded('data');
