@@ -478,7 +478,7 @@ sub items {
 		push @$sorted_items, $data->{items}->[ $filtered->[$i] ];
 	}
 
-	warn "# sorted_items ", $#$sorted_items + 1;
+	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit";
 
 	$self->render(
 		order => $order,
