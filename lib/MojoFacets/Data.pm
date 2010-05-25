@@ -260,17 +260,8 @@ sub filter {
 	my $name = $self->param('filter_name') || die "name?";
 	my @vals = $self->param('filter_vals');
 
-	my $path = $self->session('path');
-
-	if ( @vals ) {
-		$self->_filter_on_data( $name, @vals );
-	} else {
-		warn "# filter - $name\n";
-		delete $filters->{$name};
-		delete $loaded->{$path}->{filters}->{$name};
-	}
-
-	#warn "# filters ",dump($filters);
+	$self->_remove_filter( $name );
+	$self->_filter_on_data( $name, @vals ) if @vals;
 
 	$self->session( 'offset' => 0 );
 
@@ -522,14 +513,32 @@ sub _is_numeric {
 		$stats->{$name}->{numeric} > $count / 2;
 }
 
+sub _remove_filter {
+	my ($self,$name) = @_;
+	warn "_remove_filter $name\n";
+
+	my $path = $self->session('path');
+
+	delete $filters->{$name};
+	delete $loaded->{$path}->{filters}->{$name};
+	warn "filters left: ", keys %{ $loaded->{$path}->{filters} };
+
+	foreach (
+			grep { /\b$name\b/ }
+			keys %{ $loaded->{$path}->{filtered} }
+	) {
+		delete $loaded->{$path}->{filtered}->{$_};
+		warn "remove filtered cache $_";
+	}
+}
+
 sub facet {
 	my $self = shift;
 
 	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
 
-	if ( my $remove = $self->param('remove') ) {
-		delete $filters->{$remove};
-		delete $loaded->{$path}->{filters}->{$remove};
+	if ( my $name = $self->param('remove') ) {
+		$self->_remove_filter( $name );
 		$self->redirect_to( '/data/items' );
 	}
 
