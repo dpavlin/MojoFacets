@@ -521,13 +521,20 @@ sub facet {
 
 	my $all = $self->_perm_scalar('all', 1);
 
-	foreach my $i ( $self->_data_items($all) ) {
-		if ( ! exists $i->{$name} ) {
+	my $filter = $loaded->{$path}->{filters}->{$name};
+
+	my $data = $self->_loaded('data');
+	foreach my $i ( 0 .. $#{ $data->{items} } ) {
+		if ( $filter && ! $all ) {
+			next unless defined $loaded->{$path}->{filters}->{$name}->{$i};
+		}
+		my $item = $data->{items}->[$i];
+		if ( ! exists $item->{$name} ) {
 			$facet->{ _missing }++;
-		} elsif ( ref $i->{$name} eq 'ARRAY' ) {
-			$facet->{$_}++ foreach @{ $i->{$name} };
+		} elsif ( ref $item->{$name} eq 'ARRAY' ) {
+			$facet->{$_}++ foreach @{ $item->{$name} };
 		} else {
-			$facet->{ $i->{$name} }++;
+			$facet->{ $item->{$name} }++;
 		}
 	}
 
