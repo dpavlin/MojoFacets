@@ -442,35 +442,50 @@ sub items {
 		}
 	}
 
-	my $path_filters = $loaded->{$path}->{filters};
+	my $filtered_names = join(' ',sort @filter_names);
 
-	my $sort_descending = $sort eq 'd';
+#	warn "# filtered_names $filtered_names ", dump( $loaded->{$path}->{filtered}->{$filtered_names} );
 
-	my @filtered;
-	foreach my $i ( 0 .. $#$sorted ) {
-		my $pos = $sort_descending ? $sorted->[$i] : $sorted->[ $#$sorted - $i ];
+	if ( ! defined $loaded->{$path}->{filtered}->{$filtered_names} ) {
 
-		if ( $#filter_names == -1 ) {
+		my $path_filters = $loaded->{$path}->{filters};
+
+		warn "create combined filter for $filtered_names\n";
+
+		my @filtered;
+		foreach my $i ( 0 .. $#$sorted ) {
+			my $pos = $sorted->[$i];
+
+			if ( $#filter_names == -1 ) {
+				push @filtered, $pos;
+				next;
+			}
+
+			my $skip = 0;
+			foreach ( @filter_names ) {
+				$skip ||= 1 if ! defined $path_filters->{$_}->{$pos};
+			}
+			next if $skip;
+
 			push @filtered, $pos;
-			next;
 		}
 
-		my $skip = 0;
-		foreach ( @filter_names ) {
-			$skip ||= 1 if ! defined $path_filters->{$_}->{$pos};
-		}
-		next if $skip;
-
-		push @filtered, $pos;
+		$loaded->{$path}->{filtered}->{$filtered_names} = [ @filtered ];
 	}
+
+	my $filtered = $loaded->{$path}->{filtered}->{$filtered_names}
+		if defined $loaded->{$path}->{filtered}->{$filtered_names};
+
+	warn "filters $filtered_names" if $filtered;
 
 	my $sorted_items;
 	my $data = $self->_loaded('data');
+	my $sort_start = $sort eq 'd' ? $#$filtered : 0;
 	foreach ( $offset .. $offset + $limit ) {
-		last unless defined $filtered[$_];
-		push @$sorted_items, $data->{items}->[ $filtered[$_] ];
+		my $i = $sort_start + $_;
+		last unless defined $filtered->[$i];
+		push @$sorted_items, $data->{items}->[ $filtered->[$i] ];
 	}
-
 
 	warn "# sorted_items ", $#$sorted_items + 1;
 
@@ -480,7 +495,7 @@ sub items {
 		limit => $limit,
 		sorted => $sorted_items,
 		columns => [ @columns ],
-		rows => $#filtered + 1,
+		rows => $#$filtered + 1,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
 		filters => $self->_current_filters,
 	);
@@ -522,14 +537,22 @@ sub facet {
 	my $name = $self->param('name') || die "no name";
 
 	my $all = $self->_perm_scalar('all', 1);
-
-	my $filter = $loaded->{$path}->{filters}->{$name};
-
 	my $data = $self->_loaded('data');
-	foreach my $i ( 0 .. $#{ $data->{items} } ) {
-		if ( $filter && ! $all ) {
-			next unless defined $loaded->{$path}->{filters}->{$name}->{$i};
-		}
+
+	my $filters = $self->_current_filters;
+	my $filtered_names = join(' ',sort keys %$filters);
+#	warn "# filtered_names $filtered_names ", dump( $loaded->{$path}->{filtered}->{$filtered_names} );
+	my $filtered = $loaded->{$path}->{filtered}->{$filtered_names}
+		if defined $loaded->{$path}->{filtered}->{$filtered_names};
+
+	if ( ! $filtered || $all ) {
+		$filtered = [ 0 .. $#{ $data->{items} } ];
+		warn "filter all values\n";
+	} else {
+		warn "filter using $filtered_names\n";
+	}
+
+	foreach my $i ( @$filtered ) {
 		my $item = $data->{items}->[$i];
 		if ( ! exists $item->{$name} ) {
 			$facet->{ _missing }++;
