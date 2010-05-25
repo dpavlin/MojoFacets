@@ -481,8 +481,8 @@ sub items {
 	my $sorted_items;
 	my $data = $self->_loaded('data');
 	my $sort_start = $sort eq 'd' ? $#$filtered : 0;
-	foreach ( $offset .. $offset + $limit ) {
-		my $i = $sort_start + $_;
+	foreach ( 0 .. $limit ) {
+		my $i = $sort_start - ( $_ + $offset );
 		last unless defined $filtered->[$i];
 		push @$sorted_items, $data->{items}->[ $filtered->[$i] ];
 	}
