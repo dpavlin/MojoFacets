@@ -127,6 +127,16 @@ sub _load_path {
 			if $stats->{$n}->{array} == $stats->{$n}->{count};
 	}
 
+	if ( ! @header ) {
+		if ( defined $data->{header} ) {
+			if ( ref $data->{header} eq 'ARRAY' ) {
+				@header = @{ $data->{header} };
+			} else {
+				warn "header not array ", dump( $data->{header} );
+			}
+		}
+	}
+
 	@header =
 		sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} }
 		grep { defined $stats->{$_}->{count} } keys %$stats
