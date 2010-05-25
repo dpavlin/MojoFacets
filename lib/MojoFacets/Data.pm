@@ -307,7 +307,7 @@ sub _filter_on_data {
 	#warn "# filter $name ",dump($filtered_items);
 
 	$loaded->{$path}->{filters}->{$name} = $filtered_items;
-	warn "generated ", scalar keys %$filtered_items, " filtered items\n";
+	warn "filter $name with ", scalar keys %$filtered_items, " items created\n";
 }
 
 sub _data_items {
@@ -467,18 +467,19 @@ sub items {
 	my $filtered = $loaded->{$path}->{filtered}->{$filtered_names}
 		if defined $loaded->{$path}->{filtered}->{$filtered_names};
 
-	warn "filters $filtered_names" if $filtered;
+	warn "filtered_names $filtered_names",dump( $filtered ) if $filtered;
 
 	my $sorted_items;
 	my $data = $self->_loaded('data');
-	my $sort_start = $sort eq 'd' ? $#$filtered : 0;
+	my $from_end = $sort eq 'd' ? $#$filtered : 0;
 	foreach ( 0 .. $limit ) {
-		my $i = $sort_start - ( $_ + $offset );
+		my $i = $_ + $offset;
 		last unless defined $filtered->[$i];
+		$i = $from_end - $i if $from_end;
 		push @$sorted_items, $data->{items}->[ $filtered->[$i] ];
 	}
 
-	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit";
+	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
 	$self->render(
 		order => $order,
