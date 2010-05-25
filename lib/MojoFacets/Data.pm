@@ -394,7 +394,8 @@ sub _data_sorted_by {
 	} @{ $data->{items} }
 	;
 
-	warn "sorted $order"; # ,dump( @sorted );
+	warn "sorted: $order numeric: $numeric items: ", $#sorted + 1, "\n";
+	warn "# sorted ",dump( @sorted );
 
 	$loaded->{$path}->{sorted}->{$order} = [ @sorted ];
 }
@@ -435,15 +436,15 @@ sub items {
 		}
 	}
 
-	my $filtered_names = join(' ',sort @filter_names);
+	my $all_filters = join(' ',sort @filter_names);
 
-#	warn "# filtered_names $filtered_names ", dump( $loaded->{$path}->{filtered}->{$filtered_names} );
+#	warn "# all_filters $all_filters ", dump( $loaded->{$path}->{filtered}->{$all_filters} );
 
-	if ( ! defined $loaded->{$path}->{filtered}->{$filtered_names} ) {
+	if ( ! defined $loaded->{$path}->{filtered}->{$all_filters} ) {
 
 		my $path_filters = $loaded->{$path}->{filters};
 
-		warn "create combined filter for $filtered_names\n";
+		warn "create combined filter for $all_filters\n";
 
 		my @filtered;
 		foreach my $i ( 0 .. $#$sorted ) {
@@ -463,13 +464,13 @@ sub items {
 			push @filtered, $pos;
 		}
 
-		$loaded->{$path}->{filtered}->{$filtered_names} = [ @filtered ];
+		$loaded->{$path}->{filtered}->{$all_filters} = [ @filtered ];
 	}
 
-	my $filtered = $loaded->{$path}->{filtered}->{$filtered_names}
-		if defined $loaded->{$path}->{filtered}->{$filtered_names};
+	my $filtered = $loaded->{$path}->{filtered}->{$all_filters}
+		if defined $loaded->{$path}->{filtered}->{$all_filters};
 
-	warn "filtered_names $filtered_names", $#$filtered + 1, " items" if $filtered;
+	warn "all_filters $all_filters produced ", $#$filtered + 1, " items\n" if $filtered;
 
 	my $sorted_items;
 	my $data = $self->_loaded('data');
@@ -552,16 +553,16 @@ sub facet {
 	my $data = $self->_loaded('data');
 
 	my $filters = $self->_current_filters;
-	my $filtered_names = join(' ',sort keys %$filters);
-#	warn "# filtered_names $filtered_names ", dump( $loaded->{$path}->{filtered}->{$filtered_names} );
-	my $filtered = $loaded->{$path}->{filtered}->{$filtered_names}
-		if defined $loaded->{$path}->{filtered}->{$filtered_names};
+	my $all_filters = join(' ',sort keys %$filters);
+#	warn "# all_filters $all_filters ", dump( $loaded->{$path}->{filtered}->{$all_filters} );
+	my $filtered = $loaded->{$path}->{filtered}->{$all_filters}
+		if defined $loaded->{$path}->{filtered}->{$all_filters};
 
 	if ( ! $filtered || $all ) {
 		$filtered = [ 0 .. $#{ $data->{items} } ];
 		warn "filter all values\n";
 	} else {
-		warn "filter using $filtered_names\n";
+		warn "filter using $all_filters\n";
 	}
 
 	foreach my $i ( @$filtered ) {
