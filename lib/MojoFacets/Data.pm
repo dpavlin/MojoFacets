@@ -115,7 +115,7 @@ sub _load_path {
 				$stats->{$n}->{numeric}++
 					if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
 				$stats->{$n}->{empty}++
-					if $x =~ m/^\s*$/;
+					if length $x == 0; # faster than $x =~ m/^\s*$/;
 			}
 
 		}
