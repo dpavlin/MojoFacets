@@ -95,7 +95,12 @@ sub _load_path {
 				}
 			}
 			my $item;
-			$item->{ $header[$_] || "f_$_" } = [ $v[$_] ] foreach ( 0 .. $#v );
+			foreach my $i ( 0 .. $#v ) {
+				my $v = $v[$i];
+				# unpack numeric values separated by commas
+				my $a = $v =~ m/\d+\s*,\s*\d+/ ? [ split(/\,\s*/,$v) ] : [ $v ];
+				$item->{ $header[$i] || "f_$i" } = $a;
+			}
 			push @{ $data->{items} }, $item;
 		}
 	} else {

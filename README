@@ -8,6 +8,7 @@ Put JSON file from Simile Exhibit project in data/ with extension .js or .json
 Alternative format is pipe (|) separated text files with extension .txt
 First column is always header with field names
 Multi-line values should be wrapped in ^multi-line-text^
+Multiple values for one field are supported for: number, number
 
 
 Start with:
