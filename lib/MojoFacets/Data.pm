@@ -47,10 +47,14 @@ sub index {
 sub _load_path {
 	my ( $self, $path ) = @_;
 
-	return if defined $loaded->{$path}->{data};
-
 	my $full_path = $self->app->home->rel_file( 'data/' . $path );
 	die "$full_path $!" unless -r $full_path;
+
+	if ( defined $loaded->{$path}->{data} ) {
+		my $mtime = (stat($full_path))[9];
+		return if $loaded->{$path}->{mtime} == $mtime;
+		warn "reload $full_path, modified ", time() - $mtime, " seconds ago\n";
+	}
 
 	# we could use Mojo::JSON here, but it's too slow
 #	$data = from_json read_file $path;
@@ -149,6 +153,7 @@ sub _load_path {
 		stats  => $stats,
 		full_path => $full_path,
 		size => -s $full_path,
+		mtime => (stat($full_path))[9],
 		data => $data,
 	};
 
