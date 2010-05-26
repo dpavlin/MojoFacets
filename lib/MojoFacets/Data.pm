@@ -595,10 +595,10 @@ sub facet {
 
 	$checked = $self->_checked( @{ $filters->{$name} } ) if defined $filters->{$name};
 
-	my $sort = $self->param('sort') || 'c';
-
-	# sort facet numerically if more >50% elements are numeric
 	my $numeric = $self->_is_numeric($name);
+
+	my $sort = $self->param('sort');
+	$sort ||= $numeric ? 'a' : 'c';
 
 	@facet_names = sort {
 		if ( $sort =~ m/a/i ) {
