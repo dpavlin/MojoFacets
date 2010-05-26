@@ -190,8 +190,10 @@ sub load {
 sub _loaded {
 	my ( $self, $name ) = @_;
 	my $path = $self->session('path');
-	die "$path $name doesn't exist in loaded ",dump( $loaded )
-		unless defined $loaded->{$path}->{$name};
+	if ( ! defined $loaded->{$path}->{$name} ) {
+		warn "$path $name doesn't exist in loaded ",dump( $loaded );
+		$self->redirect_to('/data/index');
+	}
 	return $loaded->{$path}->{$name};
 }
 
