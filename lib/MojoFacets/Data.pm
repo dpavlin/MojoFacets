@@ -603,7 +603,8 @@ sub facet {
 	my $numeric = $self->_is_numeric($name);
 
 	my $sort = $self->param('sort');
-	$sort ||= $numeric ? 'a' : 'c';
+	# sort numeric facets with more than 5 values ascending
+	$sort ||= $numeric && $#facet_names > 4 ? 'a' : 'c';
 
 	@facet_names = sort {
 		my $result;
