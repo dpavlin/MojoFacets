@@ -405,7 +405,7 @@ sub _data_sorted_by {
 	;
 
 	warn "sorted: $order numeric: $numeric items: ", $#sorted + 1, "\n";
-	warn "# sorted ",dump( @sorted );
+	#warn "# sorted ",dump( @sorted );
 
 	$loaded->{$path}->{sorted}->{$order} = [ @sorted ];
 }
