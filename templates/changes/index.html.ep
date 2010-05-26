@@ -1,4 +1,4 @@
-% layout 'default';
+% layout 'ui';
 <h2><%= $message %></h2>
 
 <form class=action_filter>
@@ -14,14 +14,26 @@
 <input type=submit value="Filter changes">
 </form>
 
-<ul>
+<table>
+<tr><th>action</th><th>timestamp</th></tr>
 % foreach my $change ( @$changes ) {
-<li>
-<%= $change->{t} %>
+<tr><td>
 <a href="<%= url_for( controller => 'changes', action => 'view' )->query( uid => $change->{uid} ) %>"><%= $change->{action} %></a>
+</td><td>
+<tt class=ts><%= $change->{t} %></tt>
+</td></tr>
 % }
-</ul>
+</table>
 
 % my $more = ( $#$changes ) * 10;
 Show <a href="<%= url_for( controller => 'changes', action => 'index' )->query( max => $more ) %>"><%= $more %> changes</a>
 
+<script type="text/javascript" src="/js/date_pretty.js"></script>
+<script type="text/javascript">
+$(document).ready( function(){
+	console.debug('convert timestamps');
+	$('tt.ts').each( function(){
+		$(this).text( date_pretty( new Date(this.textContent * 1000) ) );
+	});
+});
+</script>
