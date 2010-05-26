@@ -96,10 +96,7 @@ sub _load_path {
 			}
 			my $item;
 			foreach my $i ( 0 .. $#v ) {
-				my $v = $v[$i];
-				# unpack numeric values separated by commas
-				my $a = $v =~ m/\d+\s*,\s*\d+/ ? [ split(/\,\s*/,$v) ] : [ $v ];
-				$item->{ $header[$i] || "f_$i" } = $a;
+				$item->{ $header[$i] || "f_$i" } = [ $v[$i] ];
 			}
 			push @{ $data->{items} }, $item;
 		}
