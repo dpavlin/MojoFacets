@@ -52,7 +52,7 @@ sub _save {
 	my $dir = $self->app->home->rel_dir('data');
 	$name =~ s/^$dir//;
 	$name =~ s/\/+/_/g;
-	my $dump_path = '/tmp/mojo_facets.' . $path . '.storable';
+	my $dump_path = '/tmp/mojo_facets.' . $name . '.storable';
 
 	warn "save loaded to $dump_path";
 	my $info = $loaded->{$path};
