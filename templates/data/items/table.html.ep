@@ -5,7 +5,7 @@
 % foreach my $n ( @$columns ) {
 <th>
 % if ( session('order') ne $n ) {
-<a href="<%= url_for( action => 'order' )->query( order => $n ) %>"><%= $n %></a>
+<a href="<%= url_for( action => 'order' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
 % } else {
 <a href="<%= url_for( action => 'order' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
 <%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
