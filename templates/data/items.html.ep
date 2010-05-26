@@ -69,3 +69,12 @@ items
 <li>numeric: <%= dumper $numeric %>
 <li>order: <%= session('order') %> sort: <%= session('sort') %>
 </ul>
+
+<script type="text/javascript">
+$(document).ready( function(){
+	$('select[name=limit]').change( function(){
+		console.debug( 'limit changed', this );
+		$(this).closest('form').submit();
+	});
+});
+</script>
