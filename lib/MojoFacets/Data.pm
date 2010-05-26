@@ -11,6 +11,7 @@ use JSON;
 use Encode;
 use locale;
 use File::Find;
+use Storable;
 
 our $loaded;
 our $filters;
@@ -42,6 +43,26 @@ sub index {
 		loaded => $loaded,
 		filters => $filters,
 	);
+}
+
+sub _save {
+	my ( $self, $path ) = @_;
+
+	my $name = $path;
+	my $dir = $self->app->home->rel_dir('data');
+	$name =~ s/^$dir//;
+	$name =~ s/\/+/_/g;
+	my $dump_path = '/tmp/mojo_facets.' . $path . '.storable';
+
+	warn "save loaded to $dump_path";
+	my $info = $loaded->{$path};
+	store $info, $dump_path;
+
+	# sync timestamp
+	my $mtime = $loaded->{$path}->{mtime};
+	utime $mtime, $mtime, $dump_path;
+
+	warn $dump_path, ' ', -s $dump_path, " bytes\n";
 }
 
 sub _load_path {
@@ -150,7 +171,7 @@ sub _load_path {
 
 	warn dump($stats);
 
-	$loaded->{ $path } = {
+	my $info = {
 		header => [ @header ],
 		stats  => $stats,
 		full_path => $full_path,
@@ -158,6 +179,9 @@ sub _load_path {
 		mtime => (stat($full_path))[9],
 		data => $data,
 	};
+
+	$loaded->{ $path } = $info;
+	$self->_save( $path );
 
 }
 
