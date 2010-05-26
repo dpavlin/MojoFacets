@@ -606,16 +606,19 @@ sub facet {
 	$sort ||= $numeric ? 'a' : 'c';
 
 	@facet_names = sort {
-		if ( $sort =~ m/a/i ) {
-			$numeric ? $a <=> $b : lc $a cmp lc $b;
-		} elsif ( $sort =~ m/d/i ) {
-			$numeric ? $b <=> $a : lc $b cmp lc $a;
-		} elsif ( $sort =~ m/c/i ) {
-			( $facet->{$b} || -1 ) <=> ( $facet->{$a} || -1 )
+		my $result;
+		if ( $sort eq 'a' ) {
+			$result = $numeric ? $a <=> $b : lc $a cmp lc $b;
+		} elsif ( $sort eq 'd' ) {
+			$result = $numeric ? $b <=> $a : lc $b cmp lc $a;
+		} elsif ( $sort eq 'c' ) {
+			$result = ( $facet->{$b} || -1 ) <=> ( $facet->{$a} || -1 )
 		} else {
 			warn "unknown sort: $sort";
-			$a cmp $b;
+			$result = $a cmp $b;
 		}
+		$result = $a cmp $b unless defined $result; # FIXME cludge for numeric facets with invalid data
+		$result;
 	} @facet_names;
 
 	$self->render( name => $name, facet => $facet, checked => $checked,
