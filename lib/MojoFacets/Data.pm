@@ -446,7 +446,7 @@ sub items {
 		}
 	}
 
-	my $all_filters = join(' ',sort @filter_names);
+	my $all_filters = join(' ',sort @filter_names,'order:',$order);
 
 #	warn "# all_filters $all_filters ", dump( $loaded->{$path}->{filtered}->{$all_filters} );
 
@@ -563,8 +563,7 @@ sub facet {
 	my $data = $self->_loaded('data');
 
 	my $filters = $self->_current_filters;
-	my $all_filters = join(' ',sort keys %$filters);
-#	warn "# all_filters $all_filters ", dump( $loaded->{$path}->{filtered}->{$all_filters} );
+	my $all_filters = join(' ',sort keys %$filters,'order:',$self->session('order'));
 	my $filtered = $loaded->{$path}->{filtered}->{$all_filters}
 		if defined $loaded->{$path}->{filtered}->{$all_filters};
 
