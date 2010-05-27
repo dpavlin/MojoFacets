@@ -689,6 +689,8 @@ sub edit {
 	my $name = $self->param('name') || die "no name";
 	my $status = 200; # 200 = OK, 201 = Created
 
+	$self->_load_path( $path );
+
 	if ( defined $loaded->{$path}->{data}->{items}->[$i] ) {
 		$content =~ s/^\s+//s;
 		$content =~ s/\s+$//s;
