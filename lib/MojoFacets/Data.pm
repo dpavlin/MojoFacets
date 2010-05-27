@@ -45,15 +45,18 @@ sub index {
 	);
 }
 
-sub _save {
-	my ( $self, $path ) = @_;
-
-	my $name = $path;
+sub _dump_path {
+	my ( $self, $name ) = @_;
 	my $dir = $self->app->home->rel_dir('data');
 	$name =~ s/^$dir//;
 	$name =~ s/\/+/_/g;
-	my $dump_path = '/tmp/mojo_facets.' . $name . '.storable';
+	return '/tmp/mojo_facets.' . $name . '.storable';
+}
 
+sub _save {
+	my ( $self, $path ) = @_;
+
+	my $dump_path = $self->_dump_path( $path );
 	warn "save loaded to $dump_path";
 	my $info = $loaded->{$path};
 	store $info, $dump_path;
@@ -76,6 +79,14 @@ sub _load_path {
 		my $mtime = (stat($full_path))[9];
 		return if $loaded->{$path}->{mtime} == $mtime;
 		warn "reload $full_path, modified ", time() - $mtime, " seconds ago\n";
+	}
+
+	my $dump_path = $self->_dump_path( $path );
+	if ( -e $dump_path ) {
+		warn "dump_path $dump_path ", -s $dump_path, " bytes loading...\n";
+		my $info = retrieve $dump_path;
+		$loaded->{ $path } = $info;
+		return;
 	}
 
 	# we could use Mojo::JSON here, but it's too slow
