@@ -40,6 +40,11 @@ sub index {
 	my $dump_path;
 	$dump_path->{$_} = $self->_dump_path( $_ ) foreach @files;
 
+	if ( my $save_path = $self->session('save_path') ) {
+		$self->session( 'save_path' => 0 )
+		if ! defined $loaded->{$save_path};
+	}
+
 	$self->render(
 		files => [ @files ],
 		size => $size,
