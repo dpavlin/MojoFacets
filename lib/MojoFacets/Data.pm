@@ -667,6 +667,8 @@ sub edit {
 	my $name = $self->param('name') || die "no name";
 
 	if ( defined $loaded->{$path}->{data}->{items}->[$i]->{$name} ) {
+		$content =~ s/^\s+//s;
+		$content =~ s/\s+$//s;
 		if ( $content =~ /\xB6/ ) {	# para
 			$content = [ split(/\s*\xB6\s*/, $content) ];
 		} else {
@@ -678,6 +680,17 @@ sub edit {
 		if ( $old ne $new ) {
 			warn "# update $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $content;
+
+			if ( defined $loaded->{$path}->{sorted}->{$name} ) {
+			    delete $loaded->{$path}->{sorted}->{$name};
+				warn "# invalidate $path sorted $name\n";
+			}
+
+			foreach ( grep { m/$name/ } keys %{ $loaded->{$path}->{filtered} } ) {
+			    delete $loaded->{$path}->{filtered}->{$_};
+				warn "# invalidate $path filtered $_\n";
+			}
+
 		} else {
 			warn "# unchanged $path $i $old\n";
 		}
