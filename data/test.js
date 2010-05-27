@@ -15,7 +15,13 @@
 	  "id":["z"]
 	, "alpha":["b"]
 	, "repeatable":[1,3,5,7,9]
+	, "boolean":0
+	},{
+	  "id":[4]
+	, "alpha":["c","a","b","y","z"]
+	, "repeatable":[2,4,6]
+	, "boolean":1
 	}
-],
- "header":["id","alpha","repeatable"]
+]
+, "header":["id","alpha","repeatable","boolean"]
 }
