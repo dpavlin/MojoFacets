@@ -150,3 +150,9 @@ span.d {
 form.action_filter {
 	float: right;
 }
+
+.bytes {
+	text-align: right;
+	font-family: monospace;
+	color: #444;
+}

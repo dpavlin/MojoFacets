@@ -37,11 +37,15 @@ sub index {
 	my $size;
 	$size->{$_} = -s "$path/$_" foreach @files;
 
+	my $dump_path;
+	$dump_path->{$_} = $self->_dump_path( $_ ) foreach @files;
+
 	$self->render(
 		files => [ @files ],
 		size => $size,
 		loaded => $loaded,
 		filters => $filters,
+		dump_path => $dump_path,
 	);
 }
 
