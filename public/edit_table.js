@@ -27,9 +27,10 @@ var cell_blur = function() {
 	$.post( '/data/edit', {
 		path: document.title, _row_id: _row_id,
 		name: name, content: content
-	} , function(data) {
-		console.debug( 'server data', data );
-		var vals = content.split('¶');
+	} , function(data, textStatus) {
+		if ( data.length == 0 ) data = content; // 304 doesn't return content
+		console.debug( 'data:', data, 'status:', textStatus );
+		var vals = data.split('¶');
 		data = vals.join('<span class=d>¶</span>');
 		update.replaceWith( data );
 	});

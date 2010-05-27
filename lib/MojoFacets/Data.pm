@@ -667,21 +667,23 @@ sub edit {
 	die "invalid _row_id ",dump($i) unless $i =~ m/^\d+$/;
 	my $path = $self->param('path') || die "no path";
 	my $name = $self->param('name') || die "no name";
+	my $status = 200; # 200 = OK, 201 = Created
 
 	if ( defined $loaded->{$path}->{data}->{items}->[$i]->{$name} ) {
 		$content =~ s/^\s+//s;
 		$content =~ s/\s+$//s;
+		my $v;
 		if ( $content =~ /\xB6/ ) {	# para
-			$content = [ split(/\s*\xB6\s*/, $content) ];
+			$v = [ split(/\s*\xB6\s*/, $content) ];
 		} else {
-			$content = [ $content ];
+			$v = [ $content ];
 		}
 
 		my $old = dump $loaded->{$path}->{data}->{items}->[$i]->{$name};
-		my $new = dump $content;
+		my $new = dump $v;
 		if ( $old ne $new ) {
 			warn "# update $path $i $old -> $new\n";
-			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $content;
+			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
 
 			if ( defined $loaded->{$path}->{sorted}->{$name} ) {
 			    delete $loaded->{$path}->{sorted}->{$name};
@@ -693,16 +695,21 @@ sub edit {
 				warn "# invalidate $path filtered $_\n";
 			}
 
+			$status = 201; # created
+
 		} else {
 			warn "# unchanged $path $i $old\n";
+			$status = 304;
 		}
 	} else {
 		$content = "$path $i $name doesn't exist\n";
+		$status = 404;
 		warn "# $content\n";
 	}
 
 	$self->render(
-		content => $content
+		status => $status,
+		content => $content,
 	);
 }
 
