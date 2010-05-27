@@ -18,7 +18,7 @@
 <tr><th>action</th><th>timestamp</th></tr>
 % foreach my $change ( @$changes ) {
 <tr><td>
-<a href="<%= url_for( controller => 'changes', action => 'view' )->query( uid => $change->{uid} ) %>"><%= $change->{action} %></a>
+<a class="view" href="<%= url_for( controller => 'changes', action => 'view' )->query( uid => $change->{uid} ) %>"><%= $change->{action} %></a>
 </td><td>
 <tt class=ts><%= $change->{t} %></tt>
 </td></tr>
@@ -34,6 +34,14 @@ $(document).ready( function(){
 	console.debug('convert timestamps');
 	$('tt.ts').each( function(){
 		$(this).text( date_pretty( new Date(this.textContent * 1000) ) );
+	});
+
+	$('a.view').live( 'click', function() {
+		console.debug(this
+			, this.href
+		);
+		$(this).parent().load( this.href + ' form' ).css({ 'border': '3px dashed #f84' });
+		return false;
 	});
 });
 </script>
