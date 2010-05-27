@@ -236,8 +236,10 @@ sub _loaded {
 	my $path = $self->session('path');
 	$self->redirect_to('/data/index') unless $path;
 	if ( ! defined $loaded->{$path}->{$name} ) {
-		warn "$path $name doesn't exist in loaded ",dump( $loaded );
-		$self->redirect_to('/data/index');
+		warn "$path $name isn't loaded\n";
+		$self->_load_path( $path );
+		$self->redirect_to('/data/index')
+			unless defined $loaded->{$path}->{$name};
 	}
 	return $loaded->{$path}->{$name};
 }
@@ -689,7 +691,7 @@ sub edit {
 	my $name = $self->param('name') || die "no name";
 	my $status = 200; # 200 = OK, 201 = Created
 
-	$self->_load_path( $path );
+	my $data = $self->_loaded('data');
 
 	if ( defined $loaded->{$path}->{data}->{items}->[$i] ) {
 		$content =~ s/^\s+//s;
