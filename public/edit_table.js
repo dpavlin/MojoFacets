@@ -41,7 +41,11 @@ var cell_click = function(event) {
 		, event
 		, $(this).text()
 	);
-	var content = $(this).text(); // we don't want para markup
+	var content = $(this).text() // we don't want para markup
+		.replace(/^[ \n\r]+/,'')
+		.replace(/[ \n\r]+$/,'')
+	;
+console.debug( 'content', content );
 	var rows = content.split('¶').length * 2 + 1;
 	var textarea = $('<textarea rows='+rows+'/>');
 	textarea.val( content );
