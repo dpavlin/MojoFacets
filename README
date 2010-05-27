@@ -14,3 +14,12 @@ Start with:
 
   LANG=hr_HR.utf8 ./script/mojo_facets daemon --reload
 
+
+Data replication:
+
+  # master
+  ./script/mojo_facets daemon --listen 'http://*:4444' --reload
+
+  # slave
+  MASTER=http://localhost:4444 ./script/mojo_facets daemon --reload
+
