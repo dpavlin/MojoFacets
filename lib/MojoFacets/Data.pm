@@ -214,6 +214,7 @@ sub load {
 sub _loaded {
 	my ( $self, $name ) = @_;
 	my $path = $self->session('path');
+	$self->redirect_to('/data/index') unless $path;
 	if ( ! defined $loaded->{$path}->{$name} ) {
 		warn "$path $name doesn't exist in loaded ",dump( $loaded );
 		$self->redirect_to('/data/index');
