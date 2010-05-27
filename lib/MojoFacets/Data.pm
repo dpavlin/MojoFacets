@@ -71,8 +71,8 @@ sub _save {
 	store $info, $dump_path;
 
 	# sync timestamp
-	my $mtime = $loaded->{$path}->{mtime};
-	utime $mtime, $mtime, $dump_path;
+	#my $mtime = $loaded->{$path}->{mtime};
+	#utime $mtime, $mtime, $dump_path;
 
 	warn $dump_path, ' ', -s $dump_path, " bytes\n";
 	return $dump_path;
