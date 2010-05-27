@@ -701,7 +701,9 @@ sub edit {
 
 		my $old = dump $loaded->{$path}->{data}->{items}->[$i]->{$name};
 		my $new = dump $v;
-		if ( $old ne $new ) {
+		if ( $old ne $new
+			&& ! ( $old eq 'undef' && length($content) == 0 ) # new value empty, previous undef
+		) {
 			warn "# update $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
 
