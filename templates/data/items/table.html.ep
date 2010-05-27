@@ -25,7 +25,7 @@ filter
 </tr>
 
 % foreach my $row ( @$sorted ) {
-<tr>
+<tr title="<%= $row->{_row_id} %>">
 % foreach my $col ( @$columns ) {
 <td<%= $numeric->{$col} ? ' class=numeric' : '' %>>
 %  if ( ref $row->{$col} eq 'ARRAY' ) {

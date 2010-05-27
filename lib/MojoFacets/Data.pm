@@ -522,7 +522,10 @@ sub items {
 		my $i = $_ + $offset;
 		last unless defined $filtered->[$i];
 		$i = $from_end - $i if $from_end;
-		push @$sorted_items, $data->{items}->[ $filtered->[$i] ];
+		my $id = $filtered->[$i];
+		push @$sorted_items,
+		my $item = $data->{items}->[ $id ];
+		$item->{_row_id} ||= $id;
 	}
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";

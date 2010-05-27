@@ -6,9 +6,12 @@ var cell_blur = function() {
 //		, $(this).val()
 	);
 
+/*
 	// FIXME primary key is fixed to 1st column
 	var pk = $('table tr th:nth(0) > a').text();
 	var id = $(this).parent().siblings(':nth(0)').text()
+*/
+	var _row_id = $(this).parent().parent().attr('title');
 
 	var x = $(this).parent().attr('cellIndex');
 	var y = $(this).parent().parent().attr('rowIndex');
@@ -17,15 +20,15 @@ var cell_blur = function() {
 //	$(this).replaceWith( content );
 
 	var name = $('table tr th:nth('+x+') > a').text();
-	console.info( x, y, pk, id, name, content );
+	console.info( x, y, _row_id, name, content );
 
 	var update = $(this);
 
 	$.post( '/data/edit', {
-		path: document.title, pk: pk, id: id,
+		path: document.title, _row_id: _row_id,
 		name: name, content: content
 	} , function(data) {
-		console.debug( data );
+		console.debug( 'server data', data );
 		var vals = content.split('¶');
 		data = vals.join('<span class=d>¶</span>');
 		update.replaceWith( data );
