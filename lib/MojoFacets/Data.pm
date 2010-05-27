@@ -684,7 +684,7 @@ sub edit {
 	my $name = $self->param('name') || die "no name";
 	my $status = 200; # 200 = OK, 201 = Created
 
-	if ( defined $loaded->{$path}->{data}->{items}->[$i]->{$name} ) {
+	if ( defined $loaded->{$path}->{data}->{items}->[$i] ) {
 		$content =~ s/^\s+//s;
 		$content =~ s/\s+$//s;
 		my $v;
@@ -720,8 +720,9 @@ sub edit {
 	} else {
 		$content = "$path $i $name doesn't exist\n";
 		$status = 404;
-		warn "# $content\n";
 	}
+
+	warn "# edit $status $content";
 
 	$self->render(
 		status => $status,
