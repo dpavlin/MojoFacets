@@ -9,6 +9,9 @@ items:
 <a href="<%= url_for( controller => 'data', action => 'items' )->query( show => $show ) %>" <%= $class %>><%= $show %></a>
 % }
 
+% if ( my $path = session('save_path') ) {
+<a class=save_changes title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
+% }
 <a class=changes href="<%= url_for( controller => 'changes', action => 'index' ) %>">changes</a>
 
 </div>

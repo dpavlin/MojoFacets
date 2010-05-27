@@ -63,6 +63,7 @@ sub _save {
 	utime $mtime, $mtime, $dump_path;
 
 	warn $dump_path, ' ', -s $dump_path, " bytes\n";
+	return $dump_path;
 }
 
 sub _load_path {
@@ -696,6 +697,7 @@ sub edit {
 			}
 
 			$status = 201; # created
+			$self->session('save_path' => $path);
 
 		} else {
 			warn "# unchanged $path $i $old\n";
@@ -711,6 +713,18 @@ sub edit {
 		status => $status,
 		content => $content,
 	);
+}
+
+
+sub save {
+	my $self = shift;
+	my $path = $self->param('path');
+	$path  ||= $self->session('path');
+
+	my $dump_path = $self->_save( $path );
+	$self->session('save_path' => 0);
+
+	$self->redirect_to( '/data/items' );
 }
 
 1;

@@ -28,8 +28,12 @@ var cell_blur = function() {
 		path: document.title, _row_id: _row_id,
 		name: name, content: content
 	} , function(data, textStatus) {
-		if ( data.length == 0 ) data = content; // 304 doesn't return content
 		console.debug( 'data:', data, 'status:', textStatus );
+		if ( ! data ) {
+			data = content; // fallback to submited data for 304
+		} else {
+			$('a.changes').before('<a class=save_changes href="/data/save">save</a>')
+		}
 		var vals = data.split('¶');
 		data = vals.join('<span class=d>¶</span>');
 		update.replaceWith( data );

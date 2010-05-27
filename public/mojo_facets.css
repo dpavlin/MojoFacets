@@ -52,6 +52,12 @@ span.h {
 	float: right;
 }
 
+.admin .save_changes {
+	float: right;
+	color: #f00;
+	padding-left: 1em;
+}
+
 .debug {
 	color: #aaa;
 }
