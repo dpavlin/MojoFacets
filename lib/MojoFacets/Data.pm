@@ -662,6 +662,30 @@ sub edit {
 	my $self = shift;
 	my $content = $self->param('content');
 
+	my $i = $self->param('_row_id') || die "no _row_id";
+	my $path = $self->param('path') || die "no path";
+	my $name = $self->param('name') || die "no name";
+
+	if ( defined $loaded->{$path}->{data}->{items}->[$i]->{$name} ) {
+		if ( $content =~ /\xB6/ ) {	# para
+			$content = [ split(/\s*\xB6\s*/, $content) ];
+		} else {
+			$content = [ $content ];
+		}
+
+		my $old = dump $loaded->{$path}->{data}->{items}->[$i]->{$name};
+		my $new = dump $content;
+		if ( $old ne $new ) {
+			warn "# update $path $i $old -> $new\n";
+			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $content;
+		} else {
+			warn "# unchanged $path $i $old\n";
+		}
+	} else {
+		$content = "$path $i $name doesn't exist\n";
+		warn "# $content\n";
+	}
+
 	$self->render(
 		content => $content
 	);
