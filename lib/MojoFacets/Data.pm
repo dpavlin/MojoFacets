@@ -75,14 +75,13 @@ sub _load_path {
 	my $full_path = $self->app->home->rel_file( 'data/' . $path );
 	die "$full_path $!" unless -r $full_path;
 
+	my $dump_path = $self->_dump_path( $path );
+
 	if ( defined $loaded->{$path}->{data} ) {
 		my $mtime = (stat($full_path))[9];
 		return if $loaded->{$path}->{mtime} == $mtime;
 		warn "reload $full_path, modified ", time() - $mtime, " seconds ago\n";
-	}
-
-	my $dump_path = $self->_dump_path( $path );
-	if ( -e $dump_path ) {
+	} elsif ( -e $dump_path ) {
 		warn "dump_path $dump_path ", -s $dump_path, " bytes loading...\n";
 		my $info = retrieve $dump_path;
 		$loaded->{ $path } = $info;
