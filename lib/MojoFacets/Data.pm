@@ -662,7 +662,8 @@ sub edit {
 	my $self = shift;
 	my $content = $self->param('content');
 
-	my $i = $self->param('_row_id') || die "no _row_id";
+	my $i = $self->param('_row_id');
+	die "invalid _row_id ",dump($i) unless $i =~ m/^\d+$/;
 	my $path = $self->param('path') || die "no path";
 	my $name = $self->param('name') || die "no name";
 
