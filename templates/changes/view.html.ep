@@ -5,6 +5,9 @@
 % $action = url_for( controller => 'data', action => $action );
 <form method=post action=<%= $action %>>
 <input type=submit value="<%= $action %>">
+% if ( my $master = $ENV{'MASTER'} ) {
+<input class=replication type=checkbox name="_master" value="<%= $master %>" title="replicate to <%= $master %>">
+% }
 % my $params = $change->{params};
 <ul>
 % while ( @$params ) {

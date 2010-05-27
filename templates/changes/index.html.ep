@@ -37,11 +37,19 @@ $(document).ready( function(){
 	});
 
 	$('a.view').live( 'click', function() {
-		console.debug(this
-			, this.href
-		);
+		console.debug(this.href);
 		$(this).parent().load( this.href + ' form' ).css({ 'border': '3px dashed #f84' });
 		return false;
 	});
+
+	$('form input[name=_master]').live( 'click', function(){
+		var master = this.value;
+		console.debug('replication master', master);
+
+		$(this).closest('form').attr('action', function() {
+			return master + this.action;
+		}).css({ 'background': '#ffe' });
+	});
+
 });
 </script>
