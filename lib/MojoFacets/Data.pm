@@ -23,11 +23,14 @@ sub index {
 	die "no data dir $path" unless -d $path;
 
 	my @files;
+	my $changes;
 	find( sub {
 		my $file = $File::Find::name;
 		if ( -f $file && $file =~ m/\.(js(on)?|txt)$/ ) {
 			$file =~ s/$path\/*//;
 			push @files, $file;
+		} elsif ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+\.\d+.+)/ ) {
+			push @{ $changes->{$1} }, $2
 		} else {
 			warn "IGNORE: $file\n";
 		}
@@ -48,6 +51,7 @@ sub index {
 		loaded => $loaded,
 		filters => $filters,
 		dump_path => { map { $_ => $self->_dump_path($_) } @files },
+		changes => $changes,
 	);
 }
 
