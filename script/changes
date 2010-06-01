@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Storable;
+use Mojo::Client;
+
+my $url = 'http://localhost:3000/data/edit';
+my $max = 1;
+
+my $t = Mojo::Client->new;
+$t->max_redirects( 1 );
+
+foreach my $c ( glob '/tmp/changes/*.data.edit' ) {
+
+	print "# $c\n";
+
+	my $params = retrieve $c;
+
+	my $tx = $t->post_form( $url => $params->to_hash );
+	if ( my $res = $tx->success) { print $res->body }
+	else {
+		my ($code, $message) = $tx->error;
+		die "Error: $message";
+	}
+
+#	last if $max-- == 0;
+}
