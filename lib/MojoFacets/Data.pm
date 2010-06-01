@@ -12,6 +12,7 @@ use Encode;
 use locale;
 use File::Find;
 use Storable;
+use Time::HiRes qw(time);
 
 our $loaded;
 our $filters;
@@ -709,7 +710,22 @@ sub edit {
 		if ( $old ne $new
 			&& ! ( $old eq 'undef' && length($content) == 0 ) # new value empty, previous undef
 		) {
-			warn "# update $path $i $old -> $new\n";
+			my $change = {
+				path => $path,
+				column => $name,
+				pos => $i,
+				old => $loaded->{$path}->{data}->{items}->[$i]->{$name},
+				new => $v,
+				time => $self->param('time') || time(),
+				user => $self->param('user') || $ENV{'LOGNAME'},
+			};
+			my $change_path = $self->app->home->rel_dir('data') . '/' . $path . '.changes';
+			mkdir $change_path unless -d $change_path;
+			$change_path .= '/' . $change->{time};
+			store $change, $change_path;
+			warn "# $change_path ", dump($change);
+
+			warn "# change $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
 
 			if ( defined $loaded->{$path}->{sorted}->{$name} ) {
