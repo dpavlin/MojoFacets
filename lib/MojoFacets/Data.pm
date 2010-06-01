@@ -37,9 +37,6 @@ sub index {
 	my $size;
 	$size->{$_} = -s "$path/$_" foreach @files;
 
-	my $dump_path;
-	$dump_path->{$_} = $self->_dump_path( $_ ) foreach @files;
-
 	if ( my $save_path = $self->session('save_path') ) {
 		$self->session( 'save_path' => 0 )
 		if ! defined $loaded->{$save_path};
@@ -50,7 +47,7 @@ sub index {
 		size => $size,
 		loaded => $loaded,
 		filters => $filters,
-		dump_path => $dump_path,
+		dump_path => { map { $_ => $self->_dump_path($_) } @files },
 	);
 }
 
