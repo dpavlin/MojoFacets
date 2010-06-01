@@ -5,6 +5,7 @@ use warnings;
 
 use Storable;
 use Mojo::Client;
+use Data::Dump qw(dump);
 
 my $url = 'http://localhost:3000/data/edit';
 my $max = 1;
@@ -19,6 +20,10 @@ foreach my $c ( @changes ) {
 	print "# $c\n";
 
 	my $params = retrieve $c;
+	my $hash = $params->to_hash;
+	$hash->{time} = $1 if $c =~ m{/(\d+\.\d+)\.data\.edit};
+
+	warn "# hash ",dump($hash);
 
 	my $tx = $t->post_form( $url => $params->to_hash );
 	if ( my $res = $tx->success) { print $res->body }
