@@ -235,7 +235,7 @@ sub load {
 
 sub _loaded {
 	my ( $self, $name ) = @_;
-	my $path = $self->session('path');
+	my $path = $self->session('path') || $self->param('path');
 	$self->redirect_to('/data/index') unless $path;
 	if ( ! defined $loaded->{$path}->{$name} ) {
 		warn "$path $name isn't loaded\n";
