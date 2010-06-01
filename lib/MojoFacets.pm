@@ -20,9 +20,17 @@ sub save_tx {
 	if ( $parts->[0] eq 'data' ) {
 		if ( my $params = $tx->req->params ) {
 
+			warn "# params ",dump($params);
+
+			my $time = time();
+			if ( my $time_travel = $params->param('time') ) {
+				warn "# time-travel to $time_travel from ", $tx->remote_address;
+				$time = $time_travel;
+			}
+
 			my $path = '/tmp/changes/';
 			mkdir $path unless -e $path;
-			$path .= sprintf '%.4f.%s', time(), join('.', @$parts);
+			$path .= sprintf '%.4f.%s', $time, join('.', @$parts);
 
 			store $params, $path;
 			warn "$path ", -s $path, " bytes\n";
