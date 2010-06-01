@@ -25,7 +25,7 @@ foreach my $c ( @changes ) {
 
 	warn "# hash ",dump($hash);
 
-	my $tx = $t->post_form( $url => $params->to_hash );
+	my $tx = $t->post_form( $url => $hash );
 	if ( my $res = $tx->success) { print $res->body }
 	else {
 		my ($code, $message) = $tx->error;
