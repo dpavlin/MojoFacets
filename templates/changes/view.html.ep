@@ -5,6 +5,9 @@
 % $action = url_for( controller => 'data', action => $action );
 <form method=post action=<%= $action %>>
 <input type=submit value="<%= $action %>">
+<tt><%= $uid %></tt>
+% my $t = $1 if $uid =~ m/^(\d+\.\d+)/;
+<input type=hidden name="time" value="<%= $t %>">
 % if ( my $master = $ENV{'MASTER'} ) {
 <input class=replication type=checkbox name="_master" value="<%= $master %>" title="replicate to <%= $master %>">
 % }
