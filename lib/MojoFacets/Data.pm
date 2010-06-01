@@ -723,6 +723,7 @@ sub edit {
 			mkdir $change_path unless -d $change_path;
 			$change_path .= '/' . $change->{time};
 			store $change, $change_path;
+			utime $change->{time}, $change->{time}, $change_path;
 			warn "# $change_path ", dump($change);
 
 			warn "# change $path $i $old -> $new\n";
