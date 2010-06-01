@@ -9,10 +9,12 @@ use Mojo::Client;
 my $url = 'http://localhost:3000/data/edit';
 my $max = 1;
 
+my @changes = @ARGV;
+
 my $t = Mojo::Client->new;
 $t->max_redirects( 1 );
 
-foreach my $c ( glob '/tmp/changes/*.data.edit' ) {
+foreach my $c ( @changes ) {
 
 	print "# $c\n";
 
