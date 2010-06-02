@@ -301,7 +301,7 @@ sub columns {
     my $self = shift;
 
 	if ( $self->param('columns') ) {
-		$self->_perm_array('columns');
+		$self->_param_array('columns');
 		$self->redirect_to('/data/items');
 	}
 
@@ -318,11 +318,11 @@ sub columns {
 		message => 'Select columns to display',
 		stats => $stats,
 		columns => \@columns,
-		checked => $self->_checked( $self->_perm_array('columns') ),
+		checked => $self->_checked( $self->_param_array('columns') ),
 	);
 }
 
-sub _perm_array {
+sub _param_array {
     my ($self,$name) = @_;
 
 	my @array = $self->param($name);
@@ -342,7 +342,7 @@ sub _perm_array {
 	return @array;
 }
 
-sub _perm_scalar {
+sub _param_scalar {
     my ($self,$name,$default) = @_;
 
 	my $scalar = $self->param($name);
@@ -516,13 +516,13 @@ sub items {
 	my $path = $self->session('path');
 	$self->redirect_to('/data/index') unless defined $loaded->{ $path };
 
-	my @columns = $self->_perm_array('columns');
+	my @columns = $self->_param_array('columns');
 	$self->redirect_to('/data/columns') unless @columns;
-	my $order   = $self->_perm_scalar('order', $columns[0]);
-	my $sort    = $self->_perm_scalar('sort', 'a');
-	my $offset  = $self->_perm_scalar('offset', 0);
-	my $limit   = $self->_perm_scalar('limit', 20);
-	$self->_perm_scalar('show', 'table');
+	my $order   = $self->_param_scalar('order', $columns[0]);
+	my $sort    = $self->_param_scalar('sort', 'a');
+	my $offset  = $self->_param_scalar('offset', 0);
+	my $limit   = $self->_param_scalar('limit', 20);
+	$self->_param_scalar('show', 'table');
 
 	# fix offset when changing limit
 	$offset = int( $offset / $limit ) * $limit;
@@ -661,7 +661,7 @@ sub facet {
 	my $facet;
 	my $name = $self->param('name') || die "no name";
 
-	my $all = $self->_perm_scalar('all', 1);
+	my $all = $self->_param_scalar('all', 1);
 	my $data = $self->_loaded('data');
 
 	my $filters = $self->_current_filters;
