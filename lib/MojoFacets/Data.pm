@@ -305,7 +305,7 @@ sub columns {
 		$self->redirect_to('/data/items');
 	}
 
-	my $stats = $self->_loaded( 'stats' ); # || $self->redirect_to( '/data/index' );
+	my $stats = $self->_loaded( 'stats' );
 
 	my @columns;
 	@columns = grep { defined $stats->{$_}->{count} } @{ $self->session('columns') } if $self->session('columns');
