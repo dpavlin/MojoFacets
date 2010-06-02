@@ -138,6 +138,16 @@ sub __stats {
 	return $stats;
 }
 
+sub _param_or_session {
+	$_[0]->param( $_[1] ) || $_[0]->session( $_[1] )
+}
+
+sub stats {
+	my $self = shift;
+	my $path = $self->_param_or_session('path');
+	$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+	$self->redirect_to( '/data/columns' );
+}
 
 
 sub _load_path {
