@@ -156,3 +156,10 @@ form.action_filter {
 	font-family: monospace;
 	color: #444;
 }
+
+/* items/list.html.ep */
+a.facet {
+	font-family: monospace;
+	color: #666;
+	text-decoration: none;
+}

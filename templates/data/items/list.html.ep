@@ -5,7 +5,10 @@
 %  next unless defined $row->{$col};
 %  my $v = ref $row->{$col} eq 'ARRAY' ? join(', ',@{ $row->{$col} }) : $row->{$col};
 %  next if $v =~ m/^\s*$/;
-<li><tt><%= $col %></tt> <%= $v %>
+<li>
+% my $count = defined $filters->{$col} ? $#{ $filters->{$col} } + 1 : '';
+<a class="facet" title="<%= $count %>" href="<%= url_for( action => 'facet' )->query( name => $col, all => 0 ) %>"><%= $col %></a>
+<%= $v %>
 % }
 </ul>
 % }
