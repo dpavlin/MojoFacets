@@ -34,6 +34,9 @@ $(document).ready(function() {
 <input type=checkbox name=columns value="<%= $n %>" <%= $checked->{$n} ? 'checked' : '' %>>
 <%= $n %>
 <span class="count"><%= $stats->{$n}->{count} %></span>
+% if ( defined $stats->{$n}->{unique} ) {
+<span title="unique">&#9997;</a>
+% }
 </label>
 % }
 </ul>
