@@ -296,12 +296,18 @@ sub _checked {
 	return $checked;
 }
 
+sub _permanent_path {
+	my $self = shift;
+	my $path = $self->_param_or_session('path');
+	$self->app->home->rel_dir('data') . '/' . join('.', $path, @_);
+}
 
 sub columns {
     my $self = shift;
 
 	if ( $self->param('columns') ) {
-		$self->_param_array('columns');
+		my @columns = $self->_param_array('columns');
+		write_file( $self->_permanent_path( 'columns.txt' ), map { "$_\n" } @columns );
 		$self->redirect_to('/data/items');
 	}
 
@@ -765,7 +771,7 @@ sub edit {
 					keys %{ $loaded->{$path}->{stats} }
 				},
 			};
-			my $edit_path = $self->app->home->rel_dir('data') . '/' . $path . '.edits';
+			my $edit_path = $self->_permanent_path( 'edits' );
 			mkdir $edit_path unless -d $edit_path;
 			$edit_path .= '/' . $edit->{time};
 			store $edit, $edit_path;
