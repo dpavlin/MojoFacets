@@ -83,6 +83,63 @@ sub _save {
 	return $dump_path;
 }
 
+
+sub __stats {
+
+	my $stats;
+
+	my $nr_items = $#{ $_[0] } + 1;
+
+	foreach my $e ( @{ $_[0] } ) {
+		foreach my $n ( keys %$e ) {
+			$stats->{$n}->{count}++;
+			my @v;
+			if ( ref $e->{$n} eq 'ARRAY' ) {
+				$stats->{$n}->{array} += $#{ $e->{$n} } + 1;
+				@v = @{ $e->{$n} };
+			} else {
+				@v = ( $e->{$n} );
+			}
+
+			foreach my $x ( @v ) {
+				$stats->{$n}->{numeric}++
+					if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
+				$stats->{$n}->{empty}++
+					if length $x == 0; # faster than $x =~ m/^\s*$/;
+			}
+
+		}
+	}
+
+	foreach my $n ( keys %$stats ) {
+		my $s = $stats->{$n};
+		next unless defined $s->{array};
+		if ( $s->{array} == $s->{count} ) {
+			delete $s->{array};
+			if ( $s->{count} == $nr_items ) {
+				warn "check $n for uniqeness\n";
+				my $unique;
+				foreach my $e ( @{ $_[0] } ) {
+					if ( ++$unique->{ $e->{$n}->[0] } == 2 ) {
+						$unique = 0;
+						last;
+					}
+				}
+				if ( $unique ) {
+					$stats->{$n}->{unique} = 1;
+					warn "# $n unique ",dump( $unique );
+				}
+			}
+		}
+	}
+
+	warn "# __stats ",dump($stats);
+
+	return $stats;
+}
+
+
+
 sub _load_path {
 	my ( $self, $path ) = @_;
 
@@ -150,52 +207,7 @@ sub _load_path {
 		warn "file format unknown $path";
 	}
 
-	my $stats;
-
-	foreach my $e ( @{ $data->{items} } ) {
-		foreach my $n ( keys %$e ) {
-			$stats->{$n}->{count}++;
-			my @v;
-			if ( ref $e->{$n} eq 'ARRAY' ) {
-				$stats->{$n}->{array} += $#{ $e->{$n} } + 1;
-				@v = @{ $e->{$n} };
-			} else {
-				@v = ( $e->{$n} );
-			}
-
-			foreach my $x ( @v ) {
-				$stats->{$n}->{numeric}++
-					if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
-				$stats->{$n}->{empty}++
-					if length $x == 0; # faster than $x =~ m/^\s*$/;
-			}
-
-		}
-	}
-
-	my $nr_items = $#{ $data->{items} } + 1;
-
-	foreach my $n ( keys %$stats ) {
-		my $s = $stats->{$n};
-		next unless defined $s->{array};
-		if ( $s->{array} == $s->{count} ) {
-			delete $s->{array};
-			if ( $s->{count} == $nr_items ) {
-				warn "check $n for uniqeness\n";
-				my $unique;
-				foreach my $e ( @{ $data->{items} } ) {
-					if ( ++$unique->{ $e->{$n}->[0] } == 2 ) {
-						$unique = 0;
-						last;
-					}
-				}
-				if ( $unique ) {
-					$stats->{$n}->{unique} = 1;
-					warn "# $n unique ",dump( $unique );
-				}
-			}
-		}
-	}
+	my $stats = __stats( $data->{items} );
 
 	if ( ! @header ) {
 		if ( defined $data->{header} ) {
@@ -211,8 +223,6 @@ sub _load_path {
 		sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} }
 		grep { defined $stats->{$_}->{count} } keys %$stats
 		unless @header;
-
-	warn dump($stats);
 
 	my $info = {
 		header => [ @header ],
