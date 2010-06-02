@@ -170,10 +170,28 @@ sub _load_path {
 		}
 	}
 
+	my $nr_items = $#{ $data->{items} } + 1;
+
 	foreach my $n ( keys %$stats ) {
-		next unless defined $stats->{$n}->{array};
-		delete $stats->{$n}->{array}
-			if $stats->{$n}->{array} == $stats->{$n}->{count};
+		my $s = $stats->{$n};
+		next unless defined $s->{array};
+		if ( $s->{array} == $s->{count} ) {
+			delete $s->{array};
+			if ( $s->{count} == $nr_items ) {
+				warn "check $n for uniqeness\n";
+				my $unique;
+				foreach my $e ( @{ $data->{items} } ) {
+					if ( ++$unique->{ $e->{$n}->[0] } == 2 ) {
+						$unique = 0;
+						last;
+					}
+				}
+				if ( $unique ) {
+					$stats->{$n}->{unique} = 1;
+					warn "# $n unique ",dump( $unique );
+				}
+			}
+		}
 	}
 
 	if ( ! @header ) {
