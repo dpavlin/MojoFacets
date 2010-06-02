@@ -68,13 +68,16 @@ sub _save {
 	my ( $self, $path ) = @_;
 
 	my $dump_path = $self->_dump_path( $path );
+	my $first_load = ! -e $dump_path;
 	warn "save loaded to $dump_path";
 	my $info = $loaded->{$path};
 	store $info, $dump_path;
 
-	# sync timestamp
-	#my $mtime = $loaded->{$path}->{mtime};
-	#utime $mtime, $mtime, $dump_path;
+	if ( $first_load ) {
+		my $mtime = $loaded->{$path}->{mtime};
+		utime $mtime, $mtime, $dump_path;
+		warn "sync time to $path at $mtime\n";
+	}
 
 	warn $dump_path, ' ', -s $dump_path, " bytes\n";
 	return $dump_path;
