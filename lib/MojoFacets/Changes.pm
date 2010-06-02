@@ -40,4 +40,15 @@ sub view {
 	$self->render( change => retrieve( "/tmp/changes/$uid" ), uid => $uid );
 }
 
+sub edits {
+	my ( $self ) = @_;
+	my $path = $self->param('path') || $self->session('path');
+	my $edit_path = $self->app->home->rel_dir('data') . '/' . $path . '.edits';
+	my $edits;
+	foreach my $t ( sort { $b <=> $a } glob $edit_path . '/*' ) {
+		push @$edits, retrieve("$t");
+	}
+	$self->render( edits => $edits );
+}
+
 1;
