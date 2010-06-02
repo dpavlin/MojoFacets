@@ -736,6 +736,11 @@ sub edit {
 				new => $v,
 				time => $self->param('time') || time(),
 				user => $self->param('user') || $ENV{'LOGNAME'},
+				unique => {
+					map { $_ => $loaded->{$path}->{data}->{items}->[$i]->{$_}->[0] }
+					grep { defined $loaded->{$path}->{stats}->{$_}->{unique} }
+					keys %{ $loaded->{$path}->{stats} }
+				},
 			};
 			my $edit_path = $self->app->home->rel_dir('data') . '/' . $path . '.edits';
 			mkdir $edit_path unless -d $edit_path;
