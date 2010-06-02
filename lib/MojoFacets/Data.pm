@@ -808,9 +808,7 @@ sub edit {
 
 sub save {
 	my $self = shift;
-	my $path = $self->param('path');
-	$path  ||= $self->session('path');
-
+	my $path = $self->_param_or_session('path');
 	my $dump_path = $self->_save( $path );
 	$self->session('save_path' => 0);
 
