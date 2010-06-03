@@ -163,3 +163,14 @@ a.facet {
 	color: #666;
 	text-decoration: none;
 }
+
+/* /changes */
+.change_box {
+	border: 3px dashed #f84;
+}
+
+.change_viewed a {
+	color: #888;
+	text-decoration: line-through;
+}
+
