@@ -45,6 +45,8 @@ $(document).ready(function() {
 
 from <input type=text name=path value="<%= session('path') %>" readonly>
 
+<a href="<%= url_for( action => 'stats' ) %>">rebuild stats</a>
+
 </form>
 
 <pre class=debug>

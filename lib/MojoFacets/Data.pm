@@ -90,6 +90,8 @@ sub __stats {
 
 	my $nr_items = $#{ $_[0] } + 1;
 
+	warn "__stats $nr_items\n";
+
 	foreach my $e ( @{ $_[0] } ) {
 		foreach my $n ( keys %$e ) {
 			$stats->{$n}->{count}++;
@@ -145,7 +147,8 @@ sub _param_or_session {
 sub stats {
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
-	$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+	warn "stats $path\n";
+	delete $loaded->{$path}->{stats};
 	$self->redirect_to( '/data/columns' );
 }
 
@@ -291,6 +294,10 @@ sub _loaded {
 		$self->_load_path( $path );
 		$self->redirect_to('/data/index')
 			unless defined $loaded->{$path}->{$name};
+		if ( ! defined $loaded->{$path}->{stats} ) {
+			warn "rebuild stats for $path\n";
+			$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+		}
 	}
 	return $loaded->{$path}->{$name};
 }
