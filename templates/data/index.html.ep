@@ -1,4 +1,6 @@
 % layout 'default';
+% my $path = session('path');
+
 <h2>Select data file to load</h2>
 
 <form method=post action=/data/load >
@@ -11,7 +13,7 @@
 % foreach my $n ( @$files ) {
 <tr><td>
 <label>
-<input name=path  type=radio    value="<%= $n %>" <%= defined $loaded->{session('path')}->{data} eq $n ? 'disabled' : '' %>>
+<input name=path  type=radio    value="<%= $n %>" <%= $n eq $path && defined $loaded->{$path}->{data} ? 'disabled' : '' %>>
 <%= $n %>
 </label>
 </td><td class=bytes><%= $size->{$n} %>
