@@ -45,7 +45,7 @@ $(document).ready( function(){
 			success: function(data){
 				var form = $(data).filter('form');
 				console.debug('ajax',e,form);
-				e.html( form.html() )
+				e.html( form )
 				.addClass( 'change_box' )
 				.append(
 					$('<input type=button value=hide>').click( function() {
