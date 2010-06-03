@@ -261,16 +261,24 @@ sub load {
 	$self->session('path' => $path);
 	$self->_load_path( $path );
 
+	my $redirect_to = '/data/items';
+
 	$self->session( 'header' => $loaded->{$path}->{header} );
 	if ( ! defined $loaded->{$path}->{columns} ) {
-		$self->session( 'columns' => $loaded->{$path}->{header} );
-		$self->session( 'order'   => $loaded->{$path}->{header}->[0] );
-		$self->redirect_to( '/data/columns' );
-	} else {
-		$self->session( 'columns' => $loaded->{$path}->{columns} );
-		$self->session( 'order'   => $loaded->{$path}->{columns}->[0] );
-		$self->redirect_to( '/data/items' );
+		my $columns_path = $self->_permanent_path( 'columns' );
+		if ( -e $columns_path ) {
+			my @columns = map { s/[\r\n]+$//; $_ } read_file $columns_path;
+			$loaded->{$path}->{columns} = [ @columns ];
+			warn "# columns_path $columns_path ",dump(@columns);
+		} else {
+			$loaded->{$path}->{columns} = $loaded->{$path}->{header}
+		}
+
+		$redirect_to = '/data/columns';
 	}
+	$self->session( 'columns' => $loaded->{$path}->{columns} );
+	$self->session( 'order'   => $loaded->{$path}->{columns}->[0] );
+	$self->redirect_to( $redirect_to );
 }
 
 
@@ -307,7 +315,7 @@ sub columns {
 
 	if ( $self->param('columns') ) {
 		my @columns = $self->_param_array('columns');
-		write_file( $self->_permanent_path( 'columns.txt' ), map { "$_\n" } @columns );
+		write_file( $self->_permanent_path( 'columns' ), map { "$_\n" } @columns );
 		$self->redirect_to('/data/items');
 	}
 
