@@ -174,3 +174,16 @@ a.facet {
 	text-decoration: line-through;
 }
 
+div.edit a {
+	margin-top: 3em;
+	float: right;
+}
+
+div.edit {
+	border-bottom: 1px dashed #eee;
+}
+
+div.edit pre {
+	display: block;
+}
+

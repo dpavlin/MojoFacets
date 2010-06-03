@@ -1,5 +1,8 @@
 % layout 'default';
 
 % foreach my $e ( @$edits ) {
+<div class=edit>
+<a href="<%= url_for( action => 'edit' )->query( remove => $e->{time} ) %>">remove</a>
 <pre class=debug><%= dumper $e %></pre>
+</div>
 % }

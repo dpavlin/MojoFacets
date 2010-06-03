@@ -40,15 +40,31 @@ sub view {
 	$self->render( change => retrieve( "/tmp/changes/$uid" ), uid => $uid );
 }
 
+sub _edit_path {
+	my $self = shift;
+	my $path = $self->param('path') || $self->session('path');
+	$self->app->home->rel_dir('data') . '/' . $path . '.edits';
+}
+
 sub edits {
 	my ( $self ) = @_;
 	my $path = $self->param('path') || $self->session('path');
-	my $edit_path = $self->app->home->rel_dir('data') . '/' . $path . '.edits';
 	my $edits;
-	foreach my $t ( sort { $b cmp $a } glob $edit_path . '/*' ) {
+	my $glob = $self->_edit_path . '/*';
+	foreach my $t ( sort { $b cmp $a } glob $glob ) {
 		push @$edits, retrieve("$t");
 	}
 	$self->render( edits => $edits );
+}
+
+sub edit {
+	my $self = shift;
+
+	if ( my $t = $self->param('remove') ) {
+		unlink $self->_edit_path . '/' . $t;
+	}
+
+	$self->redirect_to('/changes/edits');
 }
 
 1;
