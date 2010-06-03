@@ -9,3 +9,5 @@ META.yml
 MANIFEST*
 !MANIFEST.SKIP
 pm_to_blib
+data/*
+nytprof*
