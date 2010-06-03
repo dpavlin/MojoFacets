@@ -176,8 +176,9 @@ a.facet {
 
 /* /changes/edits */
 
-div.edit pre {
+tr.edit pre {
 	color: #000;
+	font-size: 70%;
 }
 
 tr.unknown {

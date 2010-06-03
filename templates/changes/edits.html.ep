@@ -1,6 +1,7 @@
 % layout 'ui';
 
 
+% my $dump = param('dump');
 % my $apply_on_path = param('apply_on_path');
 
 <form method=post>
@@ -10,6 +11,7 @@
 <option<%= $p eq $apply_on_path ? ' selected' : '' %>><%= $p %></option>
 % }
 </select>
+<label><input type=checkbox name=dump <%= $dump ? 'checked' : '' %>>dump</label>
 </form>
 
 % if ( $apply_on_path ) {
@@ -31,7 +33,7 @@
 <tr class="edit <%= $e->{_status} || 'unknown' %>">
 <td>
 <%= $e->{time} %>
-
+<tt><%= $e->{column} %></tt>
 %  if ( my $status = $e->{_status} ) {
 %    my ( $pk, $id ) = %{ $e->{unique} };
 <a href="<%= url_for( controller => 'data', action => 'filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
@@ -43,6 +45,9 @@
 </td><td><%== defined $e->{old} && join('<span class=d>&para;</span>', @{$e->{old}}) %>
 </td><td><%== defined $e->{new} && join('<span class=d>&para;</span>', @{$e->{new}}) %>
 
+%  if ( $dump ) {
+</td><td><pre class=debug><%= dumper $e %></pre>
+%  }
 </tr>
 % }
 
