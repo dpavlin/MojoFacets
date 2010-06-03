@@ -310,6 +310,16 @@ sub _permanent_path {
 	$self->app->home->rel_dir('data') . '/' . join('.', $path, @_);
 }
 
+sub _export_path {
+	my $self = shift;
+	my $path = $self->_param_or_session('path');
+	my $dir = $self->app->home->rel_dir('public') . '/export/';
+	mkdir $dir unless -e $dir;
+	$dir .= $path;
+	mkdir $dir unless -e $dir;
+	$dir . '/' . join('.', @_);
+}
+
 sub columns {
     my $self = shift;
 
@@ -384,7 +394,14 @@ sub filter {
 	my @vals = $self->param('filter_vals');
 
 	$self->_remove_filter( $name );
-	$self->_filter_on_data( $name, @vals ) if @vals;
+	if ( @vals ) {
+		$self->_filter_on_data( $name, @vals );
+		if ( my $permanent = $self->param('_permanent') ) {
+			my $permanent_path = $self->_export_path( 'filter', $name, $permanent );
+			write_file $permanent_path, map { "$_\n" } @vals;
+			warn "permanent filter $permanent_path ", -s $permanent_path;
+		}
+	}
 
 	$self->session( 'offset' => 0 );
 

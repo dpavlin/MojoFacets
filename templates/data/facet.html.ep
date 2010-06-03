@@ -36,6 +36,7 @@
 </ul>
 
 <input type=submit value="Filter <%= $name %>">
+<input type=text name=_permanent>
 
 </form>
 
