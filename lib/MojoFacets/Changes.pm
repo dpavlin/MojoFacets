@@ -72,7 +72,7 @@ sub edits {
 			}
 			my $i = $unique2id->{$pk}->{$id};
 			my $status = defined $i ? 'found' : 'missing';
-			$e->{_apply} = $status;
+			$e->{_status} = $status;
 			$stats->{$status}++;
 		}
 		push @$edits, $e;

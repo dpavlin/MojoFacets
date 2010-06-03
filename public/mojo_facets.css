@@ -174,13 +174,11 @@ a.facet {
 	text-decoration: line-through;
 }
 
-div.edit a {
+.edit-options {
 	margin-top: 3em;
 	float: right;
-}
-
-div.edit {
-	border-bottom: 1px dashed #eee;
+	text-align: center;
+	
 }
 
 div.edit pre {
@@ -188,7 +186,7 @@ div.edit pre {
 }
 
 .edit-unknown {
-	border: 3px dotted #888;
+	border-bottom: 1px dotted #ccc;
 }
 
 .edit-found {

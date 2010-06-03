@@ -1,23 +1,39 @@
 % layout 'default';
 
-<pre class=debug>
-<%= dumper( $loaded ) %>
-<%= dumper( $stats ) %>
-</pre>
+
+% my $apply_on_path = param('apply_on_path');
 
 <form method=post>
 <input type=submit value="Apply"> on
 <select name=apply_on_path>
 % foreach my $p ( @$loaded ) {
-<option><%= $p %></option>
+<option<%= $p eq $apply_on_path ? ' selected' : '' %>><%= $p %></option>
 % }
 </select>
 </form>
 
+% if ( $apply_on_path ) {
+<ul>
+%  foreach my $status ( keys %$stats ) {
+<li><%= $status %> <span class=count><%= $stats->{$status} %></span>
+%  }
+</ul>
+% }
+
 % foreach my $e ( @$edits ) {
-<div class="edit edit-<%= $e->{_apply} || 'unknown' %>">
+<div class="edit edit-<%= $e->{_status} || 'unknown' %>">
+<span class="edit-options">
 <a href="<%= url_for( action => 'edit' )->query( remove => $e->{time} ) %>">remove</a>
-<%= $e->{_apply} %>
+%  if ( my $status = $e->{_status} ) {
+<div title="status">
+<%= $status %>
+</div>
+%  }
+</span>
 <pre class=debug><%= dumper $e %></pre>
 </div>
 % }
+
+<pre class=debug>
+<%= dumper( $stats ) %>
+</pre>
