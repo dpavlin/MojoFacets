@@ -14,7 +14,9 @@ items:
 % if ( my $path = session('save_path') ) {
 <a class=save_changes title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
 % }
-
+% if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
+<a href="<%= url_for( controller => 'data', action => 'export' ) %>">export</a>
+% }
 <a href="<%= url_for( controller => 'changes', action => 'edits' ) %>">edits</a>
 <a href="<%= url_for( controller => 'changes', action => 'index' ) %>">changes</a>
 </span>

@@ -846,4 +846,12 @@ sub save {
 	$self->redirect_to( '/data/items' );
 }
 
+sub export {
+	my $self = shift;
+	$self->render( export => [
+		map { s{^.+/public/export/}{}; $_ }
+		glob( $self->_export_path . '*' )
+	] );
+}
+
 1;

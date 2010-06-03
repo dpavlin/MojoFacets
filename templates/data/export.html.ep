@@ -1,0 +1,9 @@
+% layout 'default';
+
+<ul>
+% foreach my $e ( @$export ) {
+<li><a target="<%= $e %>" href="/export/<%= $e %>"><%= $e %></a>
+% }
+</ul>
+
+<pre class=debug><%= dumper $export %></pre>
