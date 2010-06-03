@@ -1,0 +1,13 @@
+% layout 'default';
+
+<h1>Configuration</h1>
+
+<form method=post>
+
+<h2>Replication</h2>
+<ul>
+<li>MASTER <input type=text name=MASTER value="<%= $ENV{MASTER} %>">
+</ul>
+
+<input type=submit value="Change">
+</form>
