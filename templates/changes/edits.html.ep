@@ -1,4 +1,4 @@
-% layout 'default';
+% layout 'ui';
 
 
 % my $apply_on_path = param('apply_on_path');
@@ -13,9 +13,13 @@
 </form>
 
 % if ( $apply_on_path ) {
-<ul>
+<ul id=status>
 %  foreach my $status ( keys %$stats ) {
-<li><%= $status %> <span class=count><%= $stats->{$status} %></span>
+<li><label>
+<input name=show type=checkbox value="<%= $status %>" checked>
+<%= $status %>
+<span class=count><%= $stats->{$status} %></span>
+</label>
 %  }
 </ul>
 % }
@@ -24,7 +28,7 @@
 <tr><th></th><th>old</th><th>new</th></tr>
 
 % foreach my $e ( @$edits ) {
-<tr class="edit edit-<%= $e->{_status} || 'unknown' %>">
+<tr class="edit <%= $e->{_status} || 'unknown' %>">
 <td>
 <%= $e->{time} %>
 
@@ -47,3 +51,16 @@
 <pre class=debug>
 <%= dumper( $stats ) %>
 </pre>
+
+<script type="text/javascript">
+
+$(document).ready( function(){
+	console.debug('ready');
+	$('ul#status > li input[type=checkbox]').click( function(){
+		var toggle = this.value;
+		console.debug('click',this,toggle);
+		$('tr.'+toggle).toggleClass('hidden');
+	});
+});
+
+</script>

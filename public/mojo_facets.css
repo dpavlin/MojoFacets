@@ -180,15 +180,19 @@ div.edit pre {
 	color: #000;
 }
 
-.edit-unknown {
+tr.unknown {
 	background: #eee;
 }
 
-.edit-found {
+tr.found {
 	background: #cfc;
 }
 
-.edit-missing {
+tr.missing {
 	background: #fcc;
+}
+
+tr.hidden {
+	display: none;
 }
 
