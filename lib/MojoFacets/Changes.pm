@@ -6,6 +6,8 @@ use warnings;
 use base 'Mojolicious::Controller';
 
 use Storable;
+use Data::Dump qw(dump);
+use MojoFacets::Data;
 
 sub index {
 	my $self = shift;
@@ -49,12 +51,37 @@ sub _edit_path {
 sub edits {
 	my ( $self ) = @_;
 	my $path = $self->param('path') || $self->session('path');
+	my ( $items, $unique2id );
+	if ( my $apply_on_path = $self->param('apply_on_path') ) {
+		$items = $MojoFacets::Data::loaded->{$apply_on_path}->{data}->{items};
+		die "no $apply_on_path" unless $items;
+		warn "using $items for $apply_on_path\n";
+	}
 	my $edits;
+	my $stats;
 	my $glob = $self->_edit_path . '/*';
 	foreach my $t ( sort { $b cmp $a } glob $glob ) {
-		push @$edits, retrieve("$t");
+		my $e = retrieve($t);
+		if ( $items ) {
+			my ($pk,$id) = %{ $e->{unique} };
+			if ( ! defined $unique2id->{$pk} ) {
+				warn "unique2id $pk on ", $#$items + 1 ," items\n";
+				foreach my $i ( 0 .. $#$items ) {
+					$unique2id->{$pk}->{ $items->[$i]->{$pk}->[0] } = $i;
+				}
+			}
+			my $i = $unique2id->{$pk}->{$id};
+			my $status = defined $i ? 'found' : 'missing';
+			$e->{_apply} = $status;
+			$stats->{$status}++;
+		}
+		push @$edits, $e;
 	}
-	$self->render( edits => $edits );
+
+	my @loaded = MojoFacets::Data::__loaded_paths();
+	warn "# loaded paths ",dump @loaded;
+
+	$self->render( edits => $edits, loaded => \@loaded, stats => $stats );
 }
 
 sub edit {

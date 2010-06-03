@@ -184,6 +184,18 @@ div.edit {
 }
 
 div.edit pre {
-	display: block;
+	color: #000;
+}
+
+.edit-unknown {
+	border: 3px dotted #888;
+}
+
+.edit-found {
+	border: 3px dotted #cfc;
+}
+
+.edit-missing {
+	border: 3px dotted #fcc;
 }
 

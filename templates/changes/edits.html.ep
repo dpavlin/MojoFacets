@@ -1,8 +1,23 @@
 % layout 'default';
 
+<pre class=debug>
+<%= dumper( $loaded ) %>
+<%= dumper( $stats ) %>
+</pre>
+
+<form method=post>
+<input type=submit value="Apply"> on
+<select name=apply_on_path>
+% foreach my $p ( @$loaded ) {
+<option><%= $p %></option>
+% }
+</select>
+</form>
+
 % foreach my $e ( @$edits ) {
-<div class=edit>
+<div class="edit edit-<%= $e->{_apply} || 'unknown' %>">
 <a href="<%= url_for( action => 'edit' )->query( remove => $e->{time} ) %>">remove</a>
+<%= $e->{_apply} %>
 <pre class=debug><%= dumper $e %></pre>
 </div>
 % }

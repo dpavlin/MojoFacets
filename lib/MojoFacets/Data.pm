@@ -861,4 +861,10 @@ sub export {
 	] );
 }
 
+sub __loaded_paths {
+	return
+		grep { defined $loaded->{$_}->{data} }
+		keys %$loaded;
+}
+
 1;
