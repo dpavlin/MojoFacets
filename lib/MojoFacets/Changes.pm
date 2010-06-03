@@ -45,7 +45,7 @@ sub edits {
 	my $path = $self->param('path') || $self->session('path');
 	my $edit_path = $self->app->home->rel_dir('data') . '/' . $path . '.edits';
 	my $edits;
-	foreach my $t ( sort { $b <=> $a } glob $edit_path . '/*' ) {
+	foreach my $t ( sort { $b cmp $a } glob $edit_path . '/*' ) {
 		push @$edits, retrieve("$t");
 	}
 	$self->render( edits => $edits );
