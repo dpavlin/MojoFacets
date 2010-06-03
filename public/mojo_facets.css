@@ -156,3 +156,21 @@ form.action_filter {
 	font-family: monospace;
 	color: #444;
 }
+
+/* items/list.html.ep */
+a.facet {
+	font-family: monospace;
+	color: #666;
+	text-decoration: none;
+}
+
+/* /changes */
+.change_box {
+	border: 3px dashed #f84;
+}
+
+.change_viewed a {
+	color: #888;
+	text-decoration: line-through;
+}
+

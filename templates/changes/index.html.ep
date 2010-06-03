@@ -38,7 +38,24 @@ $(document).ready( function(){
 
 	$('a.view').live( 'click', function() {
 		console.debug(this.href);
-		$(this).parent().load( this.href + ' form' ).css({ 'border': '3px dashed #f84' });
+		var e = $(this).parent();
+		var link_html = e.html();
+		$.ajax({
+			url: this.href,
+			success: function(data){
+				var form = $(data).filter('form');
+				console.debug('ajax',e,form);
+				e.html( form.html() )
+				.addClass( 'change_box' )
+				.append(
+					$('<input type=button value=hide>').click( function() {
+console.debug(this,link_html);
+					e.html( link_html ).removeClass( 'change_box' ).addClass( 'change_viewed' );
+					})
+				)
+				;
+			}
+		})
 		return false;
 	});
 
