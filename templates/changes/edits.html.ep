@@ -20,19 +20,29 @@
 </ul>
 % }
 
+<table>
+<tr><th></th><th>old</th><th>new</th></tr>
+
 % foreach my $e ( @$edits ) {
-<div class="edit edit-<%= $e->{_status} || 'unknown' %>">
-<span class="edit-options">
-<a href="<%= url_for( action => 'edit' )->query( remove => $e->{time} ) %>">remove</a>
+<tr class="edit edit-<%= $e->{_status} || 'unknown' %>">
+<td>
+<%= $e->{time} %>
+
 %  if ( my $status = $e->{_status} ) {
-<div title="status">
+%    my ( $pk, $id ) = %{ $e->{unique} };
+<a href="<%= url_for( controller => 'data', action => 'filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
 <%= $status %>
-</div>
+%  } else {
+<a href="<%= url_for( action => 'edit' )->query( remove => $e->{time} ) %>">remove</a>
 %  }
-</span>
-<pre class=debug><%= dumper $e %></pre>
-</div>
+
+</td><td><%== defined $e->{old} && join('<span class=d>&para;</span>', @{$e->{old}}) %>
+</td><td><%== defined $e->{new} && join('<span class=d>&para;</span>', @{$e->{new}}) %>
+
+</tr>
 % }
+
+</table>
 
 <pre class=debug>
 <%= dumper( $stats ) %>
