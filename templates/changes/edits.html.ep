@@ -12,7 +12,6 @@
 % }
 </select>
 <label><input type=checkbox name=dump <%= $dump ? 'checked' : '' %>>dump</label>
-</form>
 
 % if ( $apply_on_path ) {
 <ul id=status>
@@ -24,7 +23,12 @@
 </label>
 %  }
 </ul>
+
+<input type=submit name=commit value="Commit changes">
+
 % }
+
+</form>
 
 <table>
 <tr><th></th><th>old</th><th>new</th></tr>

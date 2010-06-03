@@ -51,6 +51,7 @@ sub _edit_path {
 sub edits {
 	my ( $self ) = @_;
 	my $path = $self->param('path') || $self->session('path');
+	my $commit = $self->param('commit');
 	my ( $items, $unique2id );
 	if ( my $apply_on_path = $self->param('apply_on_path') ) {
 		$items = $MojoFacets::Data::loaded->{$apply_on_path}->{data}->{items};
@@ -70,8 +71,11 @@ sub edits {
 					$unique2id->{$pk}->{ $items->[$i]->{$pk}->[0] } = $i;
 				}
 			}
-			my $i = $unique2id->{$pk}->{$id};
-			my $status = defined $i ? 'found' : 'missing';
+			my $status = 'missing';
+			if ( my $i = $unique2id->{$pk}->{$id} ) {
+				$status = 'found';
+				$items->[$i]->{$pk} = $e->{new} if $commit;
+			}
 			$e->{_status} = $status;
 			$stats->{$status}++;
 		}
