@@ -9,17 +9,17 @@ items:
 <a href="<%= url_for( controller => 'data', action => 'items' )->query( show => $show ) %>" <%= $class %>><%= $show %></a>
 % }
 
-<span class=changes>
+<span class=actions>
 
 % if ( session('modified') ) {
 %  my $path = session('path');
-<a class=save_changes title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
+<a class=save_actions title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
 % }
 % if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
 <a href="<%= url_for( controller => 'data', action => 'export' ) %>">export</a>
 % }
-<a href="<%= url_for( controller => 'changes', action => 'edits' ) %>">edits</a>
-<a href="<%= url_for( controller => 'changes', action => 'index' ) %>">changes</a>
+<a href="<%= url_for( controller => 'actions', action => 'edits' ) %>">edits</a>
+<a href="<%= url_for( controller => 'actions', action => 'index' ) %>">actions</a>
 </span>
 
 </div>

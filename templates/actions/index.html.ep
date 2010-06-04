@@ -1,32 +1,32 @@
 % layout 'ui';
-<h2><%= $message %></h2>
+<h2>Latest actions</h2>
 
 <form class=action_filter>
-<input type=submit value="Filter changes">
+<input type=submit value="Filter">
 <ul>
-% foreach my $type ( sort keys %$actions ) {
+% foreach my $type ( sort keys %$stats ) {
 <li><label>
 <input type=checkbox name=action_filter value="<%= $type %>">
-<%= $type %><span class=count><%= $actions->{$type} %></span>
+<%= $type %><span class=count><%= $stats->{$type} %></span>
 </label>
 % }
 </ul>
-<input type=submit value="Filter changes">
+<input type=submit value="Filter">
 </form>
 
 <table>
 <tr><th>action</th><th>timestamp</th></tr>
-% foreach my $change ( @$changes ) {
+% foreach my $action ( @$actions ) {
 <tr><td>
-<a class="view" href="<%= url_for( controller => 'changes', action => 'view' )->query( uid => $change->{uid} ) %>"><%= $change->{action} %></a>
+<a class="view" href="<%= url_for( controller => 'actions', action => 'view' )->query( uid => $action->{uid} ) %>"><%= $action->{action} %></a>
 </td><td>
-<tt class=ts><%= $change->{t} %></tt>
+<tt class=ts><%= $action->{t} %></tt>
 </td></tr>
 % }
 </table>
 
-% my $more = ( $#$changes ) * 10;
-Show <a href="<%= url_for( controller => 'changes', action => 'index' )->query( max => $more ) %>"><%= $more %> changes</a>
+% my $more = ( $#$actions ) * 10;
+Show <a href="<%= url_for( controller => 'actions', action => 'index' )->query( max => $more ) %>"><%= $more %> actions</a>
 
 <script type="text/javascript" src="/js/date_pretty.js"></script>
 <script type="text/javascript">
@@ -46,11 +46,11 @@ $(document).ready( function(){
 				var form = $(data).filter('form');
 				console.debug('ajax',e,form);
 				e.html( form )
-				.addClass( 'change_box' )
+				.addClass( 'action_box' )
 				.append(
 					$('<input type=button value=hide>').click( function() {
 console.debug(this,link_html);
-					e.html( link_html ).removeClass( 'change_box' ).addClass( 'change_viewed' );
+					e.html( link_html ).removeClass( 'action_box' ).addClass( 'action_viewed' );
 					})
 				)
 				;

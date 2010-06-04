@@ -1,4 +1,4 @@
-package MojoFacets::Changes;
+package MojoFacets::Actions;
 
 use strict;
 use warnings;
@@ -18,28 +18,28 @@ sub index {
 
 	my $actions;
 
-	my $changes;
-	foreach my $path ( sort { $b cmp $a } glob '/tmp/changes/*' ) {
+	my $stats;
+	foreach my $path ( sort { $b cmp $a } glob '/tmp/actions/*' ) {
 		if ( $path =~ m{/((\d+\.\d+)\.data\.(.+))$} ) {
 			my ( $uid, $t, $action ) = ( $1, $2, $3 );
-			$actions->{$action}++;
+			$stats->{$action}++;
 			next if $action_regex && $action !~ m/^($action_regex)$/;
-			push @$changes, { uid => $uid, t => $t, action => $action }
-				if $#$changes < $max;
+			push @$actions, { uid => $uid, t => $t, action => $action }
+				if $#$actions < $max;
 		} else {
 			warn "ignore: $path\n";
 		}
 	}
 
-	# Render template "changes/index.html.ep" with message
-	$self->render(message => 'Latest Changes', changes => $changes, actions => $actions );
+	# Render template "actions/index.html.ep" with message
+	$self->render(actions => $actions, stats => $stats );
 }
 
 
 sub view {
 	my $self = shift;
 	my $uid = $self->param('uid');
-	$self->render( change => retrieve( "/tmp/changes/$uid" ), uid => $uid );
+	$self->render( change => retrieve( "/tmp/actions/$uid" ), uid => $uid );
 }
 
 sub _edit_path {
@@ -95,7 +95,7 @@ sub edit {
 		unlink $self->_edit_path . '/' . $t;
 	}
 
-	$self->redirect_to('/changes/edits');
+	$self->redirect_to('/actions/edits');
 }
 
 1;

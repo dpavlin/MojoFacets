@@ -28,7 +28,7 @@ sub save_tx {
 				$time = $time_travel;
 			}
 
-			my $path = '/tmp/changes/';
+			my $path = '/tmp/actions/';
 			mkdir $path unless -e $path;
 			$path .= sprintf '%.4f.%s', $time, join('.', @$parts);
 

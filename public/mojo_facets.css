@@ -48,11 +48,11 @@ span.h {
 	font-weight: bold;
 }
 
-.admin .changes {
+.admin .actions {
 	float: right;
 }
 
-.admin .save_changes {
+.admin .save_actions {
 	float: right;
 	color: #f00;
 	padding-left: 1em;
@@ -164,7 +164,7 @@ a.facet {
 	text-decoration: none;
 }
 
-/* /changes */
+/* /actions */
 .change_box {
 	border: 3px dashed #f84;
 }
@@ -174,7 +174,7 @@ a.facet {
 	text-decoration: line-through;
 }
 
-/* /changes/edits */
+/* /actions/edits */
 
 tr.edit pre {
 	color: #000;
