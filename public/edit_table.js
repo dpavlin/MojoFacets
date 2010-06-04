@@ -16,21 +16,21 @@ var cell_blur = function() {
 	var x = $(this).parent().attr('cellIndex');
 	var y = $(this).parent().parent().attr('rowIndex');
 
-	var content = $(this).val();
-//	$(this).replaceWith( content );
+	var new_content = $(this).val();
+//	$(this).replaceWith( new_content );
 
 	var name = $('table tr th:nth('+x+') > a').text();
-	console.info( x, y, _row_id, name, content );
+	console.info( x, y, _row_id, name, new_content );
 
 	var update = $(this);
 
 	$.post( '/data/edit', {
 		path: document.title, _row_id: _row_id,
-		name: name, content: content
+		name: name, new_content: new_content
 	} , function(data, textStatus) {
 		console.debug( 'data:', data, 'status:', textStatus );
 		if ( ! data ) {
-			data = content; // fallback to submited data for 304
+			data = new_content; // fallback to submited data for 304
 		} else {
 			if ( $('a.save_changes').length == 0 )
 			$('a.changes').before('<a class=save_changes href="/data/save">save</a>')
@@ -47,14 +47,14 @@ var cell_click = function(event) {
 		, event
 		, $(this).text()
 	);
-	var content = $(this).text() // we don't want para markup
+	var new_content = $(this).text() // we don't want para markup
 		.replace(/^[ \n\r]+/,'')
 		.replace(/[ \n\r]+$/,'')
 	;
-console.debug( 'content', content );
-	var rows = content.split('¶').length * 2 + 1;
+console.debug( 'new_content', new_content );
+	var rows = new_content.split('¶').length * 2 + 1;
 	var textarea = $('<textarea rows='+rows+'/>');
-	textarea.val( content );
+	textarea.val( new_content );
 	$(this).html( textarea );
 	textarea.focus();
 	textarea.blur( cell_blur )

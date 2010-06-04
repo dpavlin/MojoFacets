@@ -684,7 +684,7 @@ sub facet {
 
 sub edit {
 	my $self = shift;
-	my $content = $self->param('content');
+	my $new_content = $self->param('new_content');
 
 	my $i = $self->param('_row_id');
 	die "invalid _row_id ",dump($i) unless $i =~ m/^\d+$/;
@@ -695,19 +695,19 @@ sub edit {
 	my $data = $self->_loaded('data');
 
 	if ( defined $loaded->{$path}->{data}->{items}->[$i] ) {
-		$content =~ s/^\s+//s;
-		$content =~ s/\s+$//s;
+		$new_content =~ s/^\s+//s;
+		$new_content =~ s/\s+$//s;
 		my $v;
-		if ( $content =~ /\xB6/ ) {	# para
-			$v = [ split(/\s*\xB6\s*/, $content) ];
+		if ( $new_content =~ /\xB6/ ) {	# para
+			$v = [ split(/\s*\xB6\s*/, $new_content) ];
 		} else {
-			$v = [ $content ];
+			$v = [ $new_content ];
 		}
 
 		my $old = dump $loaded->{$path}->{data}->{items}->[$i]->{$name};
 		my $new = dump $v;
 		if ( $old ne $new
-			&& ! ( $old eq 'undef' && length($content) == 0 ) # new value empty, previous undef
+			&& ! ( $old eq 'undef' && length($new_content) == 0 ) # new value empty, previous undef
 		) {
 			warn "# update $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
@@ -724,21 +724,23 @@ sub edit {
 
 			$status = 201; # created
 			$self->session('save_path' => $path);
+	
+			$new_content = join("\xB6",@$v);
 
 		} else {
 			warn "# unchanged $path $i $old\n";
 			$status = 304;
 		}
 	} else {
-		$content = "$path $i $name doesn't exist\n";
+		$new_content = "$path $i $name doesn't exist\n";
 		$status = 404;
 	}
 
-	warn "# edit $status $content";
+	warn "# edit $status ", dump $new_content;
 
 	$self->render(
 		status => $status,
-		content => $content,
+		new_content => scalar $new_content,
 	);
 }
 
