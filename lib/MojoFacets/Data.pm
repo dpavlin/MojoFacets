@@ -20,31 +20,26 @@ our $filters;
 sub index {
 	my $self = shift;
 
-	my $path = $self->app->home->rel_dir('data');
-	die "no data dir $path" unless -d $path;
+	my $data_dir = $self->app->home->rel_dir('data');
+	die "no data dir $data_dir" unless -d $data_dir;
 
 	my @files;
 	my $edits;
 	find( sub {
 		my $file = $File::Find::name;
 		if ( -f $file && $file =~ m/\.(js(on)?|txt)$/ ) {
-			$file =~ s/$path\/*//;
+			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} elsif ( -f $file && $file =~ m/([^\/]+)\.edits\/(\d+\.\d+.+)/ ) {
 			push @{ $edits->{$1} }, $2
 		} else {
 			warn "IGNORE: $file\n";
 		}
-	}, $path);
+	}, $data_dir);
 
 	@files = sort { lc $a cmp lc $b } @files;
 	my $size;
-	$size->{$_} = -s "$path/$_" foreach @files;
-
-	if ( my $save_path = $self->session('save_path') ) {
-		$self->session( 'save_path' => 0 )
-		if ! defined $loaded->{$save_path};
-	}
+	$size->{$_} = -s "$data_dir/$_" foreach @files;
 
 	$self->render(
 		files => [ @files ],
@@ -261,8 +256,10 @@ sub load {
 
  	my $path = $self->param('path') || $self->redirect_to( '/data/index' );
 	warn "# path $path\n";
-	$self->session('path' => $path);
 	$self->_load_path( $path );
+
+	$self->session( 'path' => $path );
+	$self->session( 'modified' => $loaded->{$path}->{modified} );
 
 	my $redirect_to = '/data/items';
 
@@ -824,7 +821,8 @@ sub edit {
 			}
 
 			$status = 201; # created
-			$self->session('save_path' => $path);
+			$loaded->{$path}->{modified}  = 1;
+			$self->session( 'modified' => 1 );
 	
 			$new_content = join("\xB6",@$v);
 
@@ -850,7 +848,8 @@ sub save {
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
 	my $dump_path = $self->_save( $path );
-	$self->session('save_path' => 0);
+	$loaded->{$path}->{modified} = 0;
+	$self->session( 'modified' => 0 );
 
 	$self->redirect_to( '/data/items' );
 }

@@ -11,7 +11,8 @@ items:
 
 <span class=changes>
 
-% if ( my $path = session('save_path') ) {
+% if ( session('modified') ) {
+%  my $path = session('path');
 <a class=save_changes title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
 % }
 % if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
