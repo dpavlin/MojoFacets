@@ -61,7 +61,7 @@ sub edits {
 	my $edits;
 	my $stats;
 	my $glob = $self->_edit_path . '/*';
-	foreach my $t ( sort { $b cmp $a } glob $glob ) {
+	foreach my $t ( sort { $a cmp $b } glob $glob ) {
 		my $e = retrieve($t);
 		if ( $items ) {
 			my ($pk,$id) = %{ $e->{unique} };
