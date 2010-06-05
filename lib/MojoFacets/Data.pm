@@ -14,6 +14,9 @@ use File::Find;
 use Storable;
 use Time::HiRes qw(time);
 
+use MojoFacets::Import::File;
+use MojoFacets::Import::HTMLTable;
+
 our $loaded;
 our $filters;
 
@@ -32,6 +35,9 @@ sub index {
 			push @files, $file;
 		} elsif ( -f $file && $file =~ m/([^\/]+)\.edits\/(\d+\.\d+.+)/ ) {
 			push @{ $edits->{$1} }, $2
+		} elsif ( -d $file && $file =~ m/\.html$/ ) {
+			$file =~ s/$data_dir\/*//;
+			push @files, $file;
 		} else {
 			warn "IGNORE: $file\n";
 		}
@@ -167,65 +173,26 @@ sub _load_path {
 		return;
 	}
 
-	# we could use Mojo::JSON here, but it's too slow
-#	$data = from_json read_file $path;
-	my $data = read_file $full_path;
-	warn "# data snippet: ", substr($data,0,200);
-	my @header;
-	if ( $path =~ m/\.js/ ) {
-		Encode::_utf8_on($data);
-		$data = from_json $data;
-	} elsif ( $path =~ m/\.txt/ ) {
-		my @lines = split(/\r?\n/, $data);
-		$data = { items => [] };
-
-		my $header_line = shift @lines;
-		my $multiline = $header_line =~ s/\^//g;
-		@header = split(/\|/, $header_line );
-		warn "# header ", dump( @header );
-		while ( my $line = shift @lines ) {
-			$line =~ s/\^//g;
-			chomp $line;
-			my @v = split(/\|/, $line);
-			while ( @lines && $#v < $#header ) {
-				$line = $lines[0];
-				$line =~ s/\^//g;
-				chomp $line;
-				my @more_v = split(/\|/, $line);
-				if ( $#v + $#more_v > $#header ) {
-					warn "short line: ",dump( @v );
-					last;
-				}
-				shift @lines;
-				$v[ $#v ] .= shift @more_v if @more_v;
-				push @v, @more_v if @more_v;
-
-				if ( $#v > $#header ) {
-					die "# splice $#header ", dump( @v );
-					@v = splice @v, 0, $#header;
-				}
-			}
-			my $item;
-			foreach my $i ( 0 .. $#v ) {
-				$item->{ $header[$i] || "f_$i" } = [ $v[$i] ];
-			}
-			push @{ $data->{items} }, $item;
-		}
+	my $data;
+	if ( -f $full_path ) {
+		$data = MojoFacets::Import::File->new( path => $full_path )->data;
+	} elsif ( -d $full_path && $full_path =~ m/.html/ ) {
+		$data = MojoFacets::Import::HTMLTable->new( dir => $full_path )->data;
 	} else {
-		warn "file format unknown $path";
+		die "can't load $full_path";
+	}
+
+	my @header;
+
+	if ( defined $data->{header} ) {
+		if ( ref $data->{header} eq 'ARRAY' ) {
+			@header = @{ $data->{header} };
+		} else {
+			warn "header not array ", dump( $data->{header} );
+		}
 	}
 
 	my $stats = __stats( $data->{items} );
-
-	if ( ! @header ) {
-		if ( defined $data->{header} ) {
-			if ( ref $data->{header} eq 'ARRAY' ) {
-				@header = @{ $data->{header} };
-			} else {
-				warn "header not array ", dump( $data->{header} );
-			}
-		}
-	}
 
 	@header =
 		sort { $stats->{$b}->{count} <=> $stats->{$a}->{count} }
