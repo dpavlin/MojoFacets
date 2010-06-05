@@ -64,7 +64,12 @@ sub edits {
 	foreach my $t ( sort { $a cmp $b } glob $glob ) {
 		my $e = retrieve($t);
 		if ( $items ) {
+			die "no unique in ", dump($e) unless exists $e->{unique};
 			my ($pk,$id) = %{ $e->{unique} };
+			if ( ! $pk ) {
+				warn "SKIP ",dump($e);
+				next;
+			}
 			if ( ! defined $unique2id->{$pk} ) {
 				warn "unique2id $pk on ", $#$items + 1 ," items\n";
 				foreach my $i ( 0 .. $#$items ) {
