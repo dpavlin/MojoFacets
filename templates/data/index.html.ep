@@ -8,7 +8,7 @@
 <input type=submit value="Load">
 
 <table>
-<tr><th rowspan=2>name</th><th colspan=2>size</th><th rowspan=2>items</th><th rowspan=2>edits</th><th rowspan=2 title="loaded in memory">m</th><th colspan=2>columns</th></tr>
+<tr><th rowspan=2>name</th><th colspan=2>size</th><th rowspan=2>items</th><th rowspan=2>changes</th><th rowspan=2 title="loaded in memory">m</th><th colspan=2>columns</th></tr>
 <tr><th>disk</th><th>storable</th></tr>
 % foreach my $n ( @$files ) {
 <tr><td>
@@ -19,7 +19,7 @@
 </td><td class=bytes><%= $size->{$n} %>
 </td><td class=bytes><%= -s $dump_path->{$n} %>
 </td><td align=right><%= defined $loaded->{$n}->{data} ? $#{ $loaded->{$n}->{data}->{items} } + 1 : '' %>
-</td><td align=right><%= defined $edits->{$n} ? $#{ $edits->{$n} } + 1 : '' %>
+</td><td align=right><%= defined $changes->{$n} ? $#{ $changes->{$n} } + 1 : '' %>
 </td><td><input name=paths type=checkbox value="<%= $n %>" <%= defined $loaded->{$n}->{stats} ? 'checked' : '' %>>
 </td><td>
 %  if ( defined $loaded->{$n}->{columns} ) {
@@ -36,7 +36,7 @@
 
 </form>
 
-<pre class=debug><%= dumper $edits %></pre>
+<pre class=debug><%= dumper $changes %></pre>
 <pre class=debug><%= dumper $loaded %></pre>
 <pre class=debug><%= dumper $filters %></pre>
 <pre class=debug><%= dumper $dump_path %></pre>

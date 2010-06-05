@@ -18,7 +18,7 @@ items:
 % if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
 <a href="<%= url_for( controller => 'data', action => 'export' ) %>">export</a>
 % }
-<a href="<%= url_for( controller => 'actions', action => 'edits' ) %>">edits</a>
+<a href="<%= url_for( controller => 'actions', action => 'changes' ) %>">changes</a>
 <a href="<%= url_for( controller => 'actions', action => 'index' ) %>">actions</a>
 </span>
 

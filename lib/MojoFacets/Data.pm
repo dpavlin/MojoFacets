@@ -26,14 +26,14 @@ sub index {
 	die "no data dir $data_dir" unless -d $data_dir;
 
 	my @files;
-	my $edits;
+	my $changes;
 	find( sub {
 		my $file = $File::Find::name;
 		if ( -f $file && $file =~ m/\.(js(on)?|txt)$/ ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
-		} elsif ( -f $file && $file =~ m/([^\/]+)\.edits\/(\d+\.\d+.+)/ ) {
-			push @{ $edits->{$1} }, $2
+		} elsif ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+\.\d+.+)/ ) {
+			push @{ $changes->{$1} }, $2
 		} elsif ( -d $file && $file =~ m/\.html$/ ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
@@ -52,7 +52,7 @@ sub index {
 		loaded => $loaded,
 		filters => $filters,
 		dump_path => { map { $_ => $self->_dump_path($_) } @files },
-		edits => $edits,
+		changes => $changes,
 	);
 }
 
@@ -752,7 +752,7 @@ sub edit {
 		if ( $old ne $new
 			&& ! ( $old eq 'undef' && length($new_content) == 0 ) # new value empty, previous undef
 		) {
-			my $edit = {
+			my $change = {
 				path => $path,
 				column => $name,
 				pos => $i,
@@ -766,14 +766,14 @@ sub edit {
 					keys %{ $loaded->{$path}->{stats} }
 				},
 			};
-			my $edit_path = $self->_permanent_path( 'edits' );
-			mkdir $edit_path unless -d $edit_path;
-			$edit_path .= '/' . $edit->{time};
-			store $edit, $edit_path;
-			utime $edit->{time}, $edit->{time}, $edit_path;
-			warn "# $edit_path ", dump($edit);
+			my $change_path = $self->_permanent_path( 'changes' );
+			mkdir $change_path unless -d $change_path;
+			$change_path .= '/' . $change->{time};
+			store $change, $change_path;
+			utime $change->{time}, $change->{time}, $change_path;
+			warn "# $change_path ", dump($change);
 
-			warn "# edit $path $i $old -> $new\n";
+			warn "# change $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
 
 			if ( defined $loaded->{$path}->{sorted}->{$name} ) {

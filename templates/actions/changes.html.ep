@@ -33,8 +33,8 @@
 <table>
 <tr><th></th><th>old</th><th>new</th></tr>
 
-% foreach my $e ( @$edits ) {
-<tr class="edit <%= $e->{_status} || 'unknown' %>">
+% foreach my $e ( @$changes ) {
+<tr class="change <%= $e->{_status} || 'unknown' %>">
 <td>
 <%= $e->{time} %>
 <tt><%= $e->{column} %></tt>
@@ -43,7 +43,7 @@
 <a href="<%= url_for( controller => 'data', action => 'filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
 <%= $status %>
 %  } else {
-<a href="<%= url_for( action => 'edit' )->query( remove => $e->{time} ) %>">remove</a>
+<a href="<%= url_for( action => 'remove' )->query( time => $e->{time} ) %>">remove</a>
 %  }
 
 </td><td><%== defined $e->{old} && join('<span class=d>&para;</span>', @{$e->{old}}) %>

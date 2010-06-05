@@ -42,13 +42,13 @@ sub view {
 	$self->render( change => retrieve( "/tmp/actions/$uid" ), uid => $uid );
 }
 
-sub _edit_path {
+sub _changes_path {
 	my $self = shift;
 	my $path = $self->param('path') || $self->session('path');
-	$self->app->home->rel_dir('data') . '/' . $path . '.edits';
+	$self->app->home->rel_dir('data') . '/' . $path . '.changes';
 }
 
-sub edits {
+sub changes {
 	my ( $self ) = @_;
 	my $path = $self->param('path') || $self->session('path');
 	my $commit = $self->param('commit');
@@ -58,9 +58,9 @@ sub edits {
 		die "no $apply_on_path" unless $items;
 		warn "using $items for $apply_on_path\n";
 	}
-	my $edits;
+	my $changes;
 	my $stats;
-	my $glob = $self->_edit_path . '/*';
+	my $glob = $self->_changes_path . '/*';
 	foreach my $t ( sort { $a cmp $b } glob $glob ) {
 		my $e = retrieve($t);
 		if ( $items ) {
@@ -84,23 +84,23 @@ sub edits {
 			$e->{_status} = $status;
 			$stats->{$status}++;
 		}
-		push @$edits, $e;
+		push @$changes, $e;
 	}
 
 	my @loaded = MojoFacets::Data::__loaded_paths();
 	warn "# loaded paths ",dump @loaded;
 
-	$self->render( edits => $edits, loaded => \@loaded, stats => $stats );
+	$self->render( changes => $changes, loaded => \@loaded, stats => $stats );
 }
 
-sub edit {
+sub remove {
 	my $self = shift;
 
-	if ( my $t = $self->param('remove') ) {
-		unlink $self->_edit_path . '/' . $t;
+	if ( my $t = $self->param('time') ) {
+		unlink $self->_changes_path . '/' . $t;
 	}
 
-	$self->redirect_to('/actions/edits');
+	$self->redirect_to('/actions/changes');
 }
 
 1;
