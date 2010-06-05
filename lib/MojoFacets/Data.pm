@@ -728,6 +728,7 @@ sub facet {
 sub edit {
 	my $self = shift;
 	my $new_content = $self->param('new_content');
+	$new_content  ||= $self->param('content'); # backward compatibility with old actions
 
 	my $i = $self->param('_row_id');
 	die "invalid _row_id ",dump($i) unless $i =~ m/^\d+$/;
