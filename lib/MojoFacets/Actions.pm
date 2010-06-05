@@ -67,7 +67,9 @@ sub changes {
 			die "no unique in ", dump($e) unless exists $e->{unique};
 			my ($pk,$id) = %{ $e->{unique} };
 			if ( ! $pk ) {
-				warn "SKIP ",dump($e);
+				$e->{_status} = 'skip';
+				$stats->{skip}++;
+				push @$changes, $e;
 				next;
 			}
 			if ( ! defined $unique2id->{$pk} ) {

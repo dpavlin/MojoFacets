@@ -174,9 +174,9 @@ a.facet {
 	text-decoration: line-through;
 }
 
-/* /actions/edits */
+/* /actions/changes */
 
-tr.edit pre {
+tr.change pre {
 	color: #000;
 	font-size: 70%;
 }
@@ -191,6 +191,10 @@ tr.found {
 
 tr.missing {
 	background: #fcc;
+}
+
+tr.skip {
+	background: #fcf;
 }
 
 tr.hidden {
