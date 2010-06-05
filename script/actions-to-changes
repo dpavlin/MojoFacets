@@ -10,12 +10,16 @@ use Data::Dump qw(dump);
 my $url = 'http://localhost:3000/data/edit';
 my $max = 1;
 
-my @changes = @ARGV;
+my @actions = @ARGV;
 
 my $t = Mojo::Client->new;
 $t->max_redirects( 1 );
 
-foreach my $c ( @changes ) {
+foreach my $c ( sort {
+	my $at = $1 if $a =~ m/(\d+\.\d+)/;
+	my $bt = $1 if $b =~ m/(\d+\.\d+)/;
+	$at <=> $bt
+} @actions ) {
 
 	print "# $c\n";
 
