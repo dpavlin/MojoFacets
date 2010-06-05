@@ -38,19 +38,27 @@ sub data {
 					if ( ! @header ) {
 						@header = @$row;
 						warn "# new header ",dump(@header);
+						$row = undef;
 					} else {
 						my $o = join('|', @header);
 						my $n = join('|', @$row);
 						if ( $o eq $n ) {
 							warn "# same header again in $file skipping\n";
+							$row = undef;
 						} else {
 							warn "# header $n changed from $o in $file";
-							push @$items, $row;
-							$stats->{$file}++;
 						}
 					}
-				} else {
-					push @$items, $row;
+				};
+
+				if ( $row ) {
+					my $item;
+					foreach my $i ( 0 .. $#$row ) {
+						$item->{ $header[$i] } = [ $row->[$i] ];
+					}
+					warn "## item ",dump($item);
+					push @$items, $item;
+
 					$stats->{$file}++;
 				}
 			}
@@ -58,11 +66,14 @@ sub data {
 
 	}
 
-	return {
+	my $data = {
 		header => [ @header ],
+		file_stats => $stats,
 		items => $items,
-		stats => $stats,
-	}
+	};
+
+	warn "# data ",dump( $data );
+	return $data;
 }
 
 1
