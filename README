@@ -26,3 +26,19 @@ Data replication:
   # slave
   MASTER=http://localhost:4444 ./script/mojo_facets daemon --reload
 
+
+Turning actions into changes:
+
+There are two kinds of audit log in MojoFacets:
+
+1. actions stored in /tmp/actions are clicks on user interface with parameters
+
+2. changes are more structured, including old value and unique values from
+   edit of one value in dataset
+
+If you want to create changes which can be applied again on original dataset or
+any other dataset which has same unique values you can use helper script:
+
+  $ ./script/actions-to-changes /data/mojo_facets/*
+
+
