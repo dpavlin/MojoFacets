@@ -11,6 +11,15 @@ use Data::Dump qw(dump);
 
 __PACKAGE__->attr('dir');
 
+sub __normalize_header {
+	map {
+		s/^\s+//s;
+		s/\s+$//s;
+		s/\s\s+/ /gs;
+		$_;
+	} @_
+}
+
 sub data {
 	my $self = shift;
 
@@ -36,12 +45,12 @@ sub data {
 				warn "# row ", dump( $row ),"\n";
 				if ( ! $stats->{$file} ) {
 					if ( ! @header ) {
-						@header = @$row;
+						@header = __normalize_header( @$row );
 						warn "# new header ",dump(@header);
 						$row = undef;
 					} else {
 						my $o = join('|', @header);
-						my $n = join('|', @$row);
+						my $n = join('|', __normalize_header(@$row));
 						if ( $o eq $n ) {
 							warn "# same header again in $file skipping\n";
 							$row = undef;
@@ -56,10 +65,10 @@ sub data {
 					foreach my $i ( 0 .. $#$row ) {
 						$item->{ $header[$i] } = [ $row->[$i] ];
 					}
-					warn "## item ",dump($item);
+					$stats->{$file}++;
+					warn "## item ",$stats->{$file}, ' ', dump($item);
 					push @$items, $item;
 
-					$stats->{$file}++;
 				}
 			}
 		}
