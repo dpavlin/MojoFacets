@@ -790,6 +790,7 @@ sub edit {
 			$status = 201; # created
 			$loaded->{$path}->{modified}  = 1;
 			$self->session( 'modified' => 1 );
+			delete $loaded->{$path}->{stats};
 	
 			$new_content = join("\xB6",@$v);
 
