@@ -9,6 +9,9 @@ Alternative format is pipe (|) separated text files with extension .txt
 First column is always header with field names
 Multi-line values should be wrapped in ^multi-line-text^
 
+If you save bounch of html files with table in directory with .html extension, they will
+we all read as single data set, allowing easy analysys of search results, for example.
+
 
 Start with:
 
