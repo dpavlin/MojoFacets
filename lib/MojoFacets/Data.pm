@@ -252,6 +252,13 @@ sub _loaded {
 	my ( $self, $name ) = @_;
 	my $path = $self->session('path') || $self->param('path');
 	$self->redirect_to('/data/index') unless $path;
+
+	if ( $loaded->{$path}->{modified} > 1 ) {
+		warn "rebuild stats for $path forced by modified\n";
+		$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+		$loaded->{$path}->{modified} = 1;
+	}
+
 	if ( ! defined $loaded->{$path}->{$name} ) {
 		warn "$path $name isn't loaded\n";
 		$self->_load_path( $path );
@@ -788,9 +795,9 @@ sub edit {
 			}
 
 			$status = 201; # created
-			$loaded->{$path}->{modified}  = 1;
-			$self->session( 'modified' => 1 );
-			delete $loaded->{$path}->{stats};
+			# modified = 2 -- force rebuild of stats
+			$loaded->{$path}->{modified}  = 2;
+			$self->session( 'modified' => 2 );
 	
 			$new_content = join("\xB6",@$v);
 
