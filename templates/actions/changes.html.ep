@@ -11,6 +11,9 @@
 <option<%= $p eq $apply_on_path ? ' selected' : '' %>><%= $p %></option>
 % }
 </select>
+
+<span class=count><%= $#{ $changes } + 1 %></span>
+
 <label><input type=checkbox name=dump <%= $dump ? 'checked' : '' %>>dump</label>
 
 % if ( $apply_on_path ) {
