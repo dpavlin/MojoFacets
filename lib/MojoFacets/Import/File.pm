@@ -8,6 +8,7 @@ use base 'Mojo::Base';
 use HTML::TableExtract;
 use File::Slurp;
 use Data::Dump qw(dump);
+use JSON;
 
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
@@ -19,7 +20,7 @@ sub data {
 
 	# we could use Mojo::JSON here, but it's too slow
 #	$data = from_json read_file $path;
-	my $data = read_file $self->path_path;
+	my $data = read_file $self->full_path;
 	warn "# data snippet: ", substr($data,0,200);
 	my @header;
 	if ( $path =~ m/\.js/ ) {

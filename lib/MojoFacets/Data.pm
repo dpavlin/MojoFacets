@@ -7,7 +7,6 @@ use base 'Mojolicious::Controller';
 
 use Data::Dump qw(dump);
 use File::Slurp;
-use JSON;
 use Encode;
 use locale;
 use File::Find;
@@ -175,7 +174,7 @@ sub _load_path {
 
 	my $data;
 	if ( -f $full_path ) {
-		$data = MojoFacets::Import::File->new( path => $full_path )->data;
+		$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
 	} elsif ( -d $full_path && $full_path =~ m/.html/ ) {
 		$data = MojoFacets::Import::HTMLTable->new( dir => $full_path )->data;
 	} else {
