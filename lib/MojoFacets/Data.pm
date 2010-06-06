@@ -290,7 +290,11 @@ sub _permanent_path {
 
 sub _export_path {
 	my $self = shift;
-	my $path = $self->_param_or_session('path') || die "no path";
+	my $path = $self->_param_or_session('path');
+	if ( ! $path ) {
+		warn "no path in param or session";
+		return;
+	}
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
 	$dir . '/' . join('.', @_);
