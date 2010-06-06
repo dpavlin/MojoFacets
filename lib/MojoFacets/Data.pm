@@ -12,6 +12,7 @@ use locale;
 use File::Find;
 use Storable;
 use Time::HiRes qw(time);
+use File::Path qw(mkpath);
 
 use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
@@ -289,11 +290,9 @@ sub _permanent_path {
 
 sub _export_path {
 	my $self = shift;
-	my $path = $self->_param_or_session('path');
-	my $dir = $self->app->home->rel_dir('public') . '/export/';
-	mkdir $dir unless -e $dir;
-	$dir .= $path;
-	mkdir $dir unless -e $dir;
+	my $path = $self->_param_or_session('path') || die "no path";
+	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
+	mkpath $dir unless -e $dir;
 	$dir . '/' . join('.', @_);
 }
 

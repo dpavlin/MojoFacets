@@ -20,6 +20,7 @@ WriteMakefile(
 		'File::Slurp' => 0,
 		'JSON' => 0,
 		'HTML::TableExtract' => 0,
+		'File::Path' => 0,
 	},
     test => {TESTS => 't/*.t t/*/*.t t/*/*/*.t'}
 );
