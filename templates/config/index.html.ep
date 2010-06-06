@@ -4,9 +4,16 @@
 
 <form method=post>
 
-<h2>Replication</h2>
 <ul>
-<li>MASTER <input type=text name=MASTER value="<%= $ENV{MASTER} %>">
+
+<h2>Replication</h2>
+<li>MASTER
+<input type=text name=MASTER value="<%= $ENV{MASTER} %>">
+
+<h2>Facet display</h2>
+<li>MAX_FACETS
+<input type=text name=MAX_FACETS value="<%= $ENV{MAX_FACETS} %>">
+
 </ul>
 
 <input type=submit value="Change">

@@ -8,9 +8,11 @@ use base 'Mojolicious::Controller';
 sub index {
 	my $self = shift;
 
-	if ( my $master = $self->param('MASTER') ) {
-		$ENV{MASTER} = $master;
-		warn "MASTER = $master\n";
+	foreach my $name ( qw( MASTER MAX_FACETS ) ) {
+		if ( my $val = $self->param($name) ) {
+			$ENV{$name} = $val;
+			warn "$name = $val\n";
+		}
 	}
 
 	$self->render;
