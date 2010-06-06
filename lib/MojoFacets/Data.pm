@@ -833,11 +833,10 @@ sub export {
 
 	if ( my $import = $self->param('import') ) {
 
-		if ( $import =~ m{/filter\.(\w+)\.} ) {
+		if ( $import =~ m{/filter\.(.+?)\..+} ) {
 			my $name = $1;
 			my @vals = map { chomp; $_ }
 				read_file $self->app->home->rel_dir('public') . "/export/$import";
-warn dump(@vals);
 			$self->_remove_filter( $name );
 			$self->_filter_on_data( $name, @vals );
 			$self->session( 'offset' => 0 );
