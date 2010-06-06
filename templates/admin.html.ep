@@ -2,6 +2,7 @@
 
 <a href="<%= url_for( controller => 'data', action => 'index' ) %>">load</a>
 <a href="<%= url_for( controller => 'data', action => 'columns' ) %>">columns</a>
+&middot;
 items:
 % foreach my $show ( glob 'templates/data/items/*.html.ep' ) {
 %  $show =~ s{^.+/([^/]+)\.html\.ep$}{$1};
@@ -9,17 +10,23 @@ items:
 <a href="<%= url_for( controller => 'data', action => 'items' )->query( show => $show ) %>" <%= $class %>><%= $show %></a>
 % }
 
-<span class=actions>
+% if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
+&middot;
+<a href="<%= url_for( controller => 'data', action => 'export' ) %>">export</a>
+% }
+
+<span class=right>
+
+<a href="<%= url_for( controller => 'config', action => 'index' ) %>">config</a>
+&middot;
+
+<a href="<%= url_for( controller => 'actions', action => 'changes' ) %>">changes</a>
+<a href="<%= url_for( controller => 'actions', action => 'index' ) %>">actions</a>
 
 % if ( session('modified') ) {
 %  my $path = session('path');
 <a class=save_actions title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
 % }
-% if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
-<a href="<%= url_for( controller => 'data', action => 'export' ) %>">export</a>
-% }
-<a href="<%= url_for( controller => 'actions', action => 'changes' ) %>">changes</a>
-<a href="<%= url_for( controller => 'actions', action => 'index' ) %>">actions</a>
 </span>
 
 </div>

@@ -48,14 +48,12 @@ span.h {
 	font-weight: bold;
 }
 
-.admin .actions {
+.admin .right {
 	float: right;
 }
 
 .admin .save_actions {
-	float: right;
 	color: #f00;
-	padding-left: 1em;
 }
 
 .debug {
