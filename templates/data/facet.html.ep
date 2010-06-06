@@ -28,7 +28,8 @@
 % foreach my $n ( @$facet_names ) {
 %  if ( $facet_nr++ > $max_facets ) {
 <div class=alert>
-To keep browser memory usage at sane level, only <%= $max_facets %> facets are loaded to browser
+To keep browser memory usage at sane level, only <%= $max_facets %> facets are loaded to browser.
+This can be changed in <a href="/config">config</a>.
 </div>
 %    last;
 %  }
