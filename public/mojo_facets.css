@@ -48,6 +48,11 @@ span.h {
 	font-weight: bold;
 }
 
+.admin .middle {
+	margin-left: 2em;
+	color: #f00;
+}
+
 .admin .right {
 	float: right;
 }
