@@ -201,3 +201,10 @@ tr.hidden {
 	display: none;
 }
 
+.alert {
+	border: 0.3em dashed #f00;
+	background: #ffc;
+	padding: 1em;
+	margin: 1em;
+	text-align: center;
+}

@@ -23,7 +23,15 @@
 <%= include 'sorting' %>
 
 <ul id=facet>
+% my $max_facets = $ENV{MAX_FACETS} || 10000;
+% my $facet_nr  = 0;
 % foreach my $n ( @$facet_names ) {
+%  if ( $facet_nr++ > $max_facets ) {
+<div class=alert>
+To keep browser memory usage at sane level, only <%= $max_facets %> facets are loaded to browser
+</div>
+%    last;
+%  }
 <li>
 <label>
 <input type=checkbox name="filter_vals" value="<%= $n %>" <%= $checked->{$n} && defined $facet->{$n} ? 'checked' : '' %>>
