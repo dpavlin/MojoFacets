@@ -831,8 +831,24 @@ sub save {
 
 sub export {
 	my $self = shift;
+
+	if ( my $import = $self->param('import') ) {
+
+		if ( $import =~ m{/filter\.(\w+)\.} ) {
+			my $name = $1;
+			my @vals = map { chomp; $_ }
+				read_file $self->app->home->rel_dir('public') . "/export/$import";
+warn dump(@vals);
+			$self->_remove_filter( $name );
+			$self->_filter_on_data( $name, @vals );
+			$self->session( 'offset' => 0 );
+			$self->redirect_to('/data/items');
+		} else {
+			warn "UNKNOWN IMPORT $import";
+		}
+	}
+
 	$self->render( export => [
-		map { s{^.+/public/export/}{}; $_ }
 		glob( $self->_export_path . '*' )
 	] );
 }

@@ -2,7 +2,13 @@
 
 <ul>
 % foreach my $e ( @$export ) {
-<li><a target="<%= $e %>" href="/export/<%= $e %>"><%= $e %></a>
+%  my $path = $e; $path =~ s{^.+/public/export/}{};
+<li>
+<tt>
+<a target="<%= $path %>" href="/export/<%= $path %>"><%= $path %></a>
+</tt>
+<%= -s $e %> bytes
+<a href="?import=<%= $path %>">import</a>
 % }
 </ul>
 
