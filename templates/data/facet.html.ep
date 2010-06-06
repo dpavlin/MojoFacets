@@ -30,9 +30,9 @@
 % foreach my $n ( @$facet_names ) {
 %  if ( $facet_nr++ == $max_facets ) {
 <div class=alert>
-First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> values displayed
+First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 &middot;
-<a href="<%= url_for()->query( name => $name, all_values => 1 ) %>">Show all <%= $facet_count %> values</a>
+<a href="<%= url_for()->query( name => $name, all_values => 1 ) %>">Show all <%= $facet_count %></a>
 </div>
 %  }
 %  if ( $facet_nr > $max_facets && ! $checked->{$n} ) {
