@@ -255,9 +255,14 @@ sub _loaded {
 	$self->redirect_to('/data/index') unless $path;
 
 	if ( $loaded->{$path}->{modified} > 1 ) {
-		warn "rebuild stats for $path forced by modified\n";
-		$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
-		$loaded->{$path}->{modified} = 1;
+		my $caller = (caller(1))[3];
+		if ( $caller =~ m/::edit/ ) {
+			warn "rebuild stats for $path ignored caller $caller\n";
+		} else {
+			warn "rebuild stats for $path FORCED by modified caller $caller\n";
+			$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+			$loaded->{$path}->{modified} = 1;
+		}
 	}
 
 	if ( ! defined $loaded->{$path}->{$name} ) {
