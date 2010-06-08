@@ -27,7 +27,13 @@
 %  }
 </ul>
 
+%  if ( ! param('commit') ) {
 <input type=submit name=commit value="Commit changes">
+%  } else {
+<b>
+Changes commited to <a href="<%= url_for( controller => 'data', action => 'load' )->query( path => $apply_on_path ) %>"><%= $apply_on_path %></a>
+</b>
+%  }
 
 % }
 
