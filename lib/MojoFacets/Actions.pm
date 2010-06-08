@@ -58,6 +58,7 @@ sub changes {
 		die "no $apply_on_path" unless $items;
 		warn "using $items for $apply_on_path\n";
 	}
+	my $invalidate_columns;
 	my $changes;
 	my $stats;
 	my $glob = $self->_changes_path . '/*';
@@ -81,12 +82,21 @@ sub changes {
 			my $status = 'missing';
 			if ( my $i = $unique2id->{$pk}->{$id} ) {
 				$status = 'found';
-				$items->[$i]->{$pk} = $e->{new} if $commit;
+				if ( $commit ) {
+					my $column = $e->{column} or die "no column";
+					$items->[$i]->{$column} = $e->{new};
+					warn "# commit $i $column ",dump( $e->{new} );
+					$invalidate_columns->{$column}++;
+				}
 			}
 			$e->{_status} = $status;
 			$stats->{$status}++;
 		}
 		push @$changes, $e;
+	}
+
+	foreach my $name ( keys %$invalidate_columns ) {
+		MojoFacets::Data::_invalidate_path_column( $path, $name );
 	}
 
 	my @loaded = MojoFacets::Data::__loaded_paths();

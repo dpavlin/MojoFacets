@@ -740,6 +740,22 @@ sub facet {
 	);
 }
 
+
+sub _invalidate_path_column {
+	my ( $path, $name ) = @_;
+
+	if ( defined $loaded->{$path}->{sorted}->{$name} ) {
+		delete $loaded->{$path}->{sorted}->{$name};
+		warn "# invalidate $path sorted $name\n";
+	}
+
+	foreach ( grep { m/$name/ } keys %{ $loaded->{$path}->{filtered} } ) {
+		delete $loaded->{$path}->{filtered}->{$_};
+		warn "# invalidate $path filtered $_\n";
+	}
+}
+
+
 sub edit {
 	my $self = shift;
 	my $new_content = $self->param('new_content');
@@ -792,15 +808,7 @@ sub edit {
 			warn "# change $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
 
-			if ( defined $loaded->{$path}->{sorted}->{$name} ) {
-			    delete $loaded->{$path}->{sorted}->{$name};
-				warn "# invalidate $path sorted $name\n";
-			}
-
-			foreach ( grep { m/$name/ } keys %{ $loaded->{$path}->{filtered} } ) {
-			    delete $loaded->{$path}->{filtered}->{$_};
-				warn "# invalidate $path filtered $_\n";
-			}
+			_invalidate_path_column( $path, $name );
 
 			$status = 201; # created
 			# modified = 2 -- force rebuild of stats
