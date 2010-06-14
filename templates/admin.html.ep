@@ -28,6 +28,7 @@ items:
 
 % if ( session('modified') ) {
 %  my $path = session('path');
+&middot;
 <a class=save_actions title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
 % }
 </span>
