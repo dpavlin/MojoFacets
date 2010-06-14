@@ -226,7 +226,6 @@ sub load {
 	$self->_load_path( $path );
 
 	$self->session( 'path' => $path );
-	$self->session( 'modified' => $loaded->{$path}->{modified} );
 
 	my $redirect_to = '/data/items';
 
@@ -275,6 +274,9 @@ sub _loaded {
 			$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
 		}
 	}
+
+	$self->session( 'modified' => $loaded->{$path}->{modified} );
+
 	return $loaded->{$path}->{$name};
 }
 
@@ -741,7 +743,7 @@ sub facet {
 }
 
 
-sub _invalidate_path_column {
+sub __invalidate_path_column {
 	my ( $path, $name ) = @_;
 
 	if ( defined $loaded->{$path}->{sorted}->{$name} ) {
@@ -755,6 +757,14 @@ sub _invalidate_path_column {
 	}
 }
 
+sub __path_modified {
+	my ( $path, $value ) = @_;
+	$value = 1 unless defined $value;
+	
+	$loaded->{$path}->{modified}  = $value;
+
+	warn "# __path_modified $path $value\n";
+}
 
 sub edit {
 	my $self = shift;
@@ -808,12 +818,11 @@ sub edit {
 			warn "# change $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
 
-			_invalidate_path_column( $path, $name );
+			__invalidate_path_column( $path, $name );
 
 			$status = 201; # created
 			# modified = 2 -- force rebuild of stats
-			$loaded->{$path}->{modified}  = 2;
-			$self->session( 'modified' => 2 );
+			__path_modified( $path, 2 );
 	
 			$new_content = join("\xB6",@$v);
 
@@ -839,8 +848,7 @@ sub save {
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
 	my $dump_path = $self->_save( $path );
-	$loaded->{$path}->{modified} = 0;
-	$self->session( 'modified' => 0 );
+	__path_modified( $path, 0 );
 
 	$self->redirect_to( '/data/items' );
 }

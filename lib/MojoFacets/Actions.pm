@@ -96,8 +96,10 @@ sub changes {
 	}
 
 	foreach my $name ( keys %$invalidate_columns ) {
-		MojoFacets::Data::_invalidate_path_column( $path, $name );
+		MojoFacets::Data::__invalidate_path_column( $path, $name );
 	}
+
+	MojoFacets::Data::__path_modified( $path );
 
 	my @loaded = MojoFacets::Data::__loaded_paths();
 	warn "# loaded paths ",dump @loaded;
