@@ -611,6 +611,15 @@ sub items {
 
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
+
+	if ( $code && ( $test || $commit ) ) {
+		my $new_col = 'stoljece';
+		if ( ! grep { /$new_col/ } @columns ) {
+			unshift @columns, $new_col;
+			$self->session('columns', [ @columns ]) if $commit;
+		}
+	}
+
 	if ( $commit ) {
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
 		foreach ( 0 .. $#$filtered ) {
@@ -636,7 +645,7 @@ sub items {
 				warn "ERROR evaling\n$code\n$@";
 				$self->stash('eval_error', $@) if $@;
 			} else {
-				warn "EVAL $code ",dump($rec);
+				warn "EVAL ",dump($rec);
 			}
 		}
 		push @$sorted_items, $rec;
