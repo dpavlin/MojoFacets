@@ -599,6 +599,8 @@ sub items {
 
 	warn "all_filters $all_filters produced ", $#$filtered + 1, " items\n" if $filtered;
 
+	my $code = $self->param('code');
+
 	my $sorted_items;
 	my $data = $self->_loaded('data');
 	my $from_end = $sort eq 'd' ? $#$filtered : 0;
@@ -607,9 +609,19 @@ sub items {
 		last unless defined $filtered->[$i];
 		$i = $from_end - $i if $from_end;
 		my $id = $filtered->[$i];
-		push @$sorted_items,
-		my $item = $data->{items}->[ $id ];
-		$item->{_row_id} ||= $id;
+		my $rec = $data->{items}->[ $id ];
+		$rec->{_row_id} ||= $id;
+		if ( $code ) {
+			eval $code;
+			if ( $@ ) {
+				warn "ERROR evaling\n$code\n$@";
+				undef $code;
+				$self->stash('eval_error', $@) if $@;
+			} else {
+				warn "EVAL $code ",dump($rec);
+			}
+		}
+		push @$sorted_items, $rec;
 	}
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
