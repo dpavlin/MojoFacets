@@ -612,9 +612,10 @@ sub items {
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
 	if ( $commit ) {
-		warn "# commit $code";
-		foreach ( 0 .. $#{ $data->{items} } ) {
-			my $rec = $data->{items}->[ $_ ];
+		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
+		foreach ( 0 .. $#$filtered ) {
+			my $i = $filtered->[$_];
+			my $rec = $data->{items}->[$i];
 			eval $code;
 		}
 	}
