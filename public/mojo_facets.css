@@ -219,12 +219,15 @@ tr.hidden {
 	display: none;
 }
 
-.alert {
+.alert, .error {
 	border: 0.3em dashed #f00;
 	background: #ffc;
+	text-align: center;
+}
+
+.alert {
 	padding: 1em;
 	margin: 1em;
-	text-align: center;
 }
 
 

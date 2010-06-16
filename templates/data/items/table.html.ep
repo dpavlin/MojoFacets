@@ -49,8 +49,11 @@ filter
 </table>
 
 <form id=eval method=post>
+% if ( my $error = stash('eval_error') ) {
+<div class=error><%= $error %></div>
+% }
 % my $rows = scalar split(/\n/,$code);
-<textarea name=code rows=<%= $rows + 1 %>>
+<textarea name=code rows=<%= $rows %>>
 <%= $code %>
 </textarea>
 <input name=test   type=submit value="Test code">

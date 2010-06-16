@@ -607,13 +607,16 @@ sub items {
 	my $data = $self->_loaded('data');
 
 	my $code = $self->_param_scalar('code');
-	if ( $self->param('commit') ) {
+	$code =~ s{\n+$}{}s;
+
+	my $commit = $self->param('commit');
+	my $test = $self->param('test');
+	if ( $commit ) {
 		warn "# commit $code";
 		foreach ( 0 .. $#{ $data->{items} } ) {
 			my $rec = $data->{items}->[ $_ ];
 			eval $code;
 		}
-		undef $code;
 	}
 
 	my $sorted_items;
@@ -625,12 +628,11 @@ sub items {
 		my $id = $filtered->[$i];
 		my $rec = $data->{items}->[ $id ];
 		$rec->{_row_id} ||= $id;
-		if ( $code ) {
+		if ( $code && $test ) {
 			$rec = Storable::dclone $rec;
 			eval $code;
 			if ( $@ ) {
 				warn "ERROR evaling\n$code\n$@";
-				undef $code;
 				$self->stash('eval_error', $@) if $@;
 			} else {
 				warn "EVAL $code ",dump($rec);
