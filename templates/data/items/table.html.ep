@@ -48,7 +48,7 @@ filter
 
 </table>
 
-<form id=eval>
+<form id=eval method=post>
 % my $rows = scalar split(/\n/,$code);
 <textarea name=code rows=<%= $rows + 1 %>>
 <%= $code %>
