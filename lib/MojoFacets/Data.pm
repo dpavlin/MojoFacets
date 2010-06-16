@@ -531,6 +531,11 @@ sub _data_sorted_by {
 sub items {
 	my $self = shift;
 
+	if ( my $show = $self->param('id') ) {
+		$self->param('show', $show);
+		warn "show $show\n";
+	}
+
 	my $path = $self->session('path');
 	$self->redirect_to('/data/index') unless defined $loaded->{ $path };
 

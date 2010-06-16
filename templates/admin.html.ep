@@ -7,7 +7,7 @@ items:
 % foreach my $show ( glob 'templates/data/items/*.html.ep' ) {
 %  $show =~ s{^.+/([^/]+)\.html\.ep$}{$1};
 %  my $class = session('show') eq $show ? 'class=active' : '';
-<a href="<%= url_for( controller => 'data', action => 'items' )->query( show => $show ) %>" <%= $class %>><%= $show %></a>
+<a href="<%= url_for( controller => 'data', action => 'items', id => $show ) %>" <%= $class %>><%= $show %></a>
 % }
 
 % if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
