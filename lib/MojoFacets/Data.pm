@@ -600,6 +600,7 @@ sub items {
 	warn "all_filters $all_filters produced ", $#$filtered + 1, " items\n" if $filtered;
 
 	my $code = $self->param('code');
+	my $commit_code = $self->param('commit');
 
 	my $sorted_items;
 	my $data = $self->_loaded('data');
@@ -612,6 +613,7 @@ sub items {
 		my $rec = $data->{items}->[ $id ];
 		$rec->{_row_id} ||= $id;
 		if ( $code ) {
+			$rec = Storable::dclone $rec if ! $commit_code;
 			eval $code;
 			if ( $@ ) {
 				warn "ERROR evaling\n$code\n$@";

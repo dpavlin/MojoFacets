@@ -52,7 +52,8 @@ filter
 <textarea name=code>
 <%= param('code') %>
 </textarea>
-<input type=submit value="Execute">
+<input name=test   type=submit value="Test code">
+<input name=commit type=submit value="Commit changes">
 </form>
 
 <script type="text/javascript" src="/edit_table.js"></script>
