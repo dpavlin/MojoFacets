@@ -599,11 +599,19 @@ sub items {
 
 	warn "all_filters $all_filters produced ", $#$filtered + 1, " items\n" if $filtered;
 
+	my $data = $self->_loaded('data');
+
 	my $code = $self->param('code');
-	my $commit_code = $self->param('commit');
+	if ( $self->param('commit') ) {
+		warn "# commit $code";
+		foreach ( 0 .. $#{ $data->{items} } ) {
+			my $rec = $data->{items}->[ $_ ];
+			eval $code;
+		}
+		undef $code;
+	}
 
 	my $sorted_items;
-	my $data = $self->_loaded('data');
 	my $from_end = $sort eq 'd' ? $#$filtered : 0;
 	foreach ( 0 .. $limit ) {
 		my $i = $_ + $offset;
@@ -613,7 +621,7 @@ sub items {
 		my $rec = $data->{items}->[ $id ];
 		$rec->{_row_id} ||= $id;
 		if ( $code ) {
-			$rec = Storable::dclone $rec if ! $commit_code;
+			$rec = Storable::dclone $rec;
 			eval $code;
 			if ( $@ ) {
 				warn "ERROR evaling\n$code\n$@";
