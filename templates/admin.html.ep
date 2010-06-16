@@ -1,7 +1,7 @@
 <div class=admin>
 
-<a href="<%= url_for( controller => 'data', action => 'index' ) %>">load</a>
-<a href="<%= url_for( controller => 'data', action => 'columns' ) %>">columns</a>
+<a href="<%= url_for( controller => 'data', action => 'index', id => 0 ) %>">load</a>
+<a href="<%= url_for( controller => 'data', action => 'columns', id => 0 ) %>">columns</a>
 &middot;
 items:
 % foreach my $show ( glob 'templates/data/items/*.html.ep' ) {
@@ -12,7 +12,7 @@ items:
 
 % if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
 &middot;
-<a href="<%= url_for( controller => 'data', action => 'export' ) %>">export</a>
+<a href="<%= url_for( controller => 'data', action => 'export', id => 0 ) %>">export</a>
 % }
 
 <span class=middle>
@@ -20,16 +20,16 @@ items:
 
 <span class=right>
 
-<a href="<%= url_for( controller => 'config', action => 'index' ) %>">config</a>
+<a href="<%= url_for( controller => 'config', action => 'index', id => 0 ) %>">config</a>
 &middot;
 
-<a href="<%= url_for( controller => 'actions', action => 'changes' ) %>">changes</a>
-<a href="<%= url_for( controller => 'actions', action => 'index' ) %>">actions</a>
+<a href="<%= url_for( controller => 'actions', action => 'changes', id => 0 ) %>">changes</a>
+<a href="<%= url_for( controller => 'actions', action => 'index',   id => 0 ) %>">actions</a>
 
 % if ( session('modified') ) {
 %  my $path = session('path');
 &middot;
-<a class=save_actions title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', path => $path ) %>">save</a>
+<a class=save_actions title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', id => $path ) %>">save</a>
 % }
 </span>
 
