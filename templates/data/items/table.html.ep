@@ -48,5 +48,12 @@ filter
 
 </table>
 
+<form id=eval>
+<textarea name=code>
+<%= param('code') %>
+</textarea>
+<input type=submit value="Execute">
+</form>
+
 <script type="text/javascript" src="/edit_table.js"></script>
 

@@ -160,6 +160,21 @@ form.action_filter {
 	color: #444;
 }
 
+/* items/table */
+
+form#eval {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+	background: #eee;
+}
+
+form#eval textarea {
+	width: 100%;
+}
+
 /* items/list.html.ep */
 a.facet {
 	font-family: monospace;
@@ -211,3 +226,5 @@ tr.hidden {
 	margin: 1em;
 	text-align: center;
 }
+
+
