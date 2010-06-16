@@ -47,7 +47,7 @@ sub startup {
     my $r = $self->routes;
 
     # Default route
-    $r->route('/:controller/:action/:id')->to('data#index', id => 1);
+    $r->route('/:controller/:action/:id')->to('data#index', id => 0);
 
 #	$self->plugin( 'request_timer' );
 
