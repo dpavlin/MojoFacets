@@ -57,4 +57,11 @@ filter
 </form>
 
 <script type="text/javascript" src="/edit_table.js"></script>
+<script type="text/javascript" src="/js/jquery.textarea_grow.js"></script>
+<script type="text/javascript">
 
+$(document).ready( function(){
+	$('form#eval textarea').textarea_grow();
+});
+
+</script>
