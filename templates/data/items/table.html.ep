@@ -49,8 +49,9 @@ filter
 </table>
 
 <form id=eval>
-<textarea name=code>
-<%= param('code') %>
+% my $rows = scalar split(/\n/,$code);
+<textarea name=code rows=<%= $rows + 1 %>>
+<%= $code %>
 </textarea>
 <input name=test   type=submit value="Test code">
 <input name=commit type=submit value="Commit changes">

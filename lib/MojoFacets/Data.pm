@@ -370,7 +370,7 @@ sub _param_scalar {
 		$self->session($name => $scalar);
 	}
 
-	warn "# _perm_scalar $name ",dump $scalar;
+	warn "# _param_scalar $name ",dump $scalar;
 	return $scalar;
 }
 
@@ -601,7 +601,7 @@ sub items {
 
 	my $data = $self->_loaded('data');
 
-	my $code = $self->param('code');
+	my $code = $self->_param_scalar('code');
 	if ( $self->param('commit') ) {
 		warn "# commit $code";
 		foreach ( 0 .. $#{ $data->{items} } ) {
@@ -645,6 +645,7 @@ sub items {
 		rows => $#$filtered + 1,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
 		filters => $self->_current_filters,
+		code => $code,
 	);
 
 }
