@@ -620,7 +620,10 @@ sub items {
 			}
 			next if grep { /$column/ } @columns;
 			unshift @columns, $column;
-			$self->session('columns', [ @columns ]) if $commit;
+			if ( $commit ) {
+				$self->session('columns', [ @columns ]);
+				$loaded->{$path}->{columns} = [ @columns ];
+			}
 		}
 	}
 
