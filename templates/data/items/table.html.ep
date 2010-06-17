@@ -51,7 +51,8 @@ filter
 % if ( $code ) {
 
 <form id=eval method=post>
-% if ( my $error = stash('eval_error') ) {
+% my $error = stash('eval_error');
+% if ( $error ) {
 <div class=error><%= $error %></div>
 % }
 % my $rows = scalar split(/\n/,$code);
@@ -59,7 +60,14 @@ filter
 <%= $code %>
 </textarea>
 <input name=test   type=submit value="Test code">
-<input name=commit type=submit value="Commit changes">
+
+% if ( param('test') ) {
+<a href="">reload original</a>
+%   if ( ! $error ) {
+<input name=commit type=submit value="Commit changes" style="color:red">
+%   }
+% }
+
 <input id=close name=close  type=button value="Close" style="float: right">
 </form>
 
