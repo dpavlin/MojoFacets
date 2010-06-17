@@ -56,9 +56,7 @@ filter
 <div class=error><%= $error %></div>
 % }
 % my $rows = scalar split(/\n/,$code);
-<textarea name=code rows=<%= $rows %>>
-<%= $code %>
-</textarea>
+<textarea name=code rows=<%= $rows %>><%= $code %></textarea>
 <input name=test   type=submit value="Test code">
 
 % if ( param('test') ) {
