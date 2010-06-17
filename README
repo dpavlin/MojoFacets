@@ -42,3 +42,19 @@ any other dataset which has same unique values you can use helper script:
   $ ./script/actions-to-changes /data/mojo_facets/*
 
 
+Modify your data using perl snippets
+
+Experimental REPL console supports perl snippets which get $rec hash which is one
+element from your dataset. All values are repetable, so you always have to create
+array of values if you are creating new columns, even for single value.
+
+* generate new columns with number of elements in some other column
+
+  $rec->{count} = [ $#{ $rec->{original} } + 1 ];
+
+* generate century column from year
+
+  foreach my $year ( @{ $rec->{Year} } ) {
+    push @{ $rec->{century} }, int($year/100)+1;
+  }
+
