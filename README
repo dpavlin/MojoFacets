@@ -58,3 +58,10 @@ array of values if you are creating new columns, even for single value.
     push @{ $rec->{century} }, int($year/100)+1;
   }
 
+* modify existing column
+
+  foreach ( @{ $rec->{'Cited Author'} } ) {
+    s/^\.+//;
+    $_ = uc $_; # assigment is needed to modify value!
+  }
+
