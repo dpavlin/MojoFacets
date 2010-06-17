@@ -624,6 +624,7 @@ sub items {
 			if ( $commit ) {
 				$self->session('columns', [ @columns ]);
 				$loaded->{$path}->{columns} = [ @columns ];
+				__path_modified( $path, 2 );
 			}
 		}
 	}
