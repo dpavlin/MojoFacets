@@ -1,0 +1,15 @@
+% layout 'default';
+
+<h1>Code snippets</h1>
+
+% foreach my $column ( keys %$snippets ) {
+<h2><%= $column %></h2>
+<ul>
+%   foreach my $desc ( keys %{ $snippets->{$column} } ) {
+<li><a href="/code/<%= $column . '.' . $desc %>"><%= $desc %></a>
+<pre><%= $snippets->{$column}->{$desc} %></pre>
+%   }
+</ul>
+% }
+
+<tt class=debug><%= dumper stash('snippets') %></tt>
