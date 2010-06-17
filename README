@@ -50,7 +50,7 @@ array of values if you are creating new columns, even for single value.
 
 * generate new columns with number of elements in some other column
 
-  $row->{count} = [ $#{ $row->{original} } + 1 ];
+  $row->{author_count} = [ $#{ $row->{autor} } + 1 ];
 
 * generate century column from year
 
