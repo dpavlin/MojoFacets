@@ -48,6 +48,8 @@ filter
 
 </table>
 
+% if ( $code ) {
+
 <form id=eval method=post>
 % if ( my $error = stash('eval_error') ) {
 <div class=error><%= $error %></div>
@@ -60,7 +62,6 @@ filter
 <input name=commit type=submit value="Commit changes">
 </form>
 
-<script type="text/javascript" src="/edit_table.js"></script>
 <script type="text/javascript" src="/js/jquery.textarea_grow.js"></script>
 <script type="text/javascript">
 
@@ -69,3 +70,8 @@ $(document).ready( function(){
 });
 
 </script>
+
+% }
+
+<script type="text/javascript" src="/edit_table.js"></script>
+
