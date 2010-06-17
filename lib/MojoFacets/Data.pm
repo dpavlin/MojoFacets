@@ -613,9 +613,13 @@ sub items {
 	my $test = $self->param('test');
 
 	if ( $code && ( $test || $commit ) ) {
-		my $new_col = 'stoljece';
-		if ( ! grep { /$new_col/ } @columns ) {
-			unshift @columns, $new_col;
+		# XXX find columns used in code snippet and show them to user
+		foreach my $column ( $code =~ m/\$rec->{(.+?)}/g ) {
+			if ( $column =~ s/^(['"])// ) {
+				$column =~ s/$1$//;
+			}
+			next if grep { /$column/ } @columns;
+			unshift @columns, $column;
 			$self->session('columns', [ @columns ]) if $commit;
 		}
 	}
