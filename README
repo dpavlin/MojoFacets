@@ -65,3 +65,7 @@ array of values if you are creating new columns, even for single value.
     $_ = uc $_; # assigment is needed to modify value!
   }
 
+Code examples are stored in public/code
+
+They use Column name.description.pl notatition so only snippets which have applicable
+column will be shown.
