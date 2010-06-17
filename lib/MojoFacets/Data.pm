@@ -423,7 +423,9 @@ sub _filter_on_data {
 	foreach my $i ( 0 .. $#$items ) {
 
 		if ( defined $items->[$i]->{$name} ) {
-			foreach my $v ( @{ $items->[$i]->{$name} } ) {
+			my $i = $items->[$i]->{$name};
+			$i = [ $i ] unless ref $i eq 'ARRAY'; # FIXME probably wrong place
+			foreach my $v ( @$i ) {
 				if ( defined $filter_hash->{ $v } ) {
 					$filtered_items->{$i}++;
 				}
