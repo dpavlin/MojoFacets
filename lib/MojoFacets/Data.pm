@@ -253,7 +253,7 @@ sub _loaded {
 	my $path = $self->session('path') || $self->param('path');
 	$self->redirect_to('/data/index') unless $path;
 
-	if ( $loaded->{$path}->{modified} > 1 ) {
+	if ( defined $loaded->{$path}->{modified} && $loaded->{$path}->{modified} > 1 ) {
 		my $caller = (caller(1))[3];
 		if ( $caller =~ m/::edit/ ) {
 			warn "rebuild stats for $path ignored caller $caller\n";
@@ -267,11 +267,13 @@ sub _loaded {
 	if ( ! defined $loaded->{$path}->{$name} ) {
 		warn "$path $name isn't loaded\n";
 		$self->_load_path( $path );
-		$self->redirect_to('/data/index')
-			unless defined $loaded->{$path}->{$name};
 		if ( ! defined $loaded->{$path}->{stats} ) {
 			warn "rebuild stats for $path\n";
 			$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+		}
+		if ( ! defined $loaded->{$path}->{$name} ) {
+			warn "MISSING $name for $path\n";
+			$self->redirect_to('/data/index')
 		}
 	}
 
@@ -537,7 +539,6 @@ sub items {
 	}
 
 	my $path = $self->session('path');
-	$self->redirect_to('/data/index') unless defined $loaded->{ $path };
 
 	my @columns = $self->_param_array('columns');
 	$self->redirect_to('/data/columns') unless @columns;
