@@ -615,7 +615,7 @@ sub items {
 
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
-		foreach my $column ( $code =~ m/\$rec->{(.+?)}/g ) {
+		foreach my $column ( $code =~ m/\$row->{(.+?)}/g ) {
 			if ( $column =~ s/^(['"])// ) {
 				$column =~ s/$1$//;
 			}
@@ -633,7 +633,7 @@ sub items {
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
 		foreach ( 0 .. $#$filtered ) {
 			my $i = $filtered->[$_];
-			my $rec = $data->{items}->[$i];
+			my $row = $data->{items}->[$i];
 			eval $code;
 		}
 	}
@@ -645,19 +645,19 @@ sub items {
 		last unless defined $filtered->[$i];
 		$i = $from_end - $i if $from_end;
 		my $id = $filtered->[$i];
-		my $rec = $data->{items}->[ $id ];
-		$rec->{_row_id} ||= $id;
+		my $row = $data->{items}->[ $id ];
 		if ( $code && $test ) {
-			$rec = Storable::dclone $rec;
+			$row = Storable::dclone $row;
 			eval $code;
 			if ( $@ ) {
 				warn "ERROR evaling\n$code\n$@";
 				$self->stash('eval_error', $@) if $@;
 			} else {
-				warn "EVAL ",dump($rec);
+				warn "EVAL ",dump($row);
 			}
 		}
-		push @$sorted_items, $rec;
+		$row->{_row_id} ||= $id;
+		push @$sorted_items, $row;
 	}
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
