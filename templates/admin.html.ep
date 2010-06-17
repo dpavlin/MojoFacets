@@ -15,6 +15,9 @@ items:
 <a href="<%= url_for( controller => 'data', action => 'export', id => 0 ) %>">export</a>
 % }
 
+&middot;
+<a href="<%= url_for( controller => 'code', action => 'index', id => 0 ) %>">code</a>
+
 <span class=middle>
 </span>
 

@@ -2,12 +2,23 @@
 
 <h1>Code snippets</h1>
 
-% foreach my $column ( keys %$snippets ) {
+% foreach my $column ( @{ session('columns') } ) {
+%   next unless defined $snippets->{$column};
 <h2><%= $column %></h2>
 <ul>
 %   foreach my $desc ( keys %{ $snippets->{$column} } ) {
-<li><a href="/code/<%= $column . '.' . $desc %>"><%= $desc %></a>
-<pre><%= $snippets->{$column}->{$desc} %></pre>
+<li>
+<form method=post action=/data/items>
+<input type=submit name=test value="Load and test">
+<a href="/code/<%= $column . '.' . $desc %>"><%= $desc %></a>
+<br>
+% my $code = $snippets->{$column}->{$desc};
+% my $rows = scalar split(/\n/,$code);
+<textarea name=code cols=80 rows=<%= $rows %>>
+<%= $code %>
+</textarea>
+</form>
+
 %   }
 </ul>
 % }
