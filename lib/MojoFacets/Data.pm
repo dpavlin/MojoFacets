@@ -253,7 +253,7 @@ sub _loaded {
 	my $path = $self->session('path') || $self->param('path');
 	$self->redirect_to('/data/index') unless $path;
 
-	if ( $loaded->{$path}->{modified} > 1 ) {
+	if ( defined $loaded->{$path}->{modified} && $loaded->{$path}->{modified} > 1 ) {
 		my $caller = (caller(1))[3];
 		if ( $caller =~ m/::edit/ ) {
 			warn "rebuild stats for $path ignored caller $caller\n";
