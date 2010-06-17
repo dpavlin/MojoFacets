@@ -608,7 +608,7 @@ sub items {
 	my $data = $self->_loaded('data');
 
 	my $code = $self->_param_scalar('code','');
-	$code =~ s{\n+$}{}s;
+	$code =~ s{[\r\n]+$}{}s;
 
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
