@@ -16,7 +16,8 @@ items:
 % }
 
 &middot;
-<a href="<%= url_for( controller => 'code', action => 'index', id => 0 ) %>">code</a>
+<a id=code href="<%= url_for( controller => 'code', action => 'index', id => 0 ) %>">code</a>
+<a id=console href="#" style="display:none">console</a>
 
 <span class=middle>
 </span>

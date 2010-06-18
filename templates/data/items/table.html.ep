@@ -57,10 +57,7 @@ filter
 % } # sorted
 
 </table>
-
-% if ( $code ) {
-
-<form id=eval method=post>
+<form id=eval method=post style="<%= $code ? '' : 'display:none' %>">
 % my $error = stash('eval_error');
 % if ( $error ) {
 <div class=error><%= $error %></div>
@@ -92,17 +89,23 @@ filter
 <script type="text/javascript">
 
 $(document).ready( function(){
+
 	$('form#eval textarea').textarea_grow();
-	$('input#close').bind('click', function(a,b){
-		console.debug( this,a,b );
+	$('input#close').click( function(){
+		console.debug( 'close console' );
 		$.post( document.location, { code: '' } );
 		$(this).parent().hide();
 	});
+
+	$('a#console').click( function() {
+		console.debug('open console');
+		$('form#eval').show();
+		return false;
+	}).show();
+
 });
 
 </script>
-
-% }
 
 <script type="text/javascript" src="/edit_table.js"></script>
 
