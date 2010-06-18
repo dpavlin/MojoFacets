@@ -99,7 +99,12 @@ $(document).ready( function(){
 
 	$('a#console').click( function() {
 		console.debug('open console');
-		$('form#eval').show();
+		var $f = $('form#eval');
+		if ( $f.is(':visible') ) {
+			$f.hide();
+		} else {
+			$f.show();
+		}
 		return false;
 	}).show();
 
