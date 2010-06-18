@@ -650,10 +650,12 @@ sub items {
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
-	my $code_depends = $self->param('code_depends') ||
+	my $code_depends = $self->param('code_depends')||
 	join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns );
 	my $code_description = $self->param('code_description') ||
 	join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns );
+
+	$code_depends ||= $code_description; # self-modifing
 
 	warn "# cols_changed ",dump( $cols_changed, $code_depends, $code_description );
 
