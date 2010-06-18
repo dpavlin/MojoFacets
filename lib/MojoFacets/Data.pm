@@ -441,48 +441,6 @@ sub _filter_on_data {
 	warn "filter $name with ", scalar keys %$filtered_items, " items created\n";
 }
 
-sub _data_items {
-	my ( $self, $all ) = @_;
- 	my $data = $self->_loaded( 'data' );
-
-	return @{ $data->{items} } if $all == 1;
-
-	my $filters = $self->_current_filters;
-	my $filter_value;
-	foreach my $f ( keys %$filters ) {
-		foreach my $n ( @{ $filters->{$f} } ) {
-			$filter_value->{$f}->{$n} = 1;
-		}
-	}
- 	my @items = @{ $data->{items} };
-	@items = grep {
-		my $i = $_;
-		my $pass = 1;
-		foreach my $n ( keys %$filter_value ) {
-			if ( ! exists $i->{$n} ) {
-				if ( defined $filter_value->{$n}->{_missing} ) {
-					$pass = 1;
-					next;
-				} else {
-					$pass = 0;
-					last;
-				}
-			}
-			# and match any of values in element
-			my $have_values = 0;
-			foreach my $v ( @{ $i->{$n} } ) { # FIXME not array?
-				$have_values ||= 1 if defined $filter_value->{$n}->{$v};
-			}
-			if ( ! $have_values ) {
-				$pass = 0;
-				last;
-			}
-		}
-		$pass;
-	} @items if $filter_value;
-	return @items;
-}
-
 
 sub _current_filters {
 	my $self = shift;
