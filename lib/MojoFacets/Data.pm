@@ -656,8 +656,12 @@ sub items {
 		filters => $self->_current_filters,
 		code => $code,
 		cols_changed => $cols_changed,
-		code_depends => join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns ),
-		code_description => join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns ),
+		code_depends => 
+			$self->param('code_depends') ||
+			join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns ),
+		code_description =>
+			$self->param('code_description') ||
+			join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns ),
 	);
 
 }

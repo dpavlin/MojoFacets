@@ -10,7 +10,10 @@
 <li>
 <form method=post action=/data/items>
 <input type=submit name=test value="Load and test">
-<a href="/code/<%= $column . '.' . $desc %>"><%= $desc %></a>
+% my $path = "code/$column.$desc.pl";
+<a target=code href="/<%= $path %>"><%= $desc %></a>
+<input name=code_depends value="<%= $column %>">
+<input name=code_description value="<%= $desc %>">
 <br>
 % my $code = $snippets->{$column}->{$desc};
 % my $rows = scalar split(/\n/,$code);

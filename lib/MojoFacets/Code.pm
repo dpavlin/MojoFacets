@@ -20,6 +20,7 @@ sub index {
 	foreach my $full_path ( glob("$dir/*.pl") ) {
 		my $path = $full_path;
 		$path =~ s/^$dir\/*//;
+		$path =~ s/\.pl$//;
 		my ( $column, $description ) = split(/\./,$path,2);
 		$snippets->{$column}->{$description} = read_file $full_path;
 	}
