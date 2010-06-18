@@ -79,6 +79,10 @@ filter
 % if ( $code_depends ) {
 <input name=code_depends type=hidden value="<%= $code_depends %>">
 <tt><%= $code_depends %>.<input name=code_description type=text value="<%= $code_description %>">.pl</tt>
+%  my $path = "$code_path/$code_depends.$code_description.pl";
+%  if ( -e $path ) {
+<input type=checkbox name=overwrite value=1 title="Overwrite old version of this code">
+%  }
 % }
 
 <input id=close name=close  type=button value="Close" style="float: right">

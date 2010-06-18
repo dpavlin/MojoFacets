@@ -605,6 +605,7 @@ sub items {
 		}
 	}
 
+	my $code_path = $self->app->home->rel_dir('public') . "/code";
 	if ( $commit ) {
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
 		foreach ( 0 .. $#$filtered ) {
@@ -614,9 +615,13 @@ sub items {
 		}
 		if ( my $description = $self->param('code_description') ) {
 			my $depends = $self->param('code_depends') || die "no code_depends?";
-			my $path = $self->app->home->rel_dir('public') . "/code/$depends.$description.pl";
-			write_file $path, $code;
-			warn "code $path ", -s $path, " bytes saved\n";
+			my $path = "$code_path/$depends.$description.pl";
+			if ( -e $path && ! $self->param('overwrite') ) {
+				warn "# code $path not saved\n";
+			} else {
+				write_file $path, $code;
+				warn "code $path ", -s $path, " bytes saved\n";
+			}
 		}
 		$code = '';
 	}
@@ -662,6 +667,7 @@ sub items {
 		code_description =>
 			$self->param('code_description') ||
 			join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns ),
+		code_path => $code_path,
 	);
 
 }
