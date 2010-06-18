@@ -703,7 +703,7 @@ sub _remove_filter {
 	warn "filters left: ", keys %{ $loaded->{$path}->{filters} };
 
 	foreach (
-			grep { /\b$name\b/ }
+			grep { /\Q$name\E/ }
 			keys %{ $loaded->{$path}->{filtered} }
 	) {
 		delete $loaded->{$path}->{filtered}->{$_};
@@ -796,7 +796,7 @@ sub __invalidate_path_column {
 		warn "# invalidate $path sorted $name\n";
 	}
 
-	foreach ( grep { m/$name/ } keys %{ $loaded->{$path}->{filtered} } ) {
+	foreach ( grep { m/\Q$name\E/ } keys %{ $loaded->{$path}->{filtered} } ) {
 		delete $loaded->{$path}->{filtered}->{$_};
 		warn "# invalidate $path filtered $_\n";
 	}
