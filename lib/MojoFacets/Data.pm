@@ -642,6 +642,7 @@ sub items {
 			my $row = $data->{items}->[$i];
 			eval $code;
 		}
+		$code = '';
 	}
 
 	my $sorted_items;
