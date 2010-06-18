@@ -553,6 +553,10 @@ sub items {
 	# fix offset when changing limit
 	$offset = int( $offset / $limit ) * $limit;
 
+	if ( ! grep { /^\Q$order\E$/ } @columns ) {
+		$order = $columns[0];
+		$self->session( order => $order );
+	}
 	my $sorted = $self->_data_sorted_by( $order );
 
 	my @filter_names;
