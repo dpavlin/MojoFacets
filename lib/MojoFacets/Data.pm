@@ -39,7 +39,7 @@ sub index {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
-			warn "IGNORE: $file\n";
+			#warn "IGNORE: $file\n";
 		}
 	}, $data_dir);
 
