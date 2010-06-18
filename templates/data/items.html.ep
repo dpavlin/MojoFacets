@@ -68,6 +68,7 @@ items
 <li>columns: <%= join(',',@$columns) %>
 <li>numeric: <%= dumper $numeric %>
 <li>order: <%= session('order') %> sort: <%= session('sort') %>
+<li>filters: <%= dumper $filters %>
 </ul>
 
 <script type="text/javascript">
