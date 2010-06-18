@@ -650,6 +650,13 @@ sub items {
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
+	my $code_depends = $self->param('code_depends') ||
+	join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns );
+	my $code_description = $self->param('code_description') ||
+	join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns );
+
+	warn "# cols_changed ",dump( $cols_changed, $code_depends, $code_description );
+
 	$self->render(
 		order => $order,
 		offset => $offset,
@@ -661,12 +668,8 @@ sub items {
 		filters => $self->_current_filters,
 		code => $code,
 		cols_changed => $cols_changed,
-		code_depends => 
-			$self->param('code_depends') ||
-			join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns ),
-		code_description =>
-			$self->param('code_description') ||
-			join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns ),
+		code_depends => $code_depends,
+		code_description => $code_description,
 		code_path => $code_path,
 	);
 
