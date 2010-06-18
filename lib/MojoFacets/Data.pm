@@ -217,11 +217,19 @@ sub _load_path {
 sub load {
 	my $self = shift;
 
+ 	my $path = $self->param('path') || $self->redirect_to( '/data/index' );
+
 	my @paths = $self->param('paths');
 	warn "# paths ", dump @paths;
+
+	foreach my $p ( keys %$loaded ) {
+		next if grep { /^\Q$p\E$/ } @paths;
+		warn "remove $p from memory\n";
+		delete $loaded->{$p};
+	}
+
 	$self->_load_path( $_ ) foreach @paths;
 
- 	my $path = $self->param('path') || $self->redirect_to( '/data/index' );
 	warn "# path $path\n";
 	$self->_load_path( $path );
 
