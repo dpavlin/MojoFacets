@@ -453,12 +453,15 @@ sub _filter_on_data {
 sub _current_filters {
 	my $self = shift;
 	my $current_filters;
+	my $columns = $self->_loaded('header');
+	if ( my $sc = $self->session('columns') ) {
+		$columns = $sc;
+	}
+
 	$current_filters->{ $_ } = $filters->{ $_ }
-		foreach (
-			grep { defined $filters->{ $_ } }
-			@{ $self->_loaded('columns') }
-		);
-	#warn "# current_filters ",dump($current_filters);
+		foreach ( grep { defined $filters->{ $_ } } @$columns )
+	;
+	warn "# _current_filters ",dump($columns);
 	return $current_filters;
 }
 
