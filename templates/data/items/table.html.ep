@@ -76,6 +76,11 @@ filter
 %   }
 % }
 
+% if ( $code_depends ) {
+<input name=code_depends type=hidden value="<%= $code_depends %>">
+<tt><%= $code_depends %>.<input name=code_description type=text value="<%= $code_description %>">.pl</tt>
+% }
+
 <input id=close name=close  type=button value="Close" style="float: right">
 </form>
 
@@ -97,4 +102,3 @@ $(document).ready( function(){
 
 <script type="text/javascript" src="/edit_table.js"></script>
 
-%#<pre class=debug><%= dumper $cols_changed %></pre>

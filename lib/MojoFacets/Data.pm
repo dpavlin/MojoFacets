@@ -612,6 +612,12 @@ sub items {
 			my $row = $data->{items}->[$i];
 			eval $code;
 		}
+		if ( my $description = $self->param('code_description') ) {
+			my $depends = $self->param('code_depends') || die "no code_depends?";
+			my $path = $self->app->home->rel_dir('public') . "/code/$depends.$description.pl";
+			write_file $path, $code;
+			warn "code $path ", -s $path, " bytes saved\n";
+		}
 		$code = '';
 	}
 
@@ -650,6 +656,8 @@ sub items {
 		filters => $self->_current_filters,
 		code => $code,
 		cols_changed => $cols_changed,
+		code_depends => join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns ),
+		code_description => join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns ),
 	);
 
 }
