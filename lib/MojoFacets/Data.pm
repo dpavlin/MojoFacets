@@ -448,7 +448,7 @@ sub _current_filters {
 	$current_filters->{ $_ } = $filters->{ $_ }
 		foreach (
 			grep { defined $filters->{ $_ } }
-			@{ $self->_loaded('header') }
+			@{ $self->_loaded('columns') }
 		);
 	#warn "# current_filters ",dump($current_filters);
 	return $current_filters;
