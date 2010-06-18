@@ -14,7 +14,7 @@
 <br>
 % my $code = $snippets->{$column}->{$desc};
 % my $rows = scalar split(/\n/,$code);
-<textarea name=code cols=80 rows=<%= $rows %>>
+<textarea name=code cols=80 rows=<%= $rows %> style="overflow:hidden">
 <%= $code %>
 </textarea>
 </form>
