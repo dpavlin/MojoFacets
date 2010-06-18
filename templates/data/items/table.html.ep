@@ -1,3 +1,4 @@
+<pre class=debug><%= dumper $cols_added %></pre>
 
 <table border=1>
 
@@ -27,7 +28,7 @@ filter
 % foreach my $row ( @$sorted ) {
 <tr title="<%= $row->{_row_id} %>">
 % foreach my $col ( @$columns ) {
-<td<%= $numeric->{$col} ? ' class=numeric' : '' %>>
+<td<%= $numeric->{$col} ? ' class=numeric' : $cols_added->{$col} ? ' class=changed' : '' %>>
 %  if ( ref $row->{$col} eq 'ARRAY' ) {
 %   my $last = $#{ $row->{$col} };
 %   foreach ( 0 .. $last ) {

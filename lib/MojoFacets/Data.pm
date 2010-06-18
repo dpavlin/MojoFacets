@@ -619,6 +619,8 @@ sub items {
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
 
+	my $cols_added;
+
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
 		foreach my $column ( $code =~ m/\$row->{(.+?)}/g ) {
@@ -627,6 +629,7 @@ sub items {
 			}
 			next if grep { /$column/ } @columns;
 			unshift @columns, $column;
+			$cols_added->{$column}++;
 			if ( $commit ) {
 				$self->session('columns', [ @columns ]);
 				$loaded->{$path}->{columns} = [ @columns ];
@@ -679,6 +682,7 @@ sub items {
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
 		filters => $self->_current_filters,
 		code => $code,
+		cols_added => $cols_added,
 	);
 
 }
