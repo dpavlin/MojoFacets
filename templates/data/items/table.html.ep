@@ -1,9 +1,12 @@
-<pre class=debug><%= dumper $cols_added %></pre>
-
 <table border=1>
 
 <tr>
+% my $commit = param('commit');
 % foreach my $n ( @$columns ) {
+% if ( $cols_changed->{$n} == 2 && ! $commit ) {
+<th class=changed>
+<%= $n %>
+% } else {
 <th>
 % if ( session('order') ne $n ) {
 <a href="<%= url_for( action => 'order' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
@@ -21,6 +24,8 @@ filter
 % }
 </a>
 </div>
+
+% }
 </th>
 % }
 </tr>
@@ -28,7 +33,11 @@ filter
 % foreach my $row ( @$sorted ) {
 <tr title="<%= $row->{_row_id} %>">
 % foreach my $col ( @$columns ) {
-<td<%= $numeric->{$col} ? ' class=numeric' : $cols_added->{$col} ? ' class=changed' : '' %>>
+%  my $class = '';
+%  $class .= ' numeric' if $numeric->{$col};
+%  $class .= ' changed' if $cols_changed->{$col};
+%  $class =~ s/^ / class="/ && $class =~ s/$/"/;
+<td<%== $class %>>
 %  if ( ref $row->{$col} eq 'ARRAY' ) {
 %   my $last = $#{ $row->{$col} };
 %   foreach ( 0 .. $last ) {
@@ -88,3 +97,4 @@ $(document).ready( function(){
 
 <script type="text/javascript" src="/edit_table.js"></script>
 
+%#<pre class=debug><%= dumper $cols_changed %></pre>
