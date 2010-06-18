@@ -11,6 +11,8 @@ use File::Slurp;
 sub index {
 	my $self = shift;
 
+	$self->redirect_to('/data/columns') unless $self->session('columns');
+
 	my $dir = $self->app->home->rel_dir('public') . '/code';
 
 	my $snippets;
