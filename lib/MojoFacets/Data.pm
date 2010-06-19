@@ -560,7 +560,7 @@ sub items {
 
 		my $path_filters = $loaded->{$path}->{filters};
 
-		warn "create combined filter for $all_filters\n";
+		warn "create combined filter for $all_filters from ", $#$sorted + 1, " items\n";
 
 		my @filtered;
 		foreach my $i ( 0 .. $#$sorted ) {
