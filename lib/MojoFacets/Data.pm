@@ -708,6 +708,7 @@ sub items {
 		columns => [ @columns ],
 		rows => $#$filtered + 1,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
+		unique  => { map { $_, $self->_is_unique( $_) } @columns },
 		filters => $self->_current_filters,
 		code => $code,
 		cols_changed => $cols_changed,
@@ -737,6 +738,12 @@ sub _is_numeric {
 	$count   -= $stats->{$name}->{empty} if defined $stats->{$name}->{empty};
 	defined $stats->{$name}->{numeric} &&
 		$stats->{$name}->{numeric} > $count / 2;
+}
+
+sub _is_unique {
+	my ( $self, $name ) = @_;
+	my $stats = $self->_loaded( 'stats' );
+	defined $stats->{$name}->{unique};
 }
 
 sub _remove_filter {

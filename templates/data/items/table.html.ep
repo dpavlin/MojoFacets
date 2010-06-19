@@ -8,6 +8,9 @@
 <%= $n %>
 % } else {
 <th>
+% if ( $unique->{$n} ) {
+<span title="unique">&#9997;</span>
+% }
 % if ( session('order') ne $n ) {
 <a href="<%= url_for( action => 'order' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
 % } else {
