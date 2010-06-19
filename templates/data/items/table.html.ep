@@ -58,10 +58,16 @@ filter
 
 </table>
 <form id=eval method=post style="<%= $code ? '' : 'display:none' %>">
+
 % my $error = stash('eval_error');
 % if ( $error ) {
 <div class=error><%= $error %></div>
 % }
+
+% if ( $out ) {
+<pre class=debug><%= dumper $out %></pre>
+% }
+
 % my $rows = scalar split(/\n/,$code);
 <textarea name=code rows=<%= $rows %>><%= $code %></textarea>
 <input name=test   type=submit value="Test code">

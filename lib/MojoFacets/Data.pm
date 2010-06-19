@@ -631,6 +631,7 @@ sub items {
 
 	my $sorted_items;
 	my $from_end = $sort eq 'd' ? $#$filtered : 0;
+	my $out;
 	foreach ( 0 .. $limit ) {
 		my $i = $_ + $offset;
 		last unless defined $filtered->[$i];
@@ -676,6 +677,7 @@ sub items {
 		code_depends => $code_depends,
 		code_description => $code_description,
 		code_path => $code_path,
+		out => $out,
 	);
 
 }
