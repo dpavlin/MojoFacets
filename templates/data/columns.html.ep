@@ -35,7 +35,7 @@ $(document).ready(function() {
 <%= $n %>
 <span class="count"><%= $stats->{$n}->{count} %></span>
 % if ( defined $stats->{$n}->{unique} ) {
-<span title="unique">&#9997;</a>
+<span title="unique">&#9997;</span>
 % }
 </label>
 % }
