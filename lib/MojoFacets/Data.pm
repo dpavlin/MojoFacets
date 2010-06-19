@@ -493,8 +493,16 @@ sub _data_sorted_by {
 			$a->[1] cmp $b->[1]
 		}
 	} map {
-		[ $nr++, exists $_->{$order} ? join('', @{$_->{$order}}) : $missing ]
-	} grep { ref $_->{$order} eq 'ARRAY' } @{ $data->{items} }
+		my $v;
+		if ( ! exists $_->{$order} ) {
+			$v = $missing;
+		} elsif ( ref $_->{$order} eq 'ARRAY' ) {
+			$v = join('', @{$_->{$order}});
+		} else {
+			$v = $_->{$order};
+		}
+		[ $nr++, $v ]
+	} @{ $data->{items} }
 	;
 
 	warn "sorted: $order numeric: $numeric items: ", $#sorted + 1, "\n";
