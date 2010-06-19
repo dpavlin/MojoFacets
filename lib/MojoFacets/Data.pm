@@ -43,8 +43,8 @@ sub index {
 		}
 	}, $data_dir);
 
-	@files = sort { lc $a cmp lc $b } @files;
- 	unshift @files, grep { defined $loaded->{$_}->{generated} } keys %$loaded;
+	@files = sort { $loaded->{$b}->{mtime} <=> $loaded->{$a}->{mtime} || lc $a cmp lc $b } @files,
+ 			grep { defined $loaded->{$_}->{generated} } keys %$loaded;
 	my $size;
 	$size->{$_} = -s "$data_dir/$_" foreach @files;
 
