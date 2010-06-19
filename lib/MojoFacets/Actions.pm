@@ -64,6 +64,7 @@ sub changes {
 	my $glob = $self->_changes_path . '/*';
 	foreach my $t ( sort { $a cmp $b } glob $glob ) {
 		my $e = retrieve($t);
+		$e->{old} = [ $e->{old} ] unless ref $e->{old} eq 'ARRAY';
 		if ( $items ) {
 			die "no unique in ", dump($e) unless exists $e->{unique};
 			my ($pk,$id) = %{ $e->{unique} };
