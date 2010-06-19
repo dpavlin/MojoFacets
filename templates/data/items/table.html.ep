@@ -65,7 +65,7 @@ filter
 % }
 
 % if ( $out ) {
-<pre class=debug><%= dumper $out %></pre>
+<pre id=out><%= dumper $out %></pre>
 % }
 
 % my $rows = scalar split(/\n/,$code);
@@ -102,6 +102,11 @@ $(document).ready( function(){
 		$.post( document.location, { code: '' } );
 		$(this).parent().hide();
 	});
+
+	var $out = $('pre#out');
+	if ( $out.height() > $(window).height() ) {
+		$out.height( $(window).height() / 3 * 2 ).css({ overflow: 'auto' });
+	}
 
 	$('a#console').click( function() {
 		console.debug('open console');
