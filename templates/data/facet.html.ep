@@ -44,6 +44,7 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 <%= $n %>
 </label>
 %  if ( defined $facet->{$n} ) {
+<span style="color:white">;</span>
 <span class="count"><%= $facet->{$n} %></span>
 %  }
 % }
