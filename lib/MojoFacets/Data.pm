@@ -44,6 +44,7 @@ sub index {
 	}, $data_dir);
 
 	@files = sort { lc $a cmp lc $b } @files;
+ 	unshift @files, grep { defined $loaded->{$_}->{generated} } keys %$loaded;
 	my $size;
 	$size->{$_} = -s "$data_dir/$_" foreach @files;
 
@@ -156,6 +157,8 @@ sub stats {
 
 sub _load_path {
 	my ( $self, $path ) = @_;
+
+	return if defined $loaded->{$path}->{'generated'};
 
 	my $full_path = $self->app->home->rel_file( 'data/' . $path );
 	die "$full_path $!" unless -r $full_path;
@@ -611,6 +614,7 @@ sub items {
 	my $code_path = $self->app->home->rel_dir('public') . "/code";
 	if ( $commit ) {
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
+		my $out;
 		foreach ( 0 .. $#$filtered ) {
 			my $i = $filtered->[$_];
 			my $row = $data->{items}->[$i];
@@ -627,6 +631,39 @@ sub items {
 			}
 		}
 		$code = '';
+		if ( $out ) {
+			my $commit_dataset = join('.'
+				, $self->param('code_depends')
+				, $self->param('code_description')
+			);
+			my $key = $self->param('code_depends');
+			$key =~ s/,.+$//;
+			$key ||= 'key';
+			my $items;
+			foreach my $n ( keys %$out ) {
+				my $i = { $key => [ $n ] };
+				$i->{$_} = [ $out->{$n}->{$_} ] foreach keys %{ $out->{$n} };
+				push @$items, $i;
+			};
+			undef $out;
+			my $stats = __stats( $items );
+			my @columns = grep { ! m/^\Q$key\E$/ } sort keys %$stats;
+			unshift @columns, $key;
+
+			$loaded->{$commit_dataset} = {
+				header => [ @columns ],
+				columns => [ @columns ],
+				mtime => time(),
+				data => { items => $items },
+				stats => $stats,
+				generated => 1,
+			};
+			warn "# loaded out ", dump( $loaded->{$commit_dataset} );
+			$self->session('path', $commit_dataset);
+			$self->session('columns', [ @columns ]);
+			$self->session('order', $key);
+			$self->redirect_to('/data/items');
+		}
 	}
 
 	my $sorted_items;
