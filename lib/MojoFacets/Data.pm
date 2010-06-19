@@ -605,14 +605,17 @@ sub items {
 	my $test = $self->param('test');
 
 	my $cols_changed;
+	my $cols_order;
 
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
+		my $order = 0;
 		foreach my $column ( $code =~ m/\$row->{(.+?)}/g ) {
 			if ( $column =~ s/^(['"])// ) {
 				$column =~ s/$1$//;
 			}
 			$cols_changed->{$column}++;
+			$cols_order->{$column} = $order++;
 			next if grep { /$column/ } @columns;
 			$cols_changed->{$column}++;
 			unshift @columns, $column;
@@ -704,10 +707,12 @@ sub items {
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
+warn "XXX cols_order ",dump( $cols_order );
+
 	my $code_depends = $self->param('code_depends')||
-	join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns );
+	join(',', sort { $cols_order->{$a} <=> $cols_order->{$b} } grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns );
 	my $code_description = $self->param('code_description') ||
-	join(',', grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns );
+	join(',', sort { $cols_order->{$a} <=> $cols_order->{$b} } grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns );
 
 	$code_depends ||= $code_description; # self-modifing
 
