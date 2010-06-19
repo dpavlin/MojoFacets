@@ -504,6 +504,11 @@ sub _data_sorted_by {
 }
 
 
+sub __all_filters {
+	my $order = pop @_;
+	join(',', sort(@_), 'order', $order);
+}
+
 sub items {
 	my $self = shift;
 
@@ -547,7 +552,7 @@ sub items {
 		}
 	}
 
-	my $all_filters = join(' ',sort @filter_names,'order:',$order);
+	my $all_filters = __all_filters( @filter_names,$order );
 
 #	warn "# all_filters $all_filters ", dump( $loaded->{$path}->{filtered}->{$all_filters} );
 
@@ -782,7 +787,7 @@ sub facet {
 	my $data = $self->_loaded('data');
 
 	my $filters = $self->_current_filters;
-	my $all_filters = join(' ',sort keys %$filters,'order:',$self->session('order'));
+	my $all_filters = __all_filters( keys %$filters,$self->session('order') );
 	my $filtered = $loaded->{$path}->{filtered}->{$all_filters}
 		if defined $loaded->{$path}->{filtered}->{$all_filters};
 
