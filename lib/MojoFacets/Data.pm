@@ -614,8 +614,7 @@ sub items {
 				$column =~ s/$1$//;
 			}
 			next if $column =~ m/\$/; # hide columns with vars in them
-			next if grep { /$column/ } @columns;
-			$cols_changed->{$column}++;
+			$cols_changed->{$column} = 0;
 		}
 	}
 
@@ -694,14 +693,14 @@ sub items {
 				warn "EVAL ",dump($row);
 				$old->{$_}-- foreach keys %$row;
 				warn "columns changed ",dump($old);
-				$cols_changed->{$_} += 2 foreach grep { $old->{$_} == -1 } keys %$old;
+				$cols_changed->{$_}++ foreach grep { $old->{$_} == -1 } keys %$old;
 			}
 		}
 		$row->{_row_id} ||= $id;
 		push @$sorted_items, $row;
 	}
 
-	my @added_columns = sort grep { $cols_changed->{$_} > 1 } keys %$cols_changed;
+	my @added_columns = sort grep { $cols_changed->{$_} > 0 } keys %$cols_changed;
 	unshift @columns, @added_columns;
 
 	if ( $commit ) {
@@ -712,7 +711,7 @@ sub items {
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
 	my $code_depends = $self->param('code_depends')||
-	join(',', sort grep { $cols_changed->{$_} == 1 } keys %$cols_changed );
+	join(',', sort grep { $cols_changed->{$_} == 0 } keys %$cols_changed );
 	my $code_description = $self->param('code_description') ||
 	join(',', @added_columns);
 
