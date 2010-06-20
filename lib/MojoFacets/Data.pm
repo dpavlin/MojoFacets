@@ -620,6 +620,10 @@ sub items {
 
 	my $code_path = $self->app->home->rel_dir('public') . "/code";
 	if ( $commit ) {
+
+		my $o = { map { $_ => 1 } grep { defined $loaded->{$path}->{stats}->{$_}->{count} } keys %{ $self->_loaded('stats') } };
+		#warn "XXX o ",dump( $o );
+
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
 		my $out;
 		foreach ( 0 .. $#$filtered ) {
@@ -671,6 +675,21 @@ sub items {
 			$self->session('order', $key);
 			$self->redirect_to('/data/items');
 		}
+
+		# this might move before $out to recalculate stats on source dataset?
+		my $c = { map { $_ => 1 } @columns };
+		#warn "XXX c ",dump( $c );
+
+		__path_modified( $path, 2 );
+		$o->{$_}-- foreach keys %{ $self->_loaded('stats') };
+		#warn "XXX o ",dump( $o );
+		my @added_columns = grep { $o->{$_} && ! $c->{$_} } keys %$o;
+		warn "# added_columns ",dump( @added_columns );
+		unshift @columns, @added_columns;
+
+		$self->session('columns', [ @columns ]);
+		$loaded->{$path}->{columns} = [ @columns ];
+		warn "# new columns ",dump( @columns );
 	}
 
 	my $sorted_items;
@@ -681,10 +700,9 @@ sub items {
 		last unless defined $filtered->[$i];
 		$i = $from_end - $i if $from_end;
 		my $id = $filtered->[$i];
-		my $row = $data->{items}->[ $id ];
+		my $row = Storable::dclone $data->{items}->[ $id ];
 		my $old = { map { $_ => 1 } keys %$row };
 		if ( $code && $test ) {
-			$row = Storable::dclone $row;
 			eval $code;
 			if ( $@ ) {
 				warn "ERROR evaling\n$code\n$@";
@@ -703,11 +721,6 @@ sub items {
 	my @added_columns = sort grep { $cols_changed->{$_} > 0 } keys %$cols_changed;
 	unshift @columns, @added_columns;
 
-	if ( $commit ) {
-		$self->session('columns', [ @columns ]);
-		$loaded->{$path}->{columns} = [ @columns ];
-		__path_modified( $path, 2 );
-	}
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
 	my $code_depends = $self->param('code_depends')||
