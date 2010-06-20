@@ -150,6 +150,10 @@ span.d {
 	background: #ffe;
 }
 
+.used {
+	background: #eee;
+}
+
 form.action_filter {
 	float: right;
 }

@@ -1,10 +1,11 @@
+<pre class=debug><%= dumper $cols_changed %></pre>
 <table border=1>
 
 <tr>
 % my $commit = param('commit');
 % foreach my $n ( @$columns ) {
-% if ( $cols_changed->{$n} == 2 && ! $commit ) {
-<th class=changed>
+% if ( defined $cols_changed->{$n} && ! $commit ) {
+<th class=<%= $cols_changed->{$n} ? 'changed' : 'used' %>>
 <%= $n %>
 % } else {
 <th>
@@ -36,11 +37,12 @@ filter
 % foreach my $row ( @$sorted ) {
 <tr title="<%= $row->{_row_id} %>">
 % foreach my $col ( @$columns ) {
-%  my $class = '';
-%  $class .= ' numeric' if $numeric->{$col};
-%  $class .= ' changed' if $cols_changed->{$col};
-%  $class =~ s/^ / class="/ && $class =~ s/$/"/;
-<td<%== $class %>>
+%  my @class ;
+%  push @class, 'numeric' if $numeric->{$col};
+%  if ( defined $cols_changed->{$col} ) {
+%   push @class, $cols_changed->{$col} ? 'changed' : 'used';
+%  }
+<td class="<%= join(' ',@class) %>">
 %  if ( ref $row->{$col} eq 'ARRAY' ) {
 %   my $last = $#{ $row->{$col} };
 %   foreach ( 0 .. $last ) {
