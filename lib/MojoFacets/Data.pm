@@ -674,6 +674,7 @@ sub items {
 			$self->session('columns', [ @columns ]);
 			$self->session('order', $key);
 			$self->redirect_to('/data/items');
+			return; # FIXME needed to correctly show columns
 		}
 
 		# this might move before $out to recalculate stats on source dataset?
