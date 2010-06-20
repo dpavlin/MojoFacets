@@ -30,7 +30,7 @@ sub index {
 warn "# depends $depends $found $#deps\n";
 		next unless $found == $#deps;
 
-		$snippets->{$depends}->{$description} = read_file $full_path;
+		$snippets->{$depends}->{$description} = read_file $full_path, binmode => ':utf8';
 	}
 
 	$self->render(
