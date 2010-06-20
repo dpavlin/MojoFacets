@@ -109,7 +109,7 @@ $(document).ready( function(){
 	});
 
 	var $out = $('pre#out');
-	if ( $out.height() > $(window).height() ) {
+	if ( $out.height() > ( $(window).height() / 3 * 2 ) ) {
 		$out.height( $(window).height() / 3 * 2 ).css({ overflow: 'auto' });
 	}
 
