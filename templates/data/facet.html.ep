@@ -41,12 +41,12 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 <li>
 <label>
 <input type=checkbox name="filter_vals" value="<%= $n %>" <%= $checked->{$n} && defined $facet->{$n} ? 'checked' : '' %>>
-<%= $n %>
-</label>
 %  if ( defined $facet->{$n} ) {
-<span style="color:white">;</span>
-<span class="count"><%= $facet->{$n} %></span>
+<%= $n %><span style="color:white">;</span><span class="count"><%= $facet->{$n} %></span>
+%  } else {
+<%= $n %>
 %  }
+</label>
 % }
 </ul>
 
