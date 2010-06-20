@@ -642,7 +642,7 @@ sub items {
 			if ( -e $path && ! $self->param('overwrite') ) {
 				warn "# code $path not saved\n";
 			} else {
-				write_file $path, $code;
+				write_file(  $path, { binmode => ':utf8' }, $code );
 				warn "code $path ", -s $path, " bytes saved\n";
 			}
 		}
