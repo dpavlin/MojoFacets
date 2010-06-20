@@ -3,7 +3,7 @@
 <tr>
 % my $commit = param('commit');
 % foreach my $n ( @$columns ) {
-% if ( $cols_changed->{$n} == 2 && ! $commit ) {
+% if ( $cols_changed->{$n} > 1 && ! $commit ) {
 <th class=changed>
 <%= $n %>
 % } else {

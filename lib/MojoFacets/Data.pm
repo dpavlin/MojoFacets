@@ -605,25 +605,17 @@ sub items {
 	my $test = $self->param('test');
 
 	my $cols_changed;
-	my $cols_order;
 
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
 		my $order = 0;
-		foreach my $column ( $code =~ m/\$row->{(.+?)}/g ) {
+		foreach my $column ( $code =~ m/\$row->{([^}]+)}/g ) {
 			if ( $column =~ s/^(['"])// ) {
 				$column =~ s/$1$//;
 			}
-			$cols_changed->{$column}++;
-			$cols_order->{$column} = $order++;
+			next if $column =~ m/\$/; # hide columns with vars in them
 			next if grep { /$column/ } @columns;
 			$cols_changed->{$column}++;
-			unshift @columns, $column;
-			if ( $commit ) {
-				$self->session('columns', [ @columns ]);
-				$loaded->{$path}->{columns} = [ @columns ];
-				__path_modified( $path, 2 );
-			}
 		}
 	}
 
@@ -691,6 +683,7 @@ sub items {
 		$i = $from_end - $i if $from_end;
 		my $id = $filtered->[$i];
 		my $row = $data->{items}->[ $id ];
+		my $old = { map { $_ => 1 } keys %$row };
 		if ( $code && $test ) {
 			$row = Storable::dclone $row;
 			eval $code;
@@ -699,20 +692,29 @@ sub items {
 				$self->stash('eval_error', $@) if $@;
 			} else {
 				warn "EVAL ",dump($row);
+				$old->{$_}-- foreach keys %$row;
+				warn "columns changed ",dump($old);
+				$cols_changed->{$_} += 2 foreach grep { $old->{$_} == -1 } keys %$old;
 			}
 		}
 		$row->{_row_id} ||= $id;
 		push @$sorted_items, $row;
 	}
 
+	my @added_columns = sort grep { $cols_changed->{$_} > 1 } keys %$cols_changed;
+	unshift @columns, @added_columns;
+
+	if ( $commit ) {
+		$self->session('columns', [ @columns ]);
+		$loaded->{$path}->{columns} = [ @columns ];
+		__path_modified( $path, 2 );
+	}
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
-warn "XXX cols_order ",dump( $cols_order );
-
 	my $code_depends = $self->param('code_depends')||
-	join(',', sort { $cols_order->{$a} <=> $cols_order->{$b} } grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 1 } @columns );
+	join(',', sort grep { $cols_changed->{$_} == 1 } keys %$cols_changed );
 	my $code_description = $self->param('code_description') ||
-	join(',', sort { $cols_order->{$a} <=> $cols_order->{$b} } grep { defined $cols_changed->{$_} && $cols_changed->{$_} == 2 } @columns );
+	join(',', @added_columns);
 
 	$code_depends ||= $code_description; # self-modifing
 
