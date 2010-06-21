@@ -28,7 +28,7 @@ sub index {
 		my $found = -1;
 		$found += $columns->{$_} foreach @deps;
 warn "# depends $depends $found $#deps\n";
-		next unless $found == $#deps;
+		next unless $found == $#deps || $self->param('all_code');
 
 		$snippets->{$depends}->{$description} = read_file $full_path, binmode => ':utf8';
 	}

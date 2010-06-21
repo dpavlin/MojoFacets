@@ -24,4 +24,13 @@
 </ul>
 % }
 
+<form>
+% if ( param('all_code') ) {
+<input type=hidden name=all_code value=0>
+<input type=submit value="Show just dependent code snippets">
+% } else {
+<input type=submit name=all_code value="Show all code snippets">
+% }
+</form>
+
 <tt class=debug><%= dumper stash('snippets') %></tt>
