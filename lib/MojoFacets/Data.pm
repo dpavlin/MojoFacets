@@ -161,7 +161,7 @@ sub _load_path {
 	return if defined $loaded->{$path}->{'generated'};
 
 	my $full_path = $self->app->home->rel_file( 'data/' . $path );
-	die "$full_path $!" unless -r $full_path;
+	$self->redirect_to('/data/index') unless -r $full_path;
 
 	my $dump_path = $self->_dump_path( $path );
 
