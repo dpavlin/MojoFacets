@@ -7,13 +7,14 @@ use base 'Mojolicious::Controller';
 
 use Data::Dump qw(dump);
 use Digest::MD5 qw(md5_hex);
+use Text::Unaccent::PurePerl;
 
 sub index {
 	my $self = shift;
 
 	my $columns = $self->session('columns') || $self->redirect_to('/data/columns');
 
-	my $url = '/export/' . $self->session('path') . '/' . join('.', @$columns);
+	my $url = '/export/' . $self->session('path') . '/' . unac_string( join('.', 'items', @$columns) );
 	my $dir = $self->app->home->rel_dir('public');
 
 	if ( -e "$dir/$url" ) {

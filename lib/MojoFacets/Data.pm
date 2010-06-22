@@ -13,6 +13,7 @@ use File::Find;
 use Storable;
 use Time::HiRes qw(time);
 use File::Path qw(mkpath);
+use Text::Unaccent::PurePerl;
 
 use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
@@ -325,7 +326,7 @@ sub _export_path {
 	}
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
-	$dir . '/' . join('.', @_);
+	$dir . '/' . unac_string( join('.', @_) );
 }
 
 sub columns {
@@ -740,7 +741,7 @@ sub items {
 	}
 
 	if ( $self->param('export') ) {
-		my $export_path = "public/export/$path/" . join('.', @columns);
+		my $export_path = $self->_export_path( 'items', @columns);
 		open(my $fh, '>', $export_path) || warn "ERROR: can't open $export_path: $!";
 		foreach my $f ( 0 .. $#$filtered ) {
 			print $fh join("\t", map {
