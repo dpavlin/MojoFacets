@@ -1028,12 +1028,14 @@ sub save {
 sub export {
 	my $self = shift;
 
+	my $dir = $self->app->home->rel_dir('public');
+
 	if ( my $import = $self->param('import') ) {
 
 		if ( $import =~ m{/filter\.(.+?)\..+} ) {
 			my $name = $1;
 			my @vals = map { chomp; $_ }
-				read_file $self->app->home->rel_dir('public') . "/export/$import", binmode => ':utf8';
+				read_file "$dir/export/$import", binmode => ':utf8';
 			$self->_remove_filter( $name );
 			$self->_filter_on_data( $name, @vals );
 			$self->session( 'offset' => 0 );
@@ -1041,6 +1043,13 @@ sub export {
 		} else {
 			warn "UNKNOWN IMPORT $import";
 		}
+	}
+
+	if ( my $remove = $self->param('remove') ) {
+		my $path = "$dir/export/$remove";
+		unlink $path if -e $path;
+		$path .= '.png';
+		unlink $path if -e $path;
 	}
 
 	my @files = grep { ! /\.png$/ } glob( $self->_export_path . '*' );

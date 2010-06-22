@@ -4,14 +4,18 @@
 % foreach my $e ( @$export ) {
 %  my $path = $e; $path =~ s{^.+/public/export/}{};
 <li>
+<label>
 <tt>
 <a target="<%= $path %>" href="/export/<%= $path %>"><%= $path %></a>
 </tt>
 <%= -s $e %> bytes
-%  if ( -e $e . '.png' ) {
-<br><img src="/export/<%= $path %>.png">
-%  } elsif ( $path =~ m/filter\./ ) {
+<a style="color:red; float: right" href="<%= url_for( action => 'export' )->query( 'remove' => $path ) %>">remove</a>
+%  if ( $path =~ m/filter\./ ) {
 <a href="?import=<%= $path %>">import</a>
+%  }
+</label>
+%  if ( -e $e . '.png' ) {
+<img src="/export/<%= $path %>.png">
 %  }
 % }
 </ul>
