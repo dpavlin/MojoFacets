@@ -10,7 +10,7 @@
 <%= -s $e %> bytes
 %  if ( $path =~ m/\.png$/ ) {
 <img src="/export/<%= $path %>">
-%  } else {
+%  } elsif ( $path =~ m/filter\./ ) {
 <a href="?import=<%= $path %>">import</a>
 %  }
 % }
