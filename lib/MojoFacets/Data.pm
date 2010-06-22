@@ -612,7 +612,7 @@ sub items {
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
 
-	my $cols_changed;
+	my $commit_changed;
 
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
@@ -622,22 +622,24 @@ sub items {
 				$column =~ s/$1$//;
 			}
 			next if $column =~ m/\$/; # hide columns with vars in them
-			$cols_changed->{$column} = 0;
+			$commit_changed->{$column} = 0;
 		}
 	}
 
 	my $code_path = $self->app->home->rel_dir('public') . "/code";
 	if ( $commit ) {
 
-		my $o = { map { $_ => 1 } grep { defined $loaded->{$path}->{stats}->{$_}->{count} } keys %{ $self->_loaded('stats') } };
-		#warn "XXX o ",dump( $o );
-
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
 		my $out;
 		foreach ( 0 .. $#$filtered ) {
 			my $i = $filtered->[$_];
 			my $row = $data->{items}->[$i];
+			my $update;
 			eval $code;
+			foreach ( keys %$update ) {
+				$commit_changed->{$_}++;
+				$row->{$_} = $update->{$_};
+			}
 		}
 		if ( my $description = $self->param('code_description') ) {
 			my $depends = $self->param('code_depends') || die "no code_depends?";
@@ -686,13 +688,8 @@ sub items {
 		}
 
 		# this might move before $out to recalculate stats on source dataset?
-		my $c = { map { $_ => 1 } @columns };
-		#warn "XXX c ",dump( $c );
-
 		__path_modified( $path, 2 );
-		$o->{$_}-- foreach keys %{ $self->_loaded('stats') };
-		#warn "XXX o ",dump( $o );
-		my @added_columns = grep { $o->{$_} && ! $c->{$_} } keys %$o;
+		my @added_columns = keys %$commit_changed;
 		warn "# added_columns ",dump( @added_columns );
 		unshift @columns, @added_columns;
 
@@ -703,6 +700,7 @@ sub items {
 
 	my $sorted_items;
 	my $from_end = $sort eq 'd' ? $#$filtered : 0;
+	my $test_changed;
 	my $out;
 	foreach ( 0 .. $limit ) {
 		my $i = $_ + $offset;
@@ -719,7 +717,7 @@ sub items {
 			} else {
 				warn "EVAL ",dump($update);
 				foreach ( keys %$update ) {
-					$cols_changed->{$_}++;
+					$test_changed->{$_}++;
 					$row->{$_} = $update->{$_};
 				}
 			}
@@ -728,19 +726,21 @@ sub items {
 		push @$sorted_items, $row;
 	}
 
-	my @added_columns = sort grep { $cols_changed->{$_} > 0 } keys %$cols_changed;
+	warn "# test_changed ",dump( $test_changed );
+	my $c = { map { $_ => 1 } @columns };
+	my @added_columns = sort grep { ! $c->{$_} } keys %$test_changed;
 	unshift @columns, @added_columns;
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
 	my $code_depends = $self->param('code_depends')||
-	join(',', sort grep { $cols_changed->{$_} == 0 } keys %$cols_changed );
+	join(',', sort grep { $test_changed->{$_} == 0 } keys %$test_changed );
 	my $code_description = $self->param('code_description') ||
 	join(',', @added_columns);
 
 	$code_depends ||= $code_description; # self-modifing
 
-	warn "# cols_changed ",dump( $cols_changed, $code_depends, $code_description );
+	warn "# test_changed ",dump( $test_changed, $code_depends, $code_description );
 
 	$self->render(
 		order => $order,
@@ -753,7 +753,7 @@ sub items {
 		unique  => { map { $_, $self->_is_unique( $_) } @columns },
 		filters => $self->_current_filters,
 		code => $code,
-		cols_changed => $cols_changed,
+		cols_changed => $commit ? $commit_changed : $test_changed,
 		code_depends => $code_depends,
 		code_description => $code_description,
 		code_path => $code_path,
