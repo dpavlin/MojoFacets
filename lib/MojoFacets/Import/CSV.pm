@@ -5,10 +5,9 @@ use strict;
 
 use base 'Mojo::Base';
 
-use HTML::TableExtract;
 use File::Slurp;
 use Data::Dump qw(dump);
-use JSON;
+#use Encode;
 
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
