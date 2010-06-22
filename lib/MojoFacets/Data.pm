@@ -326,7 +326,9 @@ sub _export_path {
 	}
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
-	$dir . '/' . unac_string( join('.', @_) );
+	my $name = unac_string( join('.', @_) );
+	$name =~ s/\W+/_/g;
+	$dir . '/' . $name;
 }
 
 sub columns {

@@ -14,7 +14,12 @@ sub index {
 
 	my $columns = $self->session('columns') || $self->redirect_to('/data/columns');
 
-	my $url = '/export/' . $self->session('path') . '/' . unac_string( join('.', 'items', @$columns) );
+	my $name = unac_string( join('.', 'items', @$columns) );
+	$name =~ s/\W+/_/g;
+
+	warn "# name $name\n";
+
+	my $url = '/export/' . $self->session('path') . '/' . $name;
 	my $dir = $self->app->home->rel_dir('public');
 
 	if ( -e "$dir/$url" ) {
