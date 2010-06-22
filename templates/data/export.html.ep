@@ -8,7 +8,11 @@
 <a target="<%= $path %>" href="/export/<%= $path %>"><%= $path %></a>
 </tt>
 <%= -s $e %> bytes
+%  if ( $path =~ m/\.png$/ ) {
+<img src="/export/<%= $path %>">
+%  } else {
 <a href="?import=<%= $path %>">import</a>
+%  }
 % }
 </ul>
 
