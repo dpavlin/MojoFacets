@@ -18,7 +18,7 @@ sub data {
 
 	my $path = $self->path;
 
-	my $data = read_file $self->full_path;
+	my $data = read_file $self->full_path, { binmode => ':cp1250' }; # FIXME configurable!
 
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
