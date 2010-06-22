@@ -707,6 +707,8 @@ sub items {
 		$self->session('columns', [ @columns ]);
 		$loaded->{$path}->{columns} = [ @columns ];
 		warn "# new columns ",dump( @columns );
+
+		__invalidate_path_column( $path, $_ ) foreach keys %$commit_changed;
 	}
 
 	my $sorted_items;
