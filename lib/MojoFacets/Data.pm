@@ -16,6 +16,7 @@ use File::Path qw(mkpath);
 
 use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
+use MojoFacets::Import::CSV;
 
 our $loaded;
 our $filters;
@@ -36,6 +37,9 @@ sub index {
 		} elsif ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+\.\d+.+)/ ) {
 			push @{ $changes->{$1} }, $2
 		} elsif ( -d $file && $file =~ m/\.html$/ ) {
+			$file =~ s/$data_dir\/*//;
+			push @files, $file;
+		} elsif ( -f $file && $file =~ m/\.csv$/i ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
@@ -178,7 +182,11 @@ sub _load_path {
 
 	my $data;
 	if ( -f $full_path ) {
-		$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
+		if ( $full_path =~ m/.csv/i ) {
+			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
+		} else {
+			$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
+		}
 	} elsif ( -d $full_path && $full_path =~ m/.html/ ) {
 		$data = MojoFacets::Import::HTMLTable->new( dir => $full_path )->data;
 	} else {
