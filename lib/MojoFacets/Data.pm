@@ -1052,7 +1052,9 @@ sub export {
 		unlink $path if -e $path;
 	}
 
-	my @files = grep { ! /\.png$/ } glob( $self->_export_path . '*' );
+	my $path = $self->_export_path || $self->redirect_to('/data/index');
+
+	my @files = grep { ! /\.png$/ } glob "$path/*";
 	my $mtime = { map { $_ => (stat($_))[9] } @files };
 	@files = sort { $mtime->{$b} <=> $mtime->{$a} } @files;
 	$self->render( export => [ @files ] );
