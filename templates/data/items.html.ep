@@ -85,8 +85,13 @@ timefmt: <input name=timefmt value="<%= $timefmt %>">
 <script type="text/javascript">
 $(document).ready( function(){
 	$('select[name=limit]').change( function(){
-		console.debug( 'limit changed', this );
+		console.debug( 'limit', this );
 		$(this).closest('form').submit();
+	});
+	$('input[name=export]').change( function(){
+		console.debug( 'export', this );
+		if ( this.checked )
+			$(this).closest('form').submit();
 	});
 });
 </script>
