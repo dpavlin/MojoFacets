@@ -48,7 +48,7 @@ items
 
 </form>
 
-<img src="/gnuplot" style="float: right; z-index: -1">
+<img id=gnuplot src="/gnuplot">
 
 <%= include 'data/items/' . session('show') %>
 
