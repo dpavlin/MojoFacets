@@ -699,7 +699,8 @@ sub items {
 
 		# this might move before $out to recalculate stats on source dataset?
 		__path_modified( $path, 2 );
-		my @added_columns = keys %$commit_changed;
+		my $c = { map { $_ => 1 } @columns };
+		my @added_columns = sort grep { ! $c->{$_} } keys %$commit_changed;
 		warn "# added_columns ",dump( @added_columns );
 		unshift @columns, @added_columns;
 
