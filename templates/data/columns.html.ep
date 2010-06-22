@@ -37,6 +37,9 @@ $(document).ready(function() {
 % if ( defined $stats->{$n}->{unique} ) {
 <span title="unique">&#9997;</span>
 % }
+% if ( defined $stats->{$n}->{numeric} ) {
+<span title="numeric">&#8319;</span>
+% }
 </label>
 % }
 </ul>
