@@ -739,20 +739,22 @@ sub items {
 		push @$sorted_items, $row;
 	}
 
-	my $export_path = "public/export/$path/" . join('.', @columns);
-	open(my $fh, '>', $export_path) || warn "ERROR: can't open $export_path: $!";
-	foreach my $f ( 0 .. $#$filtered ) {
-		print $fh join("\t", map {
-			my $i = $data->{items}->[ $filtered->[$f] ];
-			if ( ref $i->{$_} eq 'ARRAY' ) {
-				join(',', @{ $i->{$_} });
-			} else {
-				dump $i->{$_};
-			}
-		} @columns),"\n";
+	if ( $self->param('export') ) {
+		my $export_path = "public/export/$path/" . join('.', @columns);
+		open(my $fh, '>', $export_path) || warn "ERROR: can't open $export_path: $!";
+		foreach my $f ( 0 .. $#$filtered ) {
+			print $fh join("\t", map {
+				my $i = $data->{items}->[ $filtered->[$f] ];
+				if ( ref $i->{$_} eq 'ARRAY' ) {
+					join(',', @{ $i->{$_} });
+				} else {
+					dump $i->{$_};
+				}
+			} @columns),"\n";
+		}
+		close($fh);
+		warn "export $export_path ", -s $export_path, " bytes\n";
 	}
-	close($fh);
-	warn "$export_path ", -s $export_path, " bytes\n";
 
 	warn "# test_changed ",dump( $test_changed );
 	my $c = { map { $_ => 1 } @columns };

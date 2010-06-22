@@ -21,7 +21,7 @@ sub index {
 		my @plot;
 		foreach ( 1 .. $#$columns ) {
 			my $n = $_ + 1;
-			push @plot, qq|"$dir/$url" using 1:$n title "$columns->[$_]" with linespoints|;
+			push @plot, qq|"$dir/$url" using 1:$n title "$columns->[$_]" with points|;
 		}
 
 		my $g = qq|
@@ -29,14 +29,22 @@ sub index {
 set terminal png
 set output '$dir/$url.png'
 
+		|;
+
+		if ( my $timefmt = $self->session('timefmt') ) {
+			$g .= qq|
+
 set xdata time
-set timefmt "%Y-%m-%d"
-#set format x "%d.%m."
-#set format x "%Y-%m-%d"
+set timefmt "$timefmt"
+set format x "$timefmt"
+
+			|;
+		}
+
 #set xrange [ "2009-01-01":"2010-01-01" ]
 #set yrange [ 0 : ]
 
-plot | . join(',', @plot) . "\n";
+		$g .= "\n\nplot " . join(',', @plot) . "\n";
 
 warn "gnuplot $g";
 
