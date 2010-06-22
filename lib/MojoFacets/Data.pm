@@ -1043,7 +1043,7 @@ sub export {
 		}
 	}
 
-	my @files = glob( $self->_export_path . '*' );
+	my @files = grep { ! /\.png$/ } glob( $self->_export_path . '*' );
 	my $mtime = { map { $_ => (stat($_))[9] } @files };
 	@files = sort { $mtime->{$b} <=> $mtime->{$a} } @files;
 	$self->render( export => [ @files ] );
