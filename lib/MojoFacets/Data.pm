@@ -1043,9 +1043,10 @@ sub export {
 		}
 	}
 
-	$self->render( export => [
-		glob( $self->_export_path . '*' )
-	] );
+	my @files = glob( $self->_export_path . '*' );
+	my $mtime = { map { $_ => (stat($_))[9] } @files };
+	@files = sort { $mtime->{$b} <=> $mtime->{$a} } @files;
+	$self->render( export => [ @files ] );
 }
 
 sub __loaded_paths {
