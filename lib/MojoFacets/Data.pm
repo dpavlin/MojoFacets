@@ -656,6 +656,7 @@ sub items {
 			my $commit_dataset = join('.'
 				, $self->param('code_depends')
 				, $self->param('code_description')
+				, time()
 			);
 			my $key = $self->param('code_depends');
 			$key =~ s/,.+$//;
@@ -663,7 +664,16 @@ sub items {
 			my $items;
 			foreach my $n ( keys %$out ) {
 				my $i = { $key => [ $n ] };
-				$i->{$_} = [ $out->{$n}->{$_} ] foreach keys %{ $out->{$n} };
+				my $ref = ref $out->{$n};
+				if ( $ref eq 'HASH' ) {
+					$i->{$_} = [ $out->{$n}->{$_} ] foreach keys %{ $out->{$n} };
+				} elsif ( $ref eq 'ARRAY' ) {
+					$i->{$_} = $out->{$n};
+				} elsif ( ! $ref ) {
+					$i->{value} = [ $out->{$n} ];
+				} else {
+					$i->{_error} = [ dump($out->{$n}) ];
+				}
 				push @$items, $i;
 			};
 			undef $out;
