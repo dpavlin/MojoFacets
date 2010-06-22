@@ -32,7 +32,7 @@ set output '$dir/$url.png'
 
 		|;
 
-		if ( my $timefmt = $self->session('timefmt') ) {
+		if ( my $timefmt = $self->param('timefmt') ) {
 			$g .= qq|
 
 set xdata time

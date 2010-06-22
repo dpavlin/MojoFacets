@@ -46,17 +46,17 @@ items
 
 <input type=submit value="refresh">
 
-% my $export = param('export') || session('export');
+% my $export = param('export');
 % session('export', $export );
 <input type=checkbox name=export value=1 title="export" <%= $export ? 'checked' : '' %> >
-% my $timefmt = param('timefmt') || session('timefmt');
+% my $timefmt = param('timefmt');
 % session('timefmt', $timefmt );
 timefmt: <input name=timefmt value="<%= $timefmt %>">
 
 </form>
 
 % if ( $export ) {
-<img id=gnuplot src="/gnuplot">
+<img id=gnuplot src="/gnuplot?timefmt=<%= $timefmt %>">
 % }
 
 <%= include 'data/items/' . session('show') %>
