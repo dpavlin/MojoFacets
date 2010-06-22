@@ -252,7 +252,7 @@ sub load {
 	if ( ! defined $loaded->{$path}->{columns} ) {
 		my $columns_path = $self->_permanent_path( 'columns' );
 		if ( -e $columns_path ) {
-			my @columns = map { s/[\r\n]+$//; $_ } read_file $columns_path;
+			my @columns = map { s/[\r\n]+$//; $_ } read_file $columns_path, binmode => ':utf8';
 			$loaded->{$path}->{columns} = [ @columns ];
 			warn "# columns_path $columns_path ",dump(@columns);
 		} else {
@@ -333,7 +333,7 @@ sub columns {
 
 	if ( $self->param('columns') ) {
 		my @columns = $self->_param_array('columns');
-		write_file( $self->_permanent_path( 'columns' ), map { "$_\n" } @columns );
+		write_file( $self->_permanent_path( 'columns' ), { binmode => ':utf8' }, map { "$_\n" } @columns );
 		$self->redirect_to('/data/items');
 	}
 
@@ -406,7 +406,7 @@ sub filter {
 		$self->_filter_on_data( $name, @vals );
 		if ( my $permanent = $self->param('_permanent') ) {
 			my $permanent_path = $self->_export_path( 'filter', $name, $permanent );
-			write_file $permanent_path, map { "$_\n" } @vals;
+			write_file $permanent_path, { binmode => ':utf8' }, map { "$_\n" } @vals;
 			warn "permanent filter $permanent_path ", -s $permanent_path;
 		}
 	}
@@ -1032,7 +1032,7 @@ sub export {
 		if ( $import =~ m{/filter\.(.+?)\..+} ) {
 			my $name = $1;
 			my @vals = map { chomp; $_ }
-				read_file $self->app->home->rel_dir('public') . "/export/$import";
+				read_file $self->app->home->rel_dir('public') . "/export/$import", binmode => ':utf8';
 			$self->_remove_filter( $name );
 			$self->_filter_on_data( $name, @vals );
 			$self->session( 'offset' => 0 );
