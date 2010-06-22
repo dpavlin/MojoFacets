@@ -19,10 +19,12 @@ sub index {
 	if ( -e "$dir/$url" ) {
 
 		my @plot;
-		push @plot, qq|"$dir/$url" using 1:2 with linespoints|;
+		foreach ( 1 .. $#$columns ) {
+			my $n = $_ + 1;
+			push @plot, qq|"$dir/$url" using 1:$n title "$columns->[$_]" with linespoints|;
+		}
 
-		open(my $gnuplot, '|-', 'gnuplot') || die "gnuplot $!";
-		print $gnuplot qq|
+		my $g = qq|
 
 set terminal png
 set output '$dir/$url.png'
@@ -34,7 +36,13 @@ set timefmt "%Y-%m-%d"
 #set xrange [ "2009-01-01":"2010-01-01" ]
 #set yrange [ 0 : ]
 
-plot |, join(',', @plot);
+plot | . join(',', @plot) . "\n";
+
+warn "gnuplot $g";
+
+		open(my $gnuplot, '|-', 'gnuplot') || die "gnuplot $!";
+		print $gnuplot $g;
+		close $gnuplot;
 
 		$self->redirect_to( "$url.png" );
 		#$self->render_text( "$url.png" );
