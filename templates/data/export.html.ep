@@ -15,7 +15,7 @@
 %  }
 </label>
 %  if ( -e $e . '.png' ) {
-<img src="/export/<%= $path %>.png">
+<br><img src="/export/<%= $path %>.png">
 %  }
 % }
 </ul>
