@@ -710,17 +710,18 @@ sub items {
 		$i = $from_end - $i if $from_end;
 		my $id = $filtered->[$i];
 		my $row = Storable::dclone $data->{items}->[ $id ];
-		my $old = { map { $_ => 1 } keys %$row };
 		if ( $code && $test ) {
+			my $update;
 			eval $code;
 			if ( $@ ) {
 				warn "ERROR evaling\n$code\n$@";
 				$self->stash('eval_error', $@) if $@;
 			} else {
-				warn "EVAL ",dump($row);
-				$old->{$_}-- foreach keys %$row;
-				warn "columns changed ",dump($old);
-				$cols_changed->{$_}++ foreach grep { $old->{$_} == -1 } keys %$old;
+				warn "EVAL ",dump($update);
+				foreach ( keys %$update ) {
+					$cols_changed->{$_}++;
+					$row->{$_} = $update->{$_};
+				}
 			}
 		}
 		$row->{_row_id} ||= $id;

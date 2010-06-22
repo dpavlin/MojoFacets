@@ -1,0 +1,6 @@
+foreach my $v ( @{ $row->{Duguje} } ) {
+ push @{ $update->{Duguje_old} }, $v;
+ $v =~ s/(\d+)?\.?(\d{0,3})\,(\d{2})/$1$2.$3/;
+ $v *= 1;
+ push @{ $update->{Duguje} }, $v;
+}
