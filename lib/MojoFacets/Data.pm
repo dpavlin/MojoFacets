@@ -748,11 +748,16 @@ sub items {
 		foreach my $f ( 0 .. $#$filtered ) {
 			print $fh join("\t", map {
 				my $i = $data->{items}->[ $filtered->[$f] ];
-				if ( ref $i->{$_} eq 'ARRAY' ) {
-					join(',', @{ $i->{$_} });
+				my $v = '\N';
+				if ( ! defined $i->{$_} ) {
+					# nop
+				} elsif ( ref $i->{$_} eq 'ARRAY' ) {
+					$v =join(',', @{ $i->{$_} });
+					$v = '\N' if length($v) == 0;
 				} else {
-					dump $i->{$_};
+					$v = dump $i->{$_};
 				}
+				$v;
 			} @columns),"\n";
 		}
 		close($fh);
