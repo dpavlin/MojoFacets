@@ -7,7 +7,7 @@ use base 'Mojo::Base';
 
 use File::Slurp;
 use Data::Dump qw(dump);
-#use Encode;
+use Encode;
 
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
@@ -17,7 +17,8 @@ sub data {
 
 	my $path = $self->path;
 
-	my $data = read_file $self->full_path, { binmode => ':cp1250' }; # FIXME configurable!
+	my $data = read_file $self->full_path, { binmode => ':raw' }; # FIXME configurable!
+	$data = decode('cp1250', $data);
 
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
