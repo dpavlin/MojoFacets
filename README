@@ -18,31 +18,34 @@ Start with:
     LANG=hr_HR.utf8 ./script/mojo_facets daemon --reload
 
 
+Data action and changes:
+
+There are two kinds of audit log in MojoFacets:
+
+1. actions stored in /tmp/actions are clicks on user interface with parameters,
+   they will probably be erased on next reboot since they are in /tmp
+
+2. changes in data/database.changes are more structured, including old value
+   and unique identifiers for that row
+
+Changes can be applied on any dataset currently in memory.
+
+Whole idea of changes is to create audit log which is detailed enough to recostruct
+current state of dataset from source file and list of changes. However, to speed
+up operations, you can periodically save your in-memory data to /tmp/ in perl
+storeable format using save link in interface.
+
+
 Data replication:
 
-    # master
-    ./script/mojo_facets daemon --listen 'http://*:4444' --reload
+Actions can be replicated to other hosts using MASTER enviroment variable
+or config menu
 
     # slave
     MASTER=http://localhost:4444 ./script/mojo_facets daemon --reload
 
 
-Turning actions into changes:
-
-There are two kinds of audit log in MojoFacets:
-
-1. actions stored in /tmp/actions are clicks on user interface with parameters
-
-2. changes are more structured, including old value and unique values from
-   edit of one value in dataset
-
-If you want to create changes which can be applied again on original dataset or
-any other dataset which has same unique values you can use helper script:
-
-    $ ./script/actions-to-changes /data/mojo_facets/*
-
-
-Modify your data using perl snippets:
+Code console to modify data using perl snippets:
 
 Experimental REPL console supports perl snippets which get $row hash which is one
 element from your dataset.
