@@ -29,7 +29,7 @@
 <input type=submit name=commit value="Commit changes">
 %  } elsif ( param('commit') ) {
 <b>
-Changes commited to <a href="<%= url_for( controller => 'data', action => 'load' )->query( path => $path ) %>"><%= $path %></a>
+Changes commited to <a href="<%= url_for( controller => 'data', action => 'items' )->query( path => $path ) %>"><%= $path %></a>
 </b>
 <pre><%= dumper stash('commit_changed') %></pre>
 %  }
