@@ -658,22 +658,23 @@ sub items {
 				$row->{$_} = $update->{$_};
 			}
 		}
+
+		$self->_save_change({
+			path => $path,
+			time => $self->param('time') || time(),
+			user => $self->param('user') || $ENV{'LOGNAME'},
+			code => $code,
+			commit_changed => $commit_changed,
+		});
+
 		if ( my $description = $self->param('code_description') ) {
 			my $depends = $self->param('code_depends') || die "no code_depends?";
 			my $path = "$code_path/$depends.$description.pl";
 			if ( -e $path && ! $self->param('overwrite') ) {
 				warn "# code $path not saved\n";
 			} else {
-				write_file(  $path, { binmode => ':utf8' }, $code );
+				write_file(  $path, { binmode => ':utf8' }, "$code\n" );
 				warn "code $path ", -s $path, " bytes saved\n";
-
-				$self->_save_change({
-					path => $path,
-					time => $self->param('time') || time(),
-					user => $self->param('user') || $ENV{'LOGNAME'},
-					code => $code,
-				});
-
 			}
 		}
 
