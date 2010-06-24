@@ -2,7 +2,7 @@
 
 
 % my $dump = param('dump');
-% my $apply_on_path = param('apply_on_path');
+% my $apply_on_path = param('apply_on_path') || session('path');
 
 <form method=post>
 <input type=submit value="Apply"> on
