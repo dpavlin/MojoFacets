@@ -27,8 +27,8 @@ items:
 <a href="<%= url_for( controller => 'config', action => 'index', id => 0 ) %>">config</a>
 &middot;
 
-<a href="<%= url_for( controller => 'actions', action => 'changes', id => 0 ) %>">changes</a>
-<a href="<%= url_for( controller => 'actions', action => 'index',   id => 0 ) %>">actions</a>
+<a href="<%= url_for( controller => 'changes', action => 'index', id => 0 ) %>">changes</a>
+<a href="<%= url_for( controller => 'actions', action => 'index', id => 0 ) %>">actions</a>
 
 % if ( session('modified') ) {
 %  my $path = session('path');
