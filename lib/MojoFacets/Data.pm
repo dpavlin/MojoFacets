@@ -343,7 +343,9 @@ sub _export_path {
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
 	my $name = join('.', map { __unac($_) } @_ );
-	$dir . '/' . $name;
+	my $full = $dir . '/' . $name;
+	$full =~ s/\/+$// if -d $full; # strip trailing slash for dirs
+	return $full;
 }
 
 sub columns {
