@@ -14,8 +14,7 @@ sub index {
 
 	my $columns = $self->session('columns') || $self->redirect_to('/data/columns');
 
-	my $name = unac_string( join('.', 'items', @$columns) );
-	$name =~ s/\W+/_/g;
+	my $name = join('.', 'items', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n } @$columns );
 
 	warn "# name $name\n";
 

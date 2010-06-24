@@ -326,8 +326,7 @@ sub _export_path {
 	}
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
-	my $name = unac_string( join('.', @_) );
-	$name =~ s/\W+/_/g;
+	my $name = join('.', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n; } @_ );
 	$dir . '/' . $name;
 }
 
