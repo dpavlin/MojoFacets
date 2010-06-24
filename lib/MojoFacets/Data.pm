@@ -560,8 +560,7 @@ sub __commit_path_code {
 		$$commit_changed->{$_}++;
 		$loaded->{$path}->{data}->{items}->[$i]->{$_} = $update->{$_};
 	}
-	warn "XX ",dump( $loaded->{$path}->{data}->{items}->[$i] );
-	warn "__commit_path_code $path ",dump( $update );
+	#warn "__commit_path_code $path $i ",dump( $update );
 }
 
 sub items {
