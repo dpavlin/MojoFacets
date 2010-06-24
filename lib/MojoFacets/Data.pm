@@ -317,6 +317,22 @@ sub _permanent_path {
 	$self->app->home->rel_dir('data') . '/' . join('.', $path, @_);
 }
 
+sub __unac {
+	my $n = shift;
+	$n = unac_string($n);
+	$n =~ s/\W+/_/g;
+	return $n;
+}
+
+sub _column_from_unac {
+	my ($self,$name) = @_;
+
+	my $stats = $self->_loaded('stats');
+	my $cols_norm = { map { __unac( $_ ) => $_ } keys %$stats };
+
+	$cols_norm->{$name} || die "can't find column $name in ", dump($cols_norm);
+}
+
 sub _export_path {
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
@@ -326,7 +342,7 @@ sub _export_path {
 	}
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
-	my $name = join('.', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n; } @_ );
+	my $name = join('.', map { __unac($_) } @_ );
 	$dir . '/' . $name;
 }
 
@@ -1036,9 +1052,11 @@ sub export {
 	if ( my $import = $self->param('import') ) {
 
 		if ( $import =~ m{/filter\.(.+?)\..+} ) {
-			my $name = $1;
+			my $name = $self->_column_from_unac( $1 );
+
 			my @vals = map { chomp; $_ }
 				read_file "$dir/export/$import", binmode => ':utf8';
+
 			$self->_remove_filter( $name );
 			$self->_filter_on_data( $name, @vals );
 			$self->session( 'offset' => 0 );
