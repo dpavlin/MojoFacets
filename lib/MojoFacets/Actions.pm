@@ -7,7 +7,6 @@ use base 'Mojolicious::Controller';
 
 use Storable;
 use Data::Dump qw(dump);
-use MojoFacets::Data;
 
 sub index {
 	my $self = shift;
