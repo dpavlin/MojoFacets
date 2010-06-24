@@ -20,10 +20,15 @@ sub index {
 	my $path = $self->param('path') || $self->session('path');
 	my $commit = $self->param('commit');
 	my ( $items, $unique2id );
-	if ( my $apply_on_path = $self->param('apply_on_path') ) {
-		$items = $MojoFacets::Data::loaded->{$apply_on_path}->{data}->{items};
-		die "no $apply_on_path" unless $items;
-		warn "using $items for $apply_on_path\n";
+	if ( $path ) {
+		$items = $MojoFacets::Data::loaded->{$path}->{data}->{items};
+		if ( ! $items ) {
+			warn "$path not loaded";
+			$self->session('path', $path);
+			$self->redirect_to('/data/index');
+			return;
+		}
+		warn "using $items for $path\n";
 	}
 	my $invalidate_columns;
 	my $changes;
@@ -58,8 +63,24 @@ sub index {
 			}
 			$e->{_status} = $status;
 			$stats->{$status}++;
+		} elsif ( my $code = $e->{code} ) {
+			if ( $commit ) {
+				my $commit_changed;
+				my $t = time();
+				foreach my $i ( 0 .. $#$items ) {
+					MojoFacets::Data::__commit_path_code( $path, $i, $code, \$commit_changed );
+				}
+				$t = time() - $t;
+				$self->stash( 'commit_changed', $commit_changed );
+				warn "commit_changed in $t s ",dump( $e->{commit_changed}, $commit_changed );
+				$e->{commit_changed_this} = $commit_changed;
+				MojoFacets::Data::__invalidate_path_column( $path, $_ ) foreach keys %$commit_changed;
+				MojoFacets::Data::__path_rebuild_stats( $path );
+			}
+			$stats->{code}++;
 		} else {
 			warn "no unique in ", dump($e);
+			$stats->{no_unique}++;
 		}
 		push @$changes, $e;
 	}
@@ -73,7 +94,7 @@ sub index {
 	my @loaded = MojoFacets::Data::__loaded_paths();
 	warn "# loaded paths ",dump @loaded;
 
-	$self->render( changes => $changes, loaded => \@loaded, stats => $stats );
+	$self->render( path => $path, changes => $changes, loaded => \@loaded, stats => $stats );
 }
 
 sub remove {

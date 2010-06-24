@@ -1,14 +1,12 @@
 % layout 'ui';
 
-
 % my $dump = param('dump');
-% my $apply_on_path = param('apply_on_path') || session('path');
 
 <form method=post>
-<input type=submit value="Apply"> on
-<select name=apply_on_path>
+<input name=apply type=submit value="Apply"> on
+<select name=path>
 % foreach my $p ( @$loaded ) {
-<option<%= $p eq $apply_on_path ? ' selected' : '' %>><%= $p %></option>
+<option<%= $p eq $path ? ' selected' : '' %>><%= $p %></option>
 % }
 </select>
 
@@ -16,7 +14,7 @@
 
 <label><input type=checkbox name=dump <%= $dump ? 'checked' : '' %>>dump</label>
 
-% if ( $apply_on_path ) {
+% if ( $path ) {
 <ul id=status>
 %  foreach my $status ( keys %$stats ) {
 <li><label>
@@ -27,12 +25,13 @@
 %  }
 </ul>
 
-%  if ( ! param('commit') ) {
+%  if ( ! param('commit') && param('apply') ) {
 <input type=submit name=commit value="Commit changes">
-%  } else {
+%  } elsif ( param('commit') ) {
 <b>
-Changes commited to <a href="<%= url_for( controller => 'data', action => 'load' )->query( path => $apply_on_path ) %>"><%= $apply_on_path %></a>
+Changes commited to <a href="<%= url_for( controller => 'data', action => 'load' )->query( path => $path ) %>"><%= $path %></a>
 </b>
+<pre><%= dumper stash('commit_changed') %></pre>
 %  }
 
 % }

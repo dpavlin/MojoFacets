@@ -279,9 +279,16 @@ sub _loaded {
 			warn "rebuild stats for $path ignored caller $caller\n";
 		} else {
 			warn "rebuild stats for $path FORCED by modified caller $caller\n";
-			$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+#			$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+			$loaded->{$path}->{rebuild_stats} = 1;
 			$loaded->{$path}->{modified} = 1;
 		}
+	}
+
+	if ( defined $loaded->{$path}->{rebuild_stats} ) {
+		warn "rebuild_stats $path";
+		$loaded->{$path}->{stats} = __stats( $loaded->{$path}->{data}->{items} );
+		delete $loaded->{$path}->{rebuild_stats};
 	}
 
 	if ( ! defined $loaded->{$path}->{$name} ) {
@@ -542,6 +549,21 @@ sub __all_filters {
 	join(',', sort(@_), 'order', $order);
 }
 
+sub __commit_path_code {
+	my ( $path, $i, $code, $commit_changed ) = @_;
+
+	my $items = $loaded->{$path}->{data}->{items} || die "no items for $path";
+	my $row = $items->[$i];
+	my $update;
+	eval $code;
+	foreach ( keys %$update ) {
+		$$commit_changed->{$_}++;
+		$loaded->{$path}->{data}->{items}->[$i]->{$_} = $update->{$_};
+	}
+	warn "XX ",dump( $loaded->{$path}->{data}->{items}->[$i] );
+	warn "__commit_path_code $path ",dump( $update );
+}
+
 sub items {
 	my $self = shift;
 
@@ -624,7 +646,7 @@ sub items {
 	my $data = $self->_loaded('data');
 
 	my $code = $self->_param_scalar('code','');
-	$code =~ s{[\r\n]+$}{}s;
+	$code =~ s{[\r\n]+$}{\n}s;
 
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
@@ -650,13 +672,7 @@ sub items {
 		my $out;
 		foreach ( 0 .. $#$filtered ) {
 			my $i = $filtered->[$_];
-			my $row = $data->{items}->[$i];
-			my $update;
-			eval $code;
-			foreach ( keys %$update ) {
-				$commit_changed->{$_}++;
-				$row->{$_} = $update->{$_};
-			}
+			__commit_path_code( $path, $i, $code, \$commit_changed );
 		}
 
 		$self->_save_change({
@@ -726,7 +742,7 @@ sub items {
 		}
 
 		# this might move before $out to recalculate stats on source dataset?
-		__path_modified( $path, 2 );
+		__path_rebuild_stats( $path );
 		my $c = { map { $_ => 1 } @columns };
 		my @added_columns = sort grep { ! $c->{$_} } keys %$commit_changed;
 		warn "# added_columns ",dump( @added_columns );
@@ -970,6 +986,8 @@ sub __path_modified {
 	warn "# __path_modified $path $value\n";
 }
 
+sub __path_rebuild_stats { $loaded->{ $_[0] }->{rebuild_stats} = 1 };
+
 sub _save_change {
 	my ($self,$change) = @_;
 
@@ -1030,8 +1048,7 @@ sub edit {
 			__invalidate_path_column( $path, $name );
 
 			$status = 201; # created
-			# modified = 2 -- force rebuild of stats
-			__path_modified( $path, 2 );
+			__path_rebuild_stats( $path );
 	
 			$new_content = join("\xB6",@$v);
 
