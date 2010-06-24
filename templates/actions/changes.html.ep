@@ -55,8 +55,15 @@ Changes commited to <a href="<%= url_for( controller => 'data', action => 'load'
 <a href="<%= url_for( action => 'remove' )->query( time => $e->{time} ) %>">remove</a>
 %  }
 
+% if ( defined $e->{new} ) {
 </td><td><%== defined $e->{old} && join('<span class=d>&para;</span>', @{$e->{old}}) %>
-</td><td><%== defined $e->{new} && join('<span class=d>&para;</span>', @{$e->{new}}) %>
+</td><td><%==                      join('<span class=d>&para;</span>', @{$e->{new}}) %>
+% } elsif ( defined $e->{code} ) {
+</td><td><pre><%= $e->{code} %></pre></td>
+</td><td><pre class=debug><%= dumper $e->{commit_changed} %></pre>
+% } else {
+</td><td colspan=2><pre class=debug><%= dumper $e %></pre>
+% }
 
 %  if ( $dump ) {
 </td><td><pre class=debug><%= dumper $e %></pre>
