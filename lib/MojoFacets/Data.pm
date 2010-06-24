@@ -549,8 +549,10 @@ sub __all_filters {
 	join(',', sort(@_), 'order', $order);
 }
 
+our $out;
+
 sub __commit_path_code {
-	my ( $path, $i, $code, $commit_changed ) = @_;
+	my ( $path, $i, $code, $commit_changed, $out_ref ) = @_;
 
 	my $items = $loaded->{$path}->{data}->{items} || die "no items for $path";
 	my $row = $items->[$i];
@@ -668,11 +670,13 @@ sub items {
 	if ( $commit ) {
 
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
-		my $out;
+		$out = undef;
 		foreach ( 0 .. $#$filtered ) {
 			my $i = $filtered->[$_];
 			__commit_path_code( $path, $i, $code, \$commit_changed );
 		}
+
+		warn "out ",dump($out);
 
 		$self->_save_change({
 			path => $path,
