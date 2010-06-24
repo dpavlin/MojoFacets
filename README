@@ -58,3 +58,14 @@ Code examples are stored in public/code
 They use column1,column2.description.pl notatition so only snippets which have applicable
 column will be shown.
 
+
+Export data:
+
+All exported data is stored in public/export/database/
+
+There you can find saved filters and items generated with export checkbox
+
+    filter.column_name.optional_description
+	items.column1.column2.column3
+
+
