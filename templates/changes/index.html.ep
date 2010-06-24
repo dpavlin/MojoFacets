@@ -4,9 +4,9 @@
 
 <form method=post>
 <input name=apply type=submit value="Apply"> on
-<select name=path>
+<select name=on_path>
 % foreach my $p ( @$loaded ) {
-<option<%= $p eq $path ? ' selected' : '' %>><%= $p %></option>
+<option<%= $p eq $on_path ? ' selected' : '' %>><%= $p %></option>
 % }
 </select>
 
@@ -14,7 +14,7 @@
 
 <label><input type=checkbox name=dump <%= $dump ? 'checked' : '' %>>dump</label>
 
-% if ( $path ) {
+% if ( $on_path ) {
 <ul id=status>
 %  foreach my $status ( keys %$stats ) {
 <li><label>
@@ -29,7 +29,7 @@
 <input type=submit name=commit value="Commit changes">
 %  } elsif ( param('commit') ) {
 <b>
-Changes commited to <a href="<%= url_for( controller => 'data', action => 'items' )->query( path => $path ) %>"><%= $path %></a>
+Changes commited to <a href="<%= url_for( controller => 'data', action => 'items' )->query( path => $on_path ) %>"><%= $on_path %></a>
 </b>
 <pre><%= dumper stash('commit_changed') %></pre>
 %  }

@@ -18,17 +18,17 @@ sub _changes_path {
 sub index {
 	my ( $self ) = @_;
 	my $path = $self->param('path') || $self->session('path');
+	my $on_path = $self->param('on_path');
 	my $commit = $self->param('commit');
 	my ( $items, $unique2id );
-	if ( $path ) {
-		$items = $MojoFacets::Data::loaded->{$path}->{data}->{items};
+	if ( $on_path ) {
+		$items = $MojoFacets::Data::loaded->{$on_path}->{data}->{items};
 		if ( ! $items ) {
-			warn "$path not loaded";
-			$self->session('path', $path);
-			$self->redirect_to('/data/index');
+			warn "$on_path not loaded";
+			$self->redirect_to('/data/index?path=' . $on_path);
 			return;
 		}
-		warn "using $items for $path\n";
+		warn "using ", $#$items + 1, " items from $on_path\n";
 	}
 	my $invalidate_columns;
 	my $changes;
@@ -68,14 +68,14 @@ sub index {
 				my $commit_changed;
 				my $t = time();
 				foreach my $i ( 0 .. $#$items ) {
-					MojoFacets::Data::__commit_path_code( $path, $i, $code, \$commit_changed );
+					MojoFacets::Data::__commit_path_code( $on_path, $i, $code, \$commit_changed );
 				}
 				$t = time() - $t;
 				$self->stash( 'commit_changed', $commit_changed );
 				warn "commit_changed in $t s ",dump( $e->{commit_changed}, $commit_changed );
 				$e->{commit_changed_this} = $commit_changed;
-				MojoFacets::Data::__invalidate_path_column( $path, $_ ) foreach keys %$commit_changed;
-				MojoFacets::Data::__path_rebuild_stats( $path );
+				MojoFacets::Data::__invalidate_path_column( $on_path, $_ ) foreach keys %$commit_changed;
+				MojoFacets::Data::__path_rebuild_stats( $on_path );
 			}
 			$stats->{code}++;
 		} else {
@@ -86,15 +86,20 @@ sub index {
 	}
 
 	foreach my $name ( keys %$invalidate_columns ) {
-		MojoFacets::Data::__invalidate_path_column( $path, $name );
+		MojoFacets::Data::__invalidate_path_column( $on_path, $name );
 	}
 
-	MojoFacets::Data::__path_modified( $path );
+	MojoFacets::Data::__path_modified( $on_path );
 
 	my @loaded = MojoFacets::Data::__loaded_paths();
 	warn "# loaded paths ",dump @loaded;
 
-	$self->render( path => $path, changes => $changes, loaded => \@loaded, stats => $stats );
+	$self->render(
+		on_path => $on_path || $path,
+		changes => $changes,
+		loaded => \@loaded,
+		stats => $stats,
+	);
 }
 
 sub remove {
