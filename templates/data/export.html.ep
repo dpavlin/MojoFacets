@@ -10,7 +10,7 @@
 </tt>
 <%= -s $e %> bytes
 <a style="color:red; float: right" href="<%= url_for( action => 'export' )->query( 'remove' => $path ) %>">remove</a>
-%  if ( $path =~ m/filter\./ ) {
+%  if ( $path =~ m/\/filter/ ) {
 <a href="?import=<%= $path %>">import</a>
 %  }
 </label>
