@@ -666,8 +666,18 @@ sub items {
 			} else {
 				write_file(  $path, { binmode => ':utf8' }, $code );
 				warn "code $path ", -s $path, " bytes saved\n";
+
+				$self->_save_change({
+					path => $path,
+					time => $self->param('time') || time(),
+					user => $self->param('user') || $ENV{'LOGNAME'},
+					code => $code,
+				});
+
 			}
 		}
+
+		# remove console
 		$code = '';
 		if ( $out ) {
 			my $commit_dataset = join('.'
@@ -959,6 +969,17 @@ sub __path_modified {
 	warn "# __path_modified $path $value\n";
 }
 
+sub _save_change {
+	my ($self,$change) = @_;
+
+	my $change_path = $self->_permanent_path( 'changes' );
+	mkdir $change_path unless -d $change_path;
+	$change_path .= '/' . $change->{time};
+	store $change, $change_path;
+	utime $change->{time}, $change->{time}, $change_path;
+	warn "_save_change $change_path ", dump($change);
+}
+
 sub edit {
 	my $self = shift;
 	my $new_content = $self->param('new_content');
@@ -987,7 +1008,7 @@ sub edit {
 		if ( $old ne $new
 			&& ! ( $old eq 'undef' && length($new_content) == 0 ) # new value empty, previous undef
 		) {
-			my $change = {
+			$self->_save_change({
 				path => $path,
 				column => $name,
 				pos => $i,
@@ -1000,13 +1021,7 @@ sub edit {
 					grep { defined $loaded->{$path}->{stats}->{$_}->{unique} }
 					keys %{ $loaded->{$path}->{stats} }
 				},
-			};
-			my $change_path = $self->_permanent_path( 'changes' );
-			mkdir $change_path unless -d $change_path;
-			$change_path .= '/' . $change->{time};
-			store $change, $change_path;
-			utime $change->{time}, $change->{time}, $change_path;
-			warn "# $change_path ", dump($change);
+			});
 
 			warn "# change $path $i $old -> $new\n";
 			$loaded->{$path}->{data}->{items}->[$i]->{$name} = $v;
