@@ -15,6 +15,7 @@ sub index {
 
 	$self->redirect_to('/data/columns') unless $self->session('columns');
 	my $columns = { map { $_ => 1 } @{ $self->session('columns') } };
+	$columns->{$_} = 1 foreach @{ $self->session('header') };
 
 	my $dir = $self->_code_dir;
 
