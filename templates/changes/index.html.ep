@@ -60,8 +60,10 @@ Changes commited to <a href="<%= url_for( controller => 'data', action => 'items
 <%= $e->{time} %>
 <tt><%= $e->{column} %></tt>
 %  if ( my $status = $e->{_status} ) {
+%   if ( defined $e->{unique} ) {
 %    my ( $pk, $id ) = %{ $e->{unique} };
 <a href="<%= url_for( controller => 'data', action => 'filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
+%   }
 <%= $status %>
 %  } else {
 <a href="<%= url_for( action => 'remove' )->query( time => $e->{time} ) %>">remove</a>

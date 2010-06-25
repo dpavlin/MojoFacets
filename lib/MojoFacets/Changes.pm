@@ -34,6 +34,7 @@ sub index {
 	my $changes;
 	my $stats;
 	my $glob = $self->_changes_path . '/*';
+	my $status = 'unknown';
 	foreach my $t ( sort { $a cmp $b } glob $glob ) {
 		my $e = retrieve($t);
 		$e->{old} = [ $e->{old} ] unless ref $e->{old} eq 'ARRAY';
@@ -51,7 +52,7 @@ sub index {
 					$unique2id->{$pk}->{ $items->[$i]->{$pk}->[0] } = $i;
 				}
 			}
-			my $status = 'missing';
+			$status = 'missing';
 			if ( my $i = $unique2id->{$pk}->{$id} ) {
 				$status = 'found';
 				if ( $commit ) {
@@ -61,8 +62,6 @@ sub index {
 					$invalidate_columns->{$column}++;
 				}
 			}
-			$e->{_status} = $status;
-			$stats->{$status}++;
 		} elsif ( my $code = $e->{code} ) {
 			if ( $commit ) {
 				my $commit_changed;
@@ -77,13 +76,17 @@ sub index {
 				MojoFacets::Data::__invalidate_path_column( $on_path, $_ ) foreach keys %$commit_changed;
 				MojoFacets::Data::__path_rebuild_stats( $on_path );
 			}
-			$stats->{code}++;
+			$status = 'code';
 		} else {
-			warn "no unique in ", dump($e);
-			$stats->{no_unique}++;
+			$status = 'unknown';
 		}
+
+		$e->{_status} = $status;
+		$stats->{$status}++;
+
 		push @$changes, $e;
 	}
+
 
 	foreach my $name ( keys %$invalidate_columns ) {
 		MojoFacets::Data::__invalidate_path_column( $on_path, $name );
