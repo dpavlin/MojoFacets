@@ -61,6 +61,11 @@ span.h {
 	color: #f00;
 }
 
+a.remove {
+	float: right;
+	color: #f00;
+}
+
 .debug {
 	color: #aaa;
 }
