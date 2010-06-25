@@ -65,9 +65,8 @@ Changes commited to <a href="<%= url_for( controller => 'data', action => 'items
 <a href="<%= url_for( controller => 'data', action => 'filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
 %   }
 <%= $status %>
-%  } else {
-<a class=remove href="<%= url_for( action => 'remove' )->query( time => $e->{time} ) %>">remove</a>
 %  }
+<a class=remove href="<%= url_for( action => 'remove' )->query( time => $e->{time} ) %>">remove</a>
 
 % if ( defined $e->{new} ) {
 </td><td><%== defined $e->{old} && join('<span class=d>&para;</span>', @{$e->{old}}) %>
