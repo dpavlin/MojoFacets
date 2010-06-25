@@ -58,6 +58,10 @@ element from your dataset.
 If you want to create or update values, you will have to use $update hash to set
 new values.
 
+If you want to report something from your dataset (also called reduce in map/reduce
+terminology) you can use $out hash to store values which will be used to generate
+new dataset using $key and $value for column names.
+
 All values are repetable, but if you create just a scalar, magic(tm) inside MojoFacets
 will try to upgrade it to [ $scalar ] so you don't have to do it explicitly.
 
