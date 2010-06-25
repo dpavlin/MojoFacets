@@ -819,6 +819,10 @@ sub items {
 	join(',', @added_columns);
 
 	$code_depends ||= $code_description; # self-modifing
+	if ( ! $code_depends && $out ) {
+		$code_depends = $key;
+		$code_description = $value;
+	}
 
 	warn "# test_changed ",dump( $test_changed, $code_depends, $code_description );
 
