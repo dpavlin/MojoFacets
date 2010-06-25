@@ -18,6 +18,11 @@ Start with:
     LANG=hr_HR.utf8 ./script/mojo_facets daemon --reload
 
 
+Changing tabular data:
+
+Just double click on any table cell and click outside or focus out to save change.
+
+
 Data action and changes:
 
 There are two kinds of audit log in MojoFacets:
