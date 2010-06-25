@@ -549,10 +549,10 @@ sub __all_filters {
 	join(',', sort(@_), 'order', $order);
 }
 
-our $out;
+our ($out, $key,$value);
 
 sub __commit_path_code {
-	my ( $path, $i, $code, $commit_changed, $out_ref ) = @_;
+	my ( $path, $i, $code, $commit_changed ) = @_;
 
 	my $items = $loaded->{$path}->{data}->{items} || die "no items for $path";
 	my $row = $items->[$i];
@@ -670,13 +670,11 @@ sub items {
 	if ( $commit ) {
 
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
-		$out = undef;
+		( $key, $value, $out ) = ( 'key', 'value' );
 		foreach ( 0 .. $#$filtered ) {
 			my $i = $filtered->[$_];
 			__commit_path_code( $path, $i, $code, \$commit_changed );
 		}
-
-		warn "out ",dump($out);
 
 		$self->_save_change({
 			path => $path,
@@ -705,9 +703,9 @@ sub items {
 				, $self->param('code_description')
 				, time()
 			);
-			my $key = $self->param('code_depends');
-			$key =~ s/,.+$//;
 			$key ||= 'key';
+			$value ||= 'value';
+			warn "key $key value $value";
 			my $items;
 			foreach my $n ( keys %$out ) {
 				my $i = { $key => [ $n ] };
@@ -717,7 +715,7 @@ sub items {
 				} elsif ( $ref eq 'ARRAY' ) {
 					$i->{$_} = $out->{$n};
 				} elsif ( ! $ref ) {
-					$i->{value} = [ $out->{$n} ];
+					$i->{$value} = [ $out->{$n} ];
 				} else {
 					$i->{_error} = [ dump($out->{$n}) ];
 				}
@@ -761,7 +759,7 @@ sub items {
 	my $sorted_items;
 	my $from_end = $sort eq 'd' ? $#$filtered : 0;
 	my $test_changed;
-	my $out;
+	my ( $key, $value, $out ) = ( 'key', 'value' ); # XXX make local
 	foreach ( 0 .. $limit ) {
 		my $i = $_ + $offset;
 		last unless defined $filtered->[$i];
@@ -772,7 +770,7 @@ sub items {
 			my $update;
 			eval $code;
 			if ( $@ ) {
-				warn "ERROR evaling\n$code\n$@";
+				warn "ERROR evaling $@", dump($code);
 				$self->stash('eval_error', $@) if $@;
 			} else {
 				warn "EVAL ",dump($update);
