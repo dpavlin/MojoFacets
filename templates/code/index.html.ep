@@ -8,10 +8,11 @@
 <li>
 <form method=post action=/data/items>
 <input type=submit name=test value="Load and test">
-% my $path = "code/$depends.$desc.pl";
-<a target=code href="/<%= $path %>"><%= $desc %></a>
+% my $path = "$depends.$desc.pl";
+<a target=code href="/code/<%= $path %>"><%= $desc %></a>
 <input type=hidden name=code_depends value="<%= $depends %>">
 <input type=hidden name=code_description value="<%= $desc %>">
+<a class=remove href="<%= url_for( action => 'remove' )->query( path => $path ) %>">remove</a>
 <br>
 % my $code = $snippets->{$depends}->{$desc};
 % my $rows = scalar split(/\n/,$code);

@@ -8,13 +8,15 @@ use base 'Mojolicious::Controller';
 use Data::Dump qw(dump);
 use File::Slurp;
 
+sub _code_dir { $_[0]->app->home->rel_dir('public') . '/code' }
+
 sub index {
 	my $self = shift;
 
 	$self->redirect_to('/data/columns') unless $self->session('columns');
 	my $columns = { map { $_ => 1 } @{ $self->session('columns') } };
 
-	my $dir = $self->app->home->rel_dir('public') . '/code';
+	my $dir = $self->_code_dir;
 
 	my $snippets;
 
@@ -36,6 +38,14 @@ warn "# depends $depends $found $#deps\n";
 	$self->render(
 		snippets => $snippets,
 	);
+}
+
+sub remove {
+	my $self = shift;
+	if ( my $path = $self->param('path') ) {
+		unlink $self->_code_dir . '/' . $path;
+	}
+	$self->redirect_to('/code');
 }
 
 1;
