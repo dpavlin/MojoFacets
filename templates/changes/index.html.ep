@@ -38,7 +38,7 @@ Changes commited to <a href="<%= url_for( controller => 'data', action => 'items
 
 </form>
 
-% my $tr = { new => [ qw( old new ) ], code => [ qw( code columns_changed ) ] };
+% my $tr = { new => [ qw( old new ) ], code => [ qw( code commit_changed ) ] };
 
 <table>
 
