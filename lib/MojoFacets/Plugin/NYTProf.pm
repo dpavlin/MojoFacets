@@ -10,11 +10,11 @@ sub register {
 	$app->plugins->add_hook(
 		before_dispatch => sub {
 			my ($self, $c) = @_;
+			return unless $ENV{PROFILE};
 			my $id = Time::HiRes::gettimeofday();
 			$c->stash('nytprof.id' => $id);
 			my $path = "/tmp/nytprof.$id";
 			DB::enable_profile($path);
-			warn "profile $path started\n";
 		}
 	);
 
@@ -22,10 +22,17 @@ sub register {
 	$app->plugins->add_hook(
 		after_dispatch => sub {
 			my ($self, $c) = @_;
+			my $p = $ENV{PROFILE} || return;
 			DB::disable_profile();
 			return unless my $id = $c->stash('nytprof.id');
-			my $path = "/tmp/nytprof.$id";
-			warn "profile $path ", -s $profile, " bytes\n";
+			my $duration = Time::HiRes::gettimeofday() - $id;
+			if ( $duration > $p ) {
+				my $path = "/tmp/nytprof.$id";
+				warn "profile $path $duration ", -s $path, " bytes\n";
+			} else {
+				warn "profile $path $duration < $p unlink\n";
+				unlink $path;
+			}
 		}
 	);
 }
