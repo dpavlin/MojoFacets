@@ -48,6 +48,7 @@ sub index {
 		}
 	}, $data_dir);
 
+	no warnings qw(uninitialized); # mtime
 	@files = sort { $loaded->{$b}->{mtime} <=> $loaded->{$a}->{mtime} || lc $a cmp lc $b } @files,
  			grep { defined $loaded->{$_}->{generated} } keys %$loaded;
 	my $size;
