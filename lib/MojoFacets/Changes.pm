@@ -20,6 +20,7 @@ sub index {
 	my $path = $self->param('path') || $self->session('path');
 	my $on_path = $self->param('on_path');
 	my $commit = $self->param('commit');
+	my $apply = $self->param('apply');
 	my ( $items, $unique2id );
 	if ( $on_path ) {
 		$items = $MojoFacets::Data::loaded->{$on_path}->{data}->{items};
@@ -77,6 +78,12 @@ sub index {
 				MojoFacets::Data::__path_rebuild_stats( $on_path );
 			}
 			$status = 'code';
+			if ( ( $apply || $commit ) && $e->{commit_changed} ) {
+				$status = 'found';
+				foreach my $c ( keys %{ $e->{commit_changed} } ) {
+					$status = 'missing' unless defined $MojoFacets::Data::loaded->{$path}->{stats}->{$c};
+				}
+			}
 		} else {
 			$status = 'unknown';
 		}
