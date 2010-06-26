@@ -15,7 +15,8 @@ sub index {
 	));
 
 	foreach my $name ( @config ) {
-		if ( my $val = $self->param($name) ) {
+		my $val = $self->param($name);
+		if ( defined $val ) {
 			$ENV{$name} = $val;
 			warn "$name = $val\n";
 		}
