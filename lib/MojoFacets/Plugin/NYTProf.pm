@@ -28,7 +28,9 @@ sub register {
 			my $duration = Time::HiRes::gettimeofday() - $id;
 			if ( $duration > $p ) {
 				my $path = "/tmp/nytprof.$id";
-				warn "profile $path $duration ", -s $path, " bytes\n";
+				my $new  = "/tmp/MojoFacets.profile-$id-$duration";
+				rename $path, $new;
+				warn "profile $new $duration ", -s $new, " bytes\n";
 			} else {
 				warn "profile $path $duration < $p unlink\n";
 				unlink $path;
