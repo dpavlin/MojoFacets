@@ -4,6 +4,7 @@
 <ul>
 % foreach my $path ( keys %$loaded ) {
 <li><%= $path %>
+<tt class=bytes><%= $self->_ref_size( $loaded->{$path} ) %></tt>
 <pre class=debug><%= dumper $loaded->{$path} %></pre>
 </li>
 % }
