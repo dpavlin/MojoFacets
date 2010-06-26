@@ -19,6 +19,11 @@ items:
 <a id=code href="<%= url_for( controller => 'code', action => 'index', id => 0 ) %>">code</a>
 <a id=console href="#" style="display:none">console</a>
 
+% if ( my $id = stash('nytprof.id') ) {
+&middot;
+<a href="<%= url_for( controller => 'profile', action => 'index', id => $id ) %>">profile</a>
+% }
+
 <span class=middle>
 </span>
 
