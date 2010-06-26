@@ -55,6 +55,19 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 
 </form>
 
+% if ( my $out = stash('out') ) {
+<pre class=debug><%= dumper $out %></pre>
+% }
+<form method=post>
+<input type=hidden name=name value="<%= $name %>">
+Eval code on each facet value and count:
+<tt>$out->{sum} += $v * $c</tt><br>
+<textarea name=code style="width: 100%">
+<%= param('code') %>
+</textarea>
+<input type=submit>
+</form>
+
 % if ( $#$facet_names < 5000 ) {
 <script type="text/javascript" src="/facet_graph.js"></script>
 % }

@@ -932,6 +932,21 @@ sub facet {
 		}
 	}
 
+	if ( my $code = $self->param('code') ) {
+		my $out;
+		foreach my $v ( keys %$facet ) {
+			my $c = $facet->{$v};
+			eval $code;
+			if ( $@ ) {
+				$out = $@;
+				warn "ERROR: $@\n$code\n";
+				last;
+			}
+		}
+		warn "out ",dump( $out );
+		$self->stash( out => $out );
+	}
+
 #	warn "# facet $name ",dump $facet;
 
 	my $checked;
