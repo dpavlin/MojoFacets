@@ -38,6 +38,7 @@ sub save_tx {
 	}
 }
 
+use MojoFacets::Plugin::NYTProf;
 
 # This method will run once at server start
 sub startup {
@@ -58,6 +59,8 @@ sub startup {
 				save_tx( $self, $tx );
 			}
 	);
+
+	MojoFacets::Plugin::NYTProf->register( $self );
 }
 
 
