@@ -1,0 +1,10 @@
+% layout 'default';
+
+<h1>$loaded</h1>
+<ul>
+% foreach my $path ( keys %$loaded ) {
+<li><%= $path %>
+<pre class=debug><%= dumper $loaded->{$path} %></pre>
+</li>
+% }
+</ul>
