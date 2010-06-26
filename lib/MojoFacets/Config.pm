@@ -8,14 +8,22 @@ use base 'Mojolicious::Controller';
 sub index {
 	my $self = shift;
 
-	foreach my $name ( qw( MASTER MAX_FACETS ) ) {
+	my @config = (qw(
+		MASTER
+		MAX_FACETS
+		PROFILE
+	));
+
+	foreach my $name ( @config ) {
 		if ( my $val = $self->param($name) ) {
 			$ENV{$name} = $val;
 			warn "$name = $val\n";
 		}
 	}
 
-	$self->render;
+	$self->render(
+		config => \@config,
+	);
 }
 
 1;

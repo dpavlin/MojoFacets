@@ -6,13 +6,16 @@
 
 <ul>
 
-<h2>Replication</h2>
-<li>MASTER
-<input type=text name=MASTER value="<%= $ENV{MASTER} %>">
+% foreach my $name ( @$config ) {
 
-<h2>Facet display</h2>
-<li>MAX_FACETS
-<input type=text name=MAX_FACETS value="<%= $ENV{MAX_FACETS} %>">
+<li>
+<label>
+<%= $name %>
+<input type=text name=<%= $name %> value="<%= $ENV{$name} %>">
+</label>
+</li>
+
+% }
 
 </ul>
 
