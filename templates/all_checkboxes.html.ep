@@ -57,13 +57,17 @@ function update_checked_count(full) {
 
 $("input[type='checkbox']").bind( 'click', update_checked_count );
 
+var toggle_checkbox = function() {
+		this.checked = ! this.checked;
+};
+
 $('a#included').click( function(){
-    $("label.included input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+    $("label.included input[type='checkbox']:not([disabled='disabled'])").each( toggle_checkbox );
 	update_checked_count(1);
 });
 
 $('a#excluded').click( function(){
-    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
+    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").each( toggle_checkbox );
 	update_checked_count(1);
 });
 
