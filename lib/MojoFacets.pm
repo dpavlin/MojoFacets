@@ -38,8 +38,6 @@ sub save_tx {
 	}
 }
 
-use MojoFacets::Plugin::NYTProf;
-
 # This method will run once at server start
 sub startup {
     my $self = shift;
@@ -59,8 +57,13 @@ sub startup {
 				save_tx( $self, $tx );
 			}
 	);
-
-	MojoFacets::Plugin::NYTProf->register( $self );
+	
+	eval 'use MojoFacets::Plugin::NYTProf';
+	if ( $@ ) {
+		warn "profile disabled: $@" if $@;
+	} else {
+		MojoFacets::Plugin::NYTProf->register( $self );
+	}
 }
 
 
