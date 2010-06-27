@@ -13,6 +13,14 @@ requires 'HTML::TableExtract';
 requires 'File::Path';
 requires 'Text::Unaccent::PurePerl';
 
+features(
+	'profile' => [
+		-default => 0,
+		'Time::HiRes',
+		'Devel::NYTProf',
+	],
+);
+
 build_requires 'Test::More';
 
 auto_install;
