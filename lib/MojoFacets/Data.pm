@@ -813,6 +813,8 @@ sub items {
 				} elsif ( ref $i->{$_} eq 'ARRAY' ) {
 					$v =join(',', @{ $i->{$_} });
 					$v = '\N' if length($v) == 0;
+				} elsif ( ! ref $i->{$_} ) {
+					$v = $i->{$_};
 				} else {
 					$v = dump $i->{$_};
 				}
