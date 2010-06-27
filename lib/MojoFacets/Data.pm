@@ -167,7 +167,7 @@ sub stats {
 sub _load_path {
 	my ( $self, $path ) = @_;
 
-	return if defined $loaded->{$path}->{'generated'};
+	return if defined $loaded->{$path}->{generated};
 
 	my $full_path = $self->app->home->rel_file( 'data/' . $path );
 	$self->redirect_to('/data/index') unless -r $full_path;
@@ -201,6 +201,7 @@ sub _load_path {
 			}
 			close($pipe);
 			warn "loaded ", $#{ $data->{items} } + 1, " items from $full_path\n";
+			$data->{generated}++;
 		} else {
 			$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
 		}
@@ -234,10 +235,11 @@ sub _load_path {
 		size => -s $full_path,
 		mtime => (stat($full_path))[9],
 		data => $data,
+		defined $data->{generated} ? ( generated => 1 ) : (),
 	};
 
 	$loaded->{ $path } = $info;
-	$self->_save( $path );
+	$self->_save( $path ) unless $info->{generated};
 
 }
 
