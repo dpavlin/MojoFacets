@@ -43,6 +43,9 @@ sub index {
 		} elsif ( -f $file && $file =~ m/\.csv$/i ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
+		} elsif ( -f $file && $file =~ m/\.storable/i ) {
+			$file =~ s/$data_dir\/*//;
+			push @files, $file;
 		} else {
 			#warn "IGNORE: $file\n";
 		}
@@ -186,6 +189,18 @@ sub _load_path {
 	if ( -f $full_path ) {
 		if ( $full_path =~ m/.csv/i ) {
 			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
+		} elsif ( $full_path =~ m/.storable/ ) {
+			warn "open $full_path ", -s $full_path, " bytes";
+			open(my $pipe, "<", $full_path) || die $!;
+			while ( my $o = eval { Storable::fd_retrieve $pipe } ) {
+				if ( defined $o->{item} ) {
+					push @{ $data->{items} }, $o->{item};
+				} else {
+					warn "SKIP ",dump($o);
+				}
+			}
+			close($pipe);
+			warn "loaded ", $#{ $data->{items} } + 1, " items from $full_path\n";
 		} else {
 			$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
 		}
