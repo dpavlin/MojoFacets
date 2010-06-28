@@ -26,7 +26,10 @@ sub register {
 			DB::disable_profile();
 			return unless my $id = $c->stash('nytprof.id');
 			my $duration = Time::HiRes::gettimeofday() - $id;
-			if ( $duration > $p ) {
+			if ( $c->stash('nytprof.disabled') ) {
+				warn "profile disabled";
+				unlink $path;
+			} elsif ( $duration > $p ) {
 				my $path = "/tmp/nytprof.$id";
 				my $new  = "/tmp/MojoFacets.profile.$id-$duration";
 				rename $path, $new;

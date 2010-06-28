@@ -16,8 +16,11 @@ sub index {
 	if ( my $profile = $self->param('profile') ) {
 warn "XXX profile $profile\n";
 		my $dir = $self->app->home->rel_dir('public') . "/profile/$profile";
-		mkpath $dir unless -d $dir;
-		system "nytprofhtml --file $path$profile --out $dir";
+		if ( ! -e $dir ) {
+			mkpath $dir unless -d $dir;
+			system "nytprofhtml --file $path$profile --out $dir";
+			$self->stash( 'nytprof.disabled' => 1 );
+		}
 		$self->redirect_to("/profile/$profile/index.html");
 	}
 
