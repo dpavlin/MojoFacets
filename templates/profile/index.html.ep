@@ -3,7 +3,10 @@
 <ul>
 % foreach my $profile ( @$profiles ) {
 %  my ( $t, $duration ) = split(/-/,$profile,2);
-<li><a target="<%= $profile %>" href="<%= url_for()->query( profile => $profile ) %>"><%= $t %></a> <%= $duration %>
+<li>
+<label>
+<a target="<%= $profile %>" href="<%= url_for()->query( profile => $profile ) %>"><%= $t %></a> <%= $duration %>
+<a class=remove href="<%= url_for( action => 'remove' )->query( profile => $profile ) %>">remove</a>
 </li>
 % }
 </ul>

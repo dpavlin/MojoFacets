@@ -30,4 +30,15 @@ warn "XXX profile $profile\n";
 	);
 }
 
+sub remove {
+	my $self = shift;
+
+	if ( my $profile = $self->param('profile') ) {
+		unlink "/tmp/MojoFacets.profile.$profile";
+		rmtree $self->app->home->rel_dir('public') . "/profile/$profile";
+	}
+
+	$self->redirect_to('/profile');
+}
+
 1
