@@ -3,11 +3,11 @@
   "version": "1",
   "icons": { "24": "24.png", "128": "128.png" },
   "launch": {
-    "web_url": "http://webpac2.rot13.org:3000/"
+    "web_url": "http://localhost:3000/"
   },
   "permissions": [],
   "web_content": {
     "enabled": true,
-    "origin": "http://webpac2.rot13.org"
+    "origin": "http://localhost"
   }
 }
