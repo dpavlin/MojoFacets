@@ -28,7 +28,7 @@ sub register {
 			my $duration = Time::HiRes::gettimeofday() - $id;
 			if ( $duration > $p ) {
 				my $path = "/tmp/nytprof.$id";
-				my $new  = "/tmp/MojoFacets.profile-$id-$duration";
+				my $new  = "/tmp/MojoFacets.profile.$id-$duration";
 				rename $path, $new;
 				warn "profile $new $duration ", -s $new, " bytes\n";
 			} else {

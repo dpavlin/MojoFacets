@@ -1,0 +1,11 @@
+% layout 'default';
+
+<ul>
+% foreach my $profile ( @$profiles ) {
+%  my ( $t, $duration ) = split(/-/,$profile,2);
+<li><a target="<%= $profile %>" href="<%= url_for()->query( profile => $profile ) %>"><%= $t %></a> <%= $duration %>
+</li>
+% }
+</ul>
+
+<pre class=debug><%= dumper $profiles %></pre>
