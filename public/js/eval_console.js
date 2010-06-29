@@ -1,6 +1,8 @@
 $(document).ready( function(){
 
-	$('form#eval textarea').each( function() {
+	var $form = $('form#eval');
+
+	$form.find('textarea').each( function() {
 		console.debug('grow',this);
 
 		var rows = this.rows;
@@ -16,6 +18,10 @@ $(document).ready( function(){
 		grow(this);
 		this.onkeyup = function() { grow(this) };
 	});
+
+	if ( $form.is(':visible') ) {
+		$('body').css({ 'margin-bottom': $form.height() });
+	}
 
 	$('input#close').click( function(){
 		console.debug( 'close console' );
@@ -33,8 +39,10 @@ $(document).ready( function(){
 		var $f = $('form#eval');
 		if ( $f.is(':visible') ) {
 			$f.hide();
+			$('body').css({ 'margin-bottom': 0 });
 		} else {
 			$f.show();
+			$('body').css({ 'margin-bottom': $form.height() });
 		}
 		return false;
 	}).show();
