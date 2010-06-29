@@ -16,10 +16,12 @@
 % while ( @$params ) {
 %	my $n = shift @$params;
 %	my $v = shift @$params;
-<li><label>
+<li><label class=checkbox_to_text>
 <%= $n %>
+<span class=value title="double click to edit">
 <input type=checkbox name="<%= $n %>" value="<%= $v %>" checked>
 <%= $v %>
+</span>
 </label>
 % }
 </ul>

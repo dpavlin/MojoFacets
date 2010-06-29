@@ -68,5 +68,15 @@ console.debug(this,link_html);
 		}).css({ 'background': '#ffe' });
 	});
 
+	$('label.checkbox_to_text span.value' ).live( 'dblclick', function() {
+		console.debug('checkbox to text',this);
+		var $checkbox = $(this).find('input[type=checkbox]');
+		$(this).html(
+			'<input type=text name="'+$checkbox.attr('name')+'" value="'+$checkbox.attr('value')+'">'
+		);
+
+	});
+
+	console.debug('ready');
 });
 </script>
