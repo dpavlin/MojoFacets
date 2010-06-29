@@ -62,6 +62,7 @@ Eval code on each facet <tt>$value</tt> and <tt>$count</tt>
 <pre>
 $out->{sum} += $value * $count;
 $out->{sum}->{ $checked ? 'on' : 'off' } += $count;
+$checked = 1 if $count > 10;
 </pre>
 </div>
 % if ( my $out = stash('out') ) {
