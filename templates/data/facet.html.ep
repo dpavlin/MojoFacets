@@ -60,8 +60,9 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 % }
 <form method=post>
 <input type=hidden name=name value="<%= $name %>">
-Eval code on each facet value and count:
-<tt>$out->{sum} += $v * $c</tt><br>
+Eval code on each facet <tt>$value</tt> and <tt>$count</tt>
+<tt class=debug>$out->{sum} += $value * $count</tt>
+<br>
 <textarea name=code style="width: 100%">
 <%= param('code') %>
 </textarea>

@@ -953,8 +953,8 @@ sub facet {
 
 	if ( my $code = $self->param('code') ) {
 		my $out;
-		foreach my $v ( keys %$facet ) {
-			my $c = $facet->{$v};
+		foreach my $value ( keys %$facet ) {
+			my $count = $facet->{$value};
 			eval $code;
 			if ( $@ ) {
 				$out = $@;
