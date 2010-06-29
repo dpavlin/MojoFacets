@@ -55,7 +55,7 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 
 </form>
 
-<form method=post>
+<form id=eval method=post>
 <input type=hidden name=name value="<%= $name %>">
 <div style="float: right">
 Eval code on each facet <tt>$value</tt> and <tt>$count</tt>
@@ -71,7 +71,8 @@ $checked = 1 if $count > 10;
 <textarea name=code style="width: 100%">
 <%= param('code') %>
 </textarea>
-<input type=submit>
+<input type=submit value="Eval on facet values">
+<input id=close name=close  type=button value="Close" style="float: right">
 </form>
 
 % if ( $#$facet_names < 5000 ) {
@@ -80,14 +81,19 @@ $checked = 1 if $count > 10;
 <script type="text/javascript">
 $(document).ready( function(){
 	console.debug('check alert');
-	var a = $('.alert');
-	if ( a.length ) {
-		$('.middle').html( a.html() );
+	var $a = $('.alert');
+	if ( $a.length ) {
+		$('.middle').html( $a.html() );
 	}
+
+	$('a#console').show();
+	
 });
 </script>
 
 % if ( $#$facet_names < 100 ) {
 <pre class=debug><%#= dumper $facet %></pre>
 % }
+
+<script type="text/javascript" src="/js/eval_console.js"></script>
 

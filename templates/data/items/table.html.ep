@@ -95,37 +95,6 @@ filter
 <input id=close name=close  type=button value="Close" style="float: right">
 </form>
 
-<script type="text/javascript" src="/js/jquery.textarea_grow.js"></script>
-<script type="text/javascript">
-
-$(document).ready( function(){
-
-	$('form#eval textarea').textarea_grow();
-	$('input#close').click( function(){
-		console.debug( 'close console' );
-		$.post( document.location, { code: '' } );
-		$(this).parent().hide();
-	});
-
-	var $out = $('pre#out');
-	if ( $out.height() > ( $(window).height() / 3 * 2 ) ) {
-		$out.height( $(window).height() / 3 * 2 ).css({ overflow: 'auto' });
-	}
-
-	$('a#console').click( function() {
-		console.debug('open console');
-		var $f = $('form#eval');
-		if ( $f.is(':visible') ) {
-			$f.hide();
-		} else {
-			$f.show();
-		}
-		return false;
-	}).show();
-
-});
-
-</script>
-
+<script type="text/javascript" src="/js/eval_console.js"></script>
 <script type="text/javascript" src="/edit_table.js"></script>
 
