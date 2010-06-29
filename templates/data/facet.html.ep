@@ -55,7 +55,7 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 
 </form>
 
-<form id=eval method=post>
+<form id=eval method=post style="<%= param('code') ? '' : 'display:none' %>">
 <input type=hidden name=name value="<%= $name %>">
 <div style="float: right">
 Eval code on each facet <tt>$value</tt> and <tt>$count</tt>
@@ -66,11 +66,10 @@ $checked = 1 if $count > 10;
 </pre>
 </div>
 % if ( my $out = stash('out') ) {
-<pre class=debug><%= dumper $out %></pre>
+<pre id=out><%= dumper $out %></pre>
 % }
-<textarea name=code style="width: 100%">
-<%= param('code') %>
-</textarea>
+% my $rows = scalar split(/\n/,param('code'));
+<textarea name=code rows=<%= $rows %>><%= param('code') %></textarea>
 <input type=submit value="Eval on facet values">
 <input id=close name=close  type=button value="Close" style="float: right">
 </form>
