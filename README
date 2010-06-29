@@ -71,6 +71,11 @@ They use column1,column2.description.pl notatition so only snippets which have a
 column will be shown.
 
 
+Facet code eval:
+
+Code snippet will be executed for each facet $value and will report $count and $checked state.
+
+
 Export data:
 
 All exported data is stored in public/export/database/

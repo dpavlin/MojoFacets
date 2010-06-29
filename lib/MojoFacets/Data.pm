@@ -951,10 +951,14 @@ sub facet {
 		}
 	}
 
+	my $checked = $self->_checked( @{ $filters->{$name} } ) if defined $filters->{$name};
+
 	if ( my $code = $self->param('code') ) {
 		my $out;
+		my $checked_values = $checked;
 		foreach my $value ( keys %$facet ) {
 			my $count = $facet->{$value};
+			my $checked = defined $checked_values->{$value};
 			eval $code;
 			if ( $@ ) {
 				$out = $@;
@@ -968,13 +972,10 @@ sub facet {
 
 #	warn "# facet $name ",dump $facet;
 
-	my $checked;
 	my @facet_names =
 		  $all                      ? keys %$facet
 		: defined $filters->{$name} ? @{ $filters->{$name} }
 		: keys %$facet;
-
-	$checked = $self->_checked( @{ $filters->{$name} } ) if defined $filters->{$name};
 
 	my $numeric = $self->_is_numeric($name);
 

@@ -55,14 +55,18 @@ First <a title="config MAX_FACETS" href="/config"><%= $max_facets %></a> shown
 
 </form>
 
+<form method=post>
+<input type=hidden name=name value="<%= $name %>">
+<div style="float: right">
+Eval code on each facet <tt>$value</tt> and <tt>$count</tt>
+<pre>
+$out->{sum} += $value * $count;
+$out->{sum}->{ $checked ? 'on' : 'off' } += $count;
+</pre>
+</div>
 % if ( my $out = stash('out') ) {
 <pre class=debug><%= dumper $out %></pre>
 % }
-<form method=post>
-<input type=hidden name=name value="<%= $name %>">
-Eval code on each facet <tt>$value</tt> and <tt>$count</tt>
-<tt class=debug>$out->{sum} += $value * $count</tt>
-<br>
 <textarea name=code style="width: 100%">
 <%= param('code') %>
 </textarea>
