@@ -4,7 +4,7 @@
 <a id="none" href="#">none</a>
 
 <label for=filter_regex>regex:
-<input type=text name=filter_regex>
+<input type=text name=filter_regex autofocus>
 <a id="included" href="#" style="display:none">included</a>
 <a id="excluded" href="#" style="display:none">excluded</a>
 </label>
