@@ -14,6 +14,7 @@ use Storable;
 use Time::HiRes qw(time);
 use File::Path qw(mkpath);
 use Text::Unaccent::PurePerl;
+use Digest::MD5;
 
 use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
@@ -359,6 +360,8 @@ sub _column_from_unac {
 }
 
 sub _export_path {
+	my $max_length = 80;
+
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
 	if ( ! $path ) {
@@ -368,6 +371,9 @@ sub _export_path {
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
 	my $name = join('.', map { __unac($_) } @_ );
+	if ( length($name) > $max_length ) {
+		$name = substr($name,0,$max_length) . Digest::MD5::md5_hex substr($name,$max_length);
+	}
 	my $full = $dir . '/' . $name;
 	$full =~ s/\/+$// if -d $full; # strip trailing slash for dirs
 	return $full;
@@ -805,7 +811,7 @@ sub items {
 
 	if ( $self->param('export') ) {
 		my $export_path = $self->_export_path( 'items', @columns);
-		open(my $fh, '>', $export_path) || warn "ERROR: can't open $export_path: $!";
+		open(my $fh, '>', $export_path) || die "ERROR: can't open $export_path: $!";
 		foreach my $f ( 0 .. $#$filtered ) {
 			print $fh join("\t", map {
 				my $i = $data->{items}->[ $filtered->[$f] ];
