@@ -67,7 +67,10 @@ $('a#excluded').click( function(){
 	update_checked_count(1);
 });
 
-$('input[name=filter_regex]').focusout( function(e) {
+
+// regex for column names
+
+var apply_regex = function(e) {
 	console.debug( this, e );
 	var r = new RegExp( this.value ,'i');
 	var included = 0;
@@ -84,7 +87,22 @@ $('input[name=filter_regex]').focusout( function(e) {
 
 	$('a#included').text(included).show();
 	$('a#excluded').text(excluded).show();
+	return false;
+};
+
+$('input[name=filter_regex]')
+.focusout( apply_regex )
+.keypress( function(e) {
+	// disable enter
+	var code = e.keyCode ? e.keyCode : e.which;
+	//console.debug('key code',code);
+	if ( code == 13 ) {
+		return apply_regex(e);
+	} else {
+		return true;
+	}
 });
+
 
 update_checked_count(1);
 
