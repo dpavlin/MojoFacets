@@ -5,7 +5,6 @@
 
 <label for=filter_regex>regex:
 <input type=text name=filter_regex>
-<span class=hint>tab or click outside to apply</span>
 <a id="included" href="#" style="display:none">included</a>
 <a id="excluded" href="#" style="display:none">excluded</a>
 </label>

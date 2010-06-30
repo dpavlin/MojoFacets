@@ -8,6 +8,7 @@
 	content: ")";
 }
 
+/*
 label span.hint {
 	display: none;
 	position: absolute;
@@ -19,7 +20,7 @@ label span.hint {
 label:hover span.hint {
 	display: block;
 }
-
+*/
 
 span.sort-by {
 	float: right;
