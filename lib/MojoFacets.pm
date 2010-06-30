@@ -60,7 +60,7 @@ sub startup {
 	
 	eval 'use MojoFacets::Plugin::NYTProf';
 	if ( $@ ) {
-		warn "profile disabled: $@" if $@;
+		warn "profile disabled: ",substr($@,0,40) if $@;
 	} else {
 		MojoFacets::Plugin::NYTProf->register( $self );
 	}
