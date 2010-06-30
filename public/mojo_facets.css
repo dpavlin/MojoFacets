@@ -163,6 +163,15 @@ form.action_filter {
 	float: right;
 }
 
+.action_view {
+	border: 1px dashed #ccc;
+}
+
+.action_hide {
+	text-decoration: line-through;
+	color: black;
+}
+
 .bytes {
 	text-align: right;
 	font-family: monospace;

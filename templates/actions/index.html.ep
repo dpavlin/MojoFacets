@@ -46,11 +46,12 @@ $(document).ready( function(){
 				var form = $(data).filter('form');
 				console.debug('ajax',e,form);
 				e.html( form )
-				.addClass( 'action_box' )
+				.addClass( 'action_view' )
+				.removeClass( 'action_hide' )
 				.append(
 					$('<input type=button value=hide>').click( function() {
 console.debug(this,link_html);
-					e.html( link_html ).removeClass( 'action_box' ).addClass( 'action_viewed' );
+					e.html( link_html ).removeClass( 'action_view' ).addClass( 'action_hide' );
 					})
 				)
 				;
