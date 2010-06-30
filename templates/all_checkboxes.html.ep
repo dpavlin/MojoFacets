@@ -4,9 +4,9 @@
 <a id="none" href="#">none</a>
 
 <label for=filter_regex>
-<input tabindex=1 type=text name=filter_regex title="enter regex to filter values" placeholder="regex">
-<a tabindex=2 id="included" href="#" style="display:none">included</a>
-<a tabindex=3 id="excluded" href="#" style="display:none">excluded</a>
+<input  type=text name=filter_regex title="enter regex to filter values" placeholder="regex">
+<a id="included" href="#" style="display:none">included</a>
+<a id="excluded" href="#" style="display:none">excluded</a>
 </label>
 </span>
 
@@ -70,8 +70,12 @@ $('a#excluded').click( function(){
 // regex for column names
 
 var apply_regex = function(e) {
-	console.debug( this, e );
-	var r = new RegExp( this.value ,'i');
+	var user_regex = this.value;
+	console.debug( this, e, user_regex );
+
+	if ( user_regex == '' ) return false;
+
+	var r = new RegExp( user_regex,'i');
 	var included = 0;
 	var excluded = 0;
     $("input[type='checkbox']:not([disabled='disabled'])").each( function(i,element){
