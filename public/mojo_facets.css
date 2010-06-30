@@ -250,7 +250,7 @@ tr.hidden {
 }
 
 /* templates/all_checkboxes.html.ep */
-span#column_selection {
+span.count span#column_selection {
 	position: absolute;
 	left: 15em;
 }
