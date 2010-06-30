@@ -1,3 +1,4 @@
+<span id=column_selection>
 <a id="all"  href="#">all</a>
 <a id="toggle" href="#">toggle</a>
 <a id="none" href="#">none</a>
@@ -8,6 +9,7 @@
 <a id="included" href="#" style="display:none">included</a>
 <a id="excluded" href="#" style="display:none">excluded</a>
 </label>
+</span>
 
 
 <script type="text/javascript">

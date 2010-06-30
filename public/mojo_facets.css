@@ -89,6 +89,7 @@ div.col_opts {
 
 .chart {
 	float: right;
+	clear: right;
 	position: relative;
 	margin-top: 1em;
 }
@@ -248,4 +249,8 @@ tr.hidden {
 	margin: 1em;
 }
 
-
+/* templates/all_checkboxes.html.ep */
+span#column_selection {
+	position: absolute;
+	left: 15em;
+}
