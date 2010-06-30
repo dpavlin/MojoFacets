@@ -16,12 +16,6 @@
 
 $(document).ready( function(){
 
-$('label span.hint').position({
-	my: 'left bottom',
-	at: 'left top',
-	of: $('label input'),
-});
-
 $('a#all').click( function(){
     $("input[type='checkbox']:not([disabled='disabled'])").attr('checked', true);
 	 $('#checked-count').text( $('#facet-count').text() );

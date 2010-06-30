@@ -13,7 +13,6 @@ label span.hint {
 	position: absolute;
 	background: #fff;
 	color: #888;
-	z-index: 100;
 	padding: 3px;
 }
 
@@ -89,7 +88,7 @@ div.col_opts {
 
 .chart {
 	float: right;
-	clear: right;
+	clear: both;
 	position: relative;
 	margin-top: 1em;
 }
