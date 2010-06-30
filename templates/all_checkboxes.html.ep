@@ -3,10 +3,10 @@
 <a id="toggle" href="#">toggle</a>
 <a id="none" href="#">none</a>
 
-<label for=filter_regex>regex:
-<input type=text name=filter_regex autofocus>
-<a id="included" href="#" style="display:none">included</a>
-<a id="excluded" href="#" style="display:none">excluded</a>
+<label for=filter_regex>
+<input tabindex=1 type=text name=filter_regex title="enter regex to filter values" placeholder="regex">
+<a tabindex=2 id="included" href="#" style="display:none">included</a>
+<a tabindex=3 id="excluded" href="#" style="display:none">excluded</a>
 </label>
 </span>
 
