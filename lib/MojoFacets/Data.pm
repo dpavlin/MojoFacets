@@ -812,6 +812,7 @@ sub items {
 	if ( $self->param('export') ) {
 		my $export_path = $self->_export_path( 'items', @columns);
 		open(my $fh, '>', $export_path) || die "ERROR: can't open $export_path: $!";
+		print $fh "#",join("\t",@columns),"\n";
 		foreach my $f ( 0 .. $#$filtered ) {
 			print $fh join("\t", map {
 				my $i = $data->{items}->[ $filtered->[$f] ];
