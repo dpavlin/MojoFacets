@@ -79,7 +79,7 @@ var apply_regex = function(e) {
 	var included = 0;
 	var excluded = 0;
     $("input[type='checkbox']:not([disabled='disabled'])").each( function(i,element){
-		if ( r.test( v ) ) {
+		if ( r.test( user_regex ) ) {
 			$(this).parent().removeClass('excluded').addClass('included');
 			included++;
 		} else {
