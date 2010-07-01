@@ -17,6 +17,16 @@ $(document).ready(function() {
 </script>
 
 
+<div style="float:right">
+% if ( $views ) {
+Load view:
+<ul>
+%  foreach my $view ( @$views ) {
+<li><a href="/data/columns/<%= $view %>"><%= $view %></a>
+%  }
+</ul>
+% }
+</div>
 
 
 <h2>Select and reorder columns</h2>
@@ -46,7 +56,9 @@ $(document).ready(function() {
 
 <input type=submit value="Select">
 
-from <input type=text name=path value="<%= session('path') %>" readonly>
+<input type=hidden name=path value="<%= session('path') %>" readonly>
+
+<input type=text name=view placeholder="save view">
 
 <a href="<%= url_for( action => 'stats' ) %>">rebuild stats</a>
 

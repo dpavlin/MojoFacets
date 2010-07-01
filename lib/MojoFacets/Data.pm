@@ -382,10 +382,28 @@ sub _export_path {
 sub columns {
     my $self = shift;
 
+	my $view_path = $self->_permanent_path( 'views' );
+
 	if ( $self->param('columns') ) {
 		my @columns = $self->_param_array('columns');
 		write_file( $self->_permanent_path( 'columns' ), { binmode => ':utf8' }, map { "$_\n" } @columns );
+		if ( my $view = $self->param('view') ) {
+			mkdir $view_path unless -e $view_path;
+			write_file( "$view_path/$view", { binmode => ':utf8' }, map { "$_\n" } @columns );
+			warn "view $view_path/$view ", -s "$view_path/$view", " bytes\n";
+		}
+
 		$self->redirect_to('/data/items');
+	}
+
+	if ( my $id = $self->param('id') ) {
+		my $view_full = "$view_path/$id";
+		if ( -f $view_full ) {
+			my @columns = map { chomp; $_ } read_file $view_full, binmode => ':utf8';
+			warn "view $view_full loaded ", dump @columns;
+			$self->session( 'columns' => [ @columns ] );
+			$self->redirect_to('/data/items');
+		}
 	}
 
 	my $stats = $self->_loaded( 'stats' );
@@ -397,11 +415,18 @@ sub columns {
 		push @columns, $c unless grep { /^\Q$c\E$/ } @columns;
 	}
 
+	my @views;
+	if ( -d $view_path ) {
+		@views = map { s{^\Q$view_path\E/*}{}; $_ } glob "$view_path/*";
+		warn "# views ",dump @views;
+	}
+
     $self->render(
 		message => 'Select columns to display',
 		stats => $stats,
 		columns => \@columns,
 		checked => $self->_checked( $self->_param_array('columns') ),
+		views => \@views,
 	);
 }
 
