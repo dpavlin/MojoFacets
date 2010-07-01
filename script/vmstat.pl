@@ -44,7 +44,7 @@ while(<$in>) {
 	my @header = @{ $headers->{$#v} };
 	foreach my $i ( 0 .. $#header ) {
 		$item->{ $header[$i] } = $v[$i];
-		$item->{ $header[$i] . '.diff' } = $diff->[$i];
+#		$item->{ $header[$i] . '.diff' } = $diff->[$i];
 		$item->{t} = time();
 	}
 	emit { item => $item };
