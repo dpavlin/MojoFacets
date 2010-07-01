@@ -69,9 +69,7 @@ $('a#excluded').click( function(){
 
 // regex for column names
 
-var apply_regex = function(e) {
-	var user_regex = this.value;
-	console.debug( this, e, user_regex );
+var filter_regex = function(user_regex) {
 
 	if ( user_regex == '' ) return false;
 
@@ -90,17 +88,19 @@ var apply_regex = function(e) {
 
 	$('a#included').text(included).show();
 	$('a#excluded').text(excluded).show();
-	return false;
+
+	console.debug('filter_regex',included,excluded);
 };
 
 $('input[name=filter_regex]')
-.focusout( apply_regex )
+.focusout( function(e) { filter_regex( this.value ) } )
 .keypress( function(e) {
 	// disable enter
 	var code = e.keyCode ? e.keyCode : e.which;
 	//console.debug('key code',code);
 	if ( code == 13 ) {
-		return apply_regex(e);
+		filter_regex( this.value );
+		return false;
 	} else {
 		return true;
 	}
