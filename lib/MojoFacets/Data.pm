@@ -622,7 +622,7 @@ sub items {
 		warn "show $show\n";
 	}
 
-	my $path = $self->session('path');
+	my $path = $self->_param_scalar('path');
 
 	my @columns = $self->_param_array('columns');
 	$self->redirect_to('/data/columns') unless @columns;
