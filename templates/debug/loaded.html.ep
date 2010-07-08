@@ -1,3 +1,4 @@
 % layout 'default';
 
 <pre class=debug><%= dumper $loaded %></pre>
+<a href="/debug">debug</a>
