@@ -24,4 +24,17 @@ sub _ref_size {
 	tell($fh);
 }
 
+sub loaded {
+	my $self = shift;
+
+	my $path = $self->session('path');
+	my $key  = $self->param('id');
+
+	my $loaded = $MojoFacets::Data::loaded->{$path}->{$key} || die "no $path $key in loaded";
+
+	$self->render(
+		loaded => $loaded,
+	);
+}
+
 1

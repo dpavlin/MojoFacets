@@ -1,0 +1,3 @@
+% layout 'default';
+
+<pre class=debug><%= dumper $loaded %></pre>
