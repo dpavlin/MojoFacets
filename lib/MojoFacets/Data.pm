@@ -360,8 +360,6 @@ sub _column_from_unac {
 }
 
 sub _export_path {
-	my $max_length = 80;
-
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
 	if ( ! $path ) {
@@ -370,13 +368,21 @@ sub _export_path {
 	}
 	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
+	my $name = __export_path_name( $path, @_ );
+	my $full = $dir . '/' . $name;
+	$full =~ s/\/+$// if -d $full; # strip trailing slash for dirs
+	return $full;
+}
+
+sub __export_path_name {
+	my $max_length = 80;
+
+	my $path = shift;
 	my $name = join('.', map { __unac($_) } @_ );
 	if ( length($name) > $max_length ) {
 		$name = substr($name,0,$max_length) . Digest::MD5::md5_hex substr($name,$max_length);
 	}
-	my $full = $dir . '/' . $name;
-	$full =~ s/\/+$// if -d $full; # strip trailing slash for dirs
-	return $full;
+	return $name;
 }
 
 sub columns {
