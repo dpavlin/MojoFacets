@@ -13,12 +13,14 @@ sub index {
 	my $self = shift;
 
 	my $columns = $self->session('columns') || $self->redirect_to('/data/columns');
+	my $path    = $self->session('path')    || $self->redirect_to('/data/load');
 
-	my $name = join('.', 'items', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n } @$columns );
+#	my $name = join('.', 'items', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n } @$columns );
+	my $name = MojoFacets::Data::__export_path_name( $path, 'items', @$columns );
 
 	warn "# name $name\n";
 
-	my $url = '/export/' . $self->session('path') . '/' . $name;
+	my $url = "/export/$path/$name";
 	my $dir = $self->app->home->rel_dir('public');
 
 	if ( -e "$dir/$url" ) {
@@ -57,8 +59,12 @@ warn "gnuplot $g";
 		print $gnuplot $g;
 		close $gnuplot;
 
-		$self->redirect_to( "$url.png" );
-		#$self->render_text( "$url.png" );
+		if ( -e "$dir/$url.png" ) {
+			warn "redirect $url.png";
+			$self->redirect_to( "$url.png" );
+		} else {
+			$self->render_text( "no $dir/$url.png" );
+		}
 	} else {
 		$self->render_text("no graph for $url");
 	}
