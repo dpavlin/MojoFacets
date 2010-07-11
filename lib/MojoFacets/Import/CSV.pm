@@ -23,9 +23,13 @@ sub data {
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
 
-	my $delimiter = qr/;/;
+	my $delimiter = qr/,/;
 
-	shift @lines; # FIXME ship non-header line
+	if ( $lines[0] !~ /;/ && $lines[1] =~ /;/ ) {
+		shift @lines; # FIXME ship non-header line
+		$delimiter = qr/;/;
+	}
+
 	my $header_line = shift @lines;
 
 	my @header = split( $delimiter, $header_line );
