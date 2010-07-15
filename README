@@ -12,6 +12,9 @@ Multi-line values should be wrapped in ^multi-line-text^
 If you save bounch of html files with table in directory with .html extension, they will
 we all read as single data set, allowing easy analysys of search results, for example.
 
+CSV files with .csv extension are parsed using , as delimiter. Encoding is utf8
+and can be specified in filename, before extension like this: data.encoding.csv
+
 
 Start with:
 
