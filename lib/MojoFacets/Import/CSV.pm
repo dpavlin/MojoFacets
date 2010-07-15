@@ -10,15 +10,20 @@ use Data::Dump qw(dump);
 use Encode;
 
 __PACKAGE__->attr('path');
-__PACKAGE__->attr('full_path');
+__PACKAGE__->attr('full_path'); # FIXME remove full_path
 
 sub data {
 	my $self = shift;
 
-	my $path = $self->path;
+	my $path = $self->full_path || $self->path;
 
-	my $data = read_file $self->full_path, { binmode => ':raw' }; # FIXME configurable!
-	$data = decode('cp1250', $data);
+	my $data = read_file $path, { binmode => ':raw' }; # FIXME configurable!
+	my $encoding = 'utf-8';
+	if ( $path =~ m/\.(\w+).csv/i ) {
+		$encoding = $1;
+		warn "decoding ", length($data), " bytes using $encoding\n";
+		$data = decode($encoding, $data);
+	}
 
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
@@ -29,6 +34,8 @@ sub data {
 		shift @lines; # FIXME ship non-header line
 		$delimiter = qr/;/;
 	}
+
+	warn "$path ", $#lines + 1, " lines encoding: $encoding delimiter:",dump($delimiter);
 
 	my $header_line = shift @lines;
 
