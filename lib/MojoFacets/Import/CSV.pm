@@ -19,6 +19,7 @@ sub _split_line {
 	my @v;
 	while ( $line ) {
 		my $v;
+		$line =~ s/""/_qq_/gc;
 		if ( $line =~ s/^"\s*([^"]+)\s*"\Q$delimiter\E?// ) {
 			$v = $1;
 		} elsif ( $line =~ s/^\s*([^\Q$delimiter\E]+)\s*\Q$delimiter\E?// ) {
@@ -30,6 +31,7 @@ sub _split_line {
 		}
 
 		$v =~ s/^\s*(.+?)\s*$/$1/;
+		$v =~ s/_qq_/"/g;
 		push @v, $v;
 	}
 
