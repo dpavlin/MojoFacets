@@ -19,8 +19,9 @@ sub _split_line {
 	my @v;
 	while ( $line ) {
 		my $v;
-		$line =~ s/""/_qq_/gc;
-		if ( $line =~ s/^"\s*([^"]+)\s*"\Q$delimiter\E?// ) {
+		if ( $line =~ s/^"// ) {
+			$line =~ s/""/_qq_/gc;
+			$line =~ s/^\s*([^"]+)\s*"\Q$delimiter\E?// || die "can't parse $line";
 			$v = $1;
 		} elsif ( $line =~ s/^\s*([^\Q$delimiter\E]+)\s*\Q$delimiter\E?// ) {
 			$v = $1;
