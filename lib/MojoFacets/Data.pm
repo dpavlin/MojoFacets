@@ -1204,4 +1204,16 @@ sub __loaded_paths {
 		keys %$loaded;
 }
 
+sub unlink {
+	my $self = shift;
+	my $path = $self->param('path');
+	if ( $path =~ m{^/tmp/mojo_facets.} ) {
+		unlink $path;
+		warn "# unlink $path";
+	} else {
+		warn "WARNING: $path unlink ignored";
+	}
+	$self->redirect_to( '/data/load' );
+}
+
 1;

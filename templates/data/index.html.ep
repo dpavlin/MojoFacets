@@ -17,7 +17,10 @@
 <%= $n %>
 </label>
 </td><td class=bytes><%= $size->{$n} %>
-</td><td class=bytes><%= -s $dump_path->{$n} %>
+</td><td class=bytes>
+% if ( my $size = -s $dump_path->{$n} ) {
+<a title="remove" href="/data/unlink?path=<%= $dump_path->{$n} %>"><%= $size %></a>
+% }
 </td><td align=right><%= defined $loaded->{$n}->{data} ? $#{ $loaded->{$n}->{data}->{items} } + 1 : '' %>
 </td><td align=right><%= defined $changes->{$n} ? $#{ $changes->{$n} } + 1 : '' %>
 </td><td><input name=paths type=checkbox value="<%= $n %>" <%= defined $loaded->{$n}->{stats} ? 'checked' : '' %>>
