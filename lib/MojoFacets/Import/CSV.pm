@@ -18,15 +18,19 @@ sub _split_line {
 	my ( $delimiter, $line ) = @_;
 	my @v;
 	while ( $line ) {
-		if ( $line =~ s/^"([^"]+)"\Q$delimiter\E?// ) {
-			push @v, $1;
-		} elsif ( $line =~ s/^([^\Q$delimiter\E]+)\Q$delimiter\E?// ) {
-			push @v, $1;
-		} elsif ( $line =~ s/^\Q$delimiter\E// ) {
-			push @v, $null;
+		my $v;
+		if ( $line =~ s/^"\s*([^"]+)\s*"\Q$delimiter\E?// ) {
+			$v = $1;
+		} elsif ( $line =~ s/^\s*([^\Q$delimiter\E]+)\s*\Q$delimiter\E?// ) {
+			$v = $1;
+		} elsif ( $line =~ s/^\s*\Q$delimiter\E// ) {
+			$v = $null;
 		} else {
 			die "can't parse [$line]\n";
 		}
+
+		$v =~ s/^\s*(.+?)\s*$/$1/;
+		push @v, $v;
 	}
 
 	return @v;
