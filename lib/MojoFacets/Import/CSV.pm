@@ -21,9 +21,9 @@ sub data {
 	my $encoding = 'utf-8';
 	if ( $path =~ m/\.(\w+).csv/i ) {
 		$encoding = $1;
-		warn "decoding ", length($data), " bytes using $encoding\n";
-		$data = decode($encoding, $data);
 	}
+	warn "decoding ", length($data), " bytes using $encoding\n";
+	$data = decode($encoding, $data);
 
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
