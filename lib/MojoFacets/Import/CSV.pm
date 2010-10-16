@@ -12,6 +12,26 @@ use Encode;
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path'); # FIXME remove full_path
 
+my $null = ''; # FIXME undef?
+
+sub _split_line {
+	my ( $delimiter, $line ) = @_;
+	my @v;
+	while ( $line ) {
+		if ( $line =~ s/^"([^"]+)"\Q$delimiter\E?// ) {
+			push @v, $1;
+		} elsif ( $line =~ s/^([^\Q$delimiter\E]+)\Q$delimiter\E?// ) {
+			push @v, $1;
+		} elsif ( $line =~ s/^\Q$delimiter\E// ) {
+			push @v, $null;
+		} else {
+			die "can't parse [$line]\n";
+		}
+	}
+
+	return @v;
+}
+
 sub data {
 	my $self = shift;
 
@@ -28,29 +48,26 @@ sub data {
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
 
-	my $delimiter = qr/,/;
+	my $delimiter = ',';
 
 	if ( $lines[0] !~ /;/ && $lines[1] =~ /;/ ) {
 		shift @lines; # FIXME ship non-header line
-		$delimiter = qr/;/;
+		$delimiter = ';';
 	}
 
 	warn "$path ", $#lines + 1, " lines encoding: $encoding delimiter:",dump($delimiter);
 
 	my $header_line = shift @lines;
 
-	my @header = map { s/^"(.+)"$/$1/; s/^\s*(.+?)\s*$/$1/; $_ } split( $delimiter, $header_line );
+	my @header = _split_line( $delimiter, $header_line );
 	warn "# header ",dump( @header );
 
 	while ( my $line = shift @lines ) {
 		chomp $line;
-		my @v = split($delimiter, $line);
+		my @v = _split_line($delimiter, $line);
 		my $item;
 		foreach my $i ( 0 .. $#v ) {
-			my $v = $v[$i];
-			$v =~ s/^"(.+)"$/$1/;
-			$v =~ s/^\s*(.+?)\s*$/$1/;
-			$item->{ $header[$i] || "f_$i" } = [ $v ];
+			$item->{ $header[$i] || "f_$i" } = [ $v[$i] ];
 		}
 		push @{ $data->{items} }, $item;
 	}
