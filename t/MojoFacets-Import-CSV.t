@@ -10,7 +10,10 @@ use lib 'lib';
 
 use_ok('MojoFacets::Import::CSV');
 
-ok( my $o = MojoFacets::Import::CSV->new( path => 'data/ESB_izvadak-ziro.cp1250.csv' ), 'new' );
+my $csv = (glob 'data/*.csv')[0];
+diag "using $csv";
+
+ok( my $o = MojoFacets::Import::CSV->new( path => $csv ), 'new' );
 
 ok( my $data = $o->data, 'data' );
 diag dump($data);
