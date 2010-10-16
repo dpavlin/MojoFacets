@@ -39,7 +39,7 @@ sub data {
 
 	my $header_line = shift @lines;
 
-	my @header = split( $delimiter, $header_line );
+	my @header = map { s/^"(.+)"$/$1/; $_ } split( $delimiter, $header_line );
 	warn "# header ",dump( @header );
 
 	while ( my $line = shift @lines ) {
@@ -47,7 +47,9 @@ sub data {
 		my @v = split($delimiter, $line);
 		my $item;
 		foreach my $i ( 0 .. $#v ) {
-			$item->{ $header[$i] || "f_$i" } = [ $v[$i] ];
+			my $v = $v[$i];
+			$v =~ s/^"(.+)"$/$1/;
+			$item->{ $header[$i] || "f_$i" } = [ $v ];
 		}
 		push @{ $data->{items} }, $item;
 	}
