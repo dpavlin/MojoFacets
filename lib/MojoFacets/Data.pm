@@ -732,6 +732,18 @@ sub items {
 			__commit_path_code( $path, $i, $code, \$commit_changed );
 		}
 
+		# this might move before $out to recalculate stats on source dataset?
+		__path_rebuild_stats( $path );
+		my $c = { map { $_ => 1 } @columns };
+		my @added_columns = sort grep { ! $c->{$_} } keys %$commit_changed;
+		warn "# added_columns ",dump( @added_columns );
+		unshift @columns, @added_columns;
+
+		$loaded->{$path}->{columns} = [ @columns ];
+		warn "# new columns ",dump( @columns );
+
+		__invalidate_path_column( $path, $_ ) foreach keys %$commit_changed;
+
 		$self->_save_change({
 			path => $path,
 			time => $self->param('time') || time(),
@@ -798,18 +810,7 @@ sub items {
 			return; # FIXME needed to correctly show columns
 		}
 
-		# this might move before $out to recalculate stats on source dataset?
-		__path_rebuild_stats( $path );
-		my $c = { map { $_ => 1 } @columns };
-		my @added_columns = sort grep { ! $c->{$_} } keys %$commit_changed;
-		warn "# added_columns ",dump( @added_columns );
-		unshift @columns, @added_columns;
-
 		$self->session('columns', [ @columns ]);
-		$loaded->{$path}->{columns} = [ @columns ];
-		warn "# new columns ",dump( @columns );
-
-		__invalidate_path_column( $path, $_ ) foreach keys %$commit_changed;
 	}
 
 	my $sorted_items;
