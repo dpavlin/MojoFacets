@@ -5,7 +5,7 @@ version_from 'lib/MojoFacets.pm';
 author 'Dobrica Pavlinusic <dpavlin@rot13.org>';
 license 'dual';
 
-requires 'Mojolicious' => '0.9003';
+requires 'Mojolicious' => '0.999931';
 requires 'Data::Dump';
 requires 'File::Slurp';
 requires 'JSON';

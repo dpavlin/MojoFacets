@@ -161,7 +161,7 @@ sub stats {
 	my $path = $self->_param_or_session('path');
 	warn "stats $path\n";
 	delete $loaded->{$path}->{stats};
-	$self->redirect_to( '/data/columns' );
+	return $self->redirect_to( '/data/columns' );
 }
 
 
@@ -171,7 +171,7 @@ sub _load_path {
 	return if defined $loaded->{$path}->{generated};
 
 	my $full_path = $self->app->home->rel_file( 'data/' . $path );
-	$self->redirect_to('/data/index') unless -r $full_path;
+	return $self->redirect_to('/data/index') unless -r $full_path;
 
 	my $dump_path = $self->_dump_path( $path );
 
@@ -248,7 +248,7 @@ sub _load_path {
 sub load {
 	my $self = shift;
 
- 	my $path = $self->param('path') || $self->redirect_to( '/data/index' );
+ 	my $path = $self->param('path') || return $self->redirect_to( '/data/index' );
 
 	my @paths = $self->param('paths');
 	warn "# paths ", dump @paths;
@@ -283,14 +283,14 @@ sub load {
 	}
 	$self->session( 'columns' => $loaded->{$path}->{columns} );
 	$self->session( 'order'   => $loaded->{$path}->{columns}->[0] );
-	$self->redirect_to( $redirect_to );
+	return $self->redirect_to( $redirect_to );
 }
 
 
 sub _loaded {
 	my ( $self, $name ) = @_;
 	my $path = $self->session('path') || $self->param('path');
-	$self->redirect_to('/data/index') unless $path;
+	return $self->redirect_to('/data/index') unless $path;
 
 	if ( defined $loaded->{$path}->{modified} && $loaded->{$path}->{modified} > 1 ) {
 		my $caller = (caller(1))[3];
@@ -319,7 +319,7 @@ sub _loaded {
 		}
 		if ( ! defined $loaded->{$path}->{$name} ) {
 			warn "MISSING $name for $path\n";
-			$self->redirect_to('/data/index')
+			return $self->redirect_to('/data/index')
 		}
 	}
 
@@ -399,7 +399,7 @@ sub columns {
 			warn "view $view_path/$view ", -s "$view_path/$view", " bytes\n";
 		}
 
-		$self->redirect_to('/data/items');
+		return $self->redirect_to('/data/items');
 	}
 
 	if ( my $id = $self->param('id') ) {
@@ -408,7 +408,7 @@ sub columns {
 			my @columns = map { chomp; $_ } read_file $view_full, binmode => ':utf8';
 			warn "view $view_full loaded ", dump @columns;
 			$self->session( 'columns' => [ @columns ] );
-			$self->redirect_to('/data/items');
+			return $self->redirect_to('/data/items');
 		}
 	}
 
@@ -495,7 +495,7 @@ sub filter {
 
 	$self->session( 'offset' => 0 );
 
-	$self->redirect_to('/data/items');
+	return $self->redirect_to('/data/items');
 }
 
 sub _filter_on_data {
@@ -631,7 +631,7 @@ sub items {
 	my $path = $self->_param_scalar('path');
 
 	my @columns = $self->_param_array('columns');
-	$self->redirect_to('/data/columns') unless @columns;
+	return $self->redirect_to('/data/columns') unless @columns;
 	my $order   = $self->_param_scalar('order', $columns[0]);
 	my $sort    = $self->_param_scalar('sort', 'a');
 	my $offset  = $self->_param_scalar('offset', 0);
@@ -806,8 +806,7 @@ sub items {
 			$self->session('path', $commit_dataset);
 			$self->session('columns', [ @columns ]);
 			$self->session('order', $key);
-			$self->redirect_to('/data/items');
-			return; # FIXME needed to correctly show columns
+			return $self->redirect_to('/data/items');
 		}
 
 		$self->session('columns', [ @columns ]);
@@ -911,7 +910,7 @@ sub order {
 	my $self = shift;
 	$self->session('order', $self->param('order'));
 	$self->session('sort', $self->param('sort'));
-	$self->redirect_to('/data/items');
+	return $self->redirect_to('/data/items');
 }
 
 sub _is_numeric {
@@ -954,11 +953,11 @@ sub _remove_filter {
 sub facet {
 	my $self = shift;
 
-	my $path = $self->session('path') || $self->redirect_to( '/data/index' );
+	my $path = $self->session('path') || return $self->redirect_to( '/data/index' );
 
 	if ( my $name = $self->param('remove') ) {
 		$self->_remove_filter( $name );
-		$self->redirect_to( '/data/items' );
+		return $self->redirect_to( '/data/items' );
 	}
 
 	my $facet;
@@ -1159,7 +1158,7 @@ sub save {
 	my $dump_path = $self->_save( $path );
 	__path_modified( $path, 0 );
 
-	$self->redirect_to( '/data/items' );
+	return $self->redirect_to( '/data/items' );
 }
 
 sub export {
@@ -1178,7 +1177,7 @@ sub export {
 			$self->_remove_filter( $name );
 			$self->_filter_on_data( $name, @vals );
 			$self->session( 'offset' => 0 );
-			$self->redirect_to('/data/items');
+			return $self->redirect_to('/data/items');
 		} else {
 			warn "UNKNOWN IMPORT $import";
 		}
@@ -1191,7 +1190,7 @@ sub export {
 		unlink $path if -e $path;
 	}
 
-	my $path = $self->_export_path || $self->redirect_to('/data/index');
+	my $path = $self->_export_path || return $self->redirect_to('/data/index');
 
 	my @files = grep { ! /\.png$/ } glob "$path/*";
 	my $mtime = { map { $_ => (stat($_))[9] } @files };
@@ -1214,7 +1213,7 @@ sub unlink {
 	} else {
 		warn "WARNING: $path unlink ignored";
 	}
-	$self->redirect_to( '/data/load' );
+	return $self->redirect_to( '/data/load' );
 }
 
 1;

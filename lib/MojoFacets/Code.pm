@@ -13,7 +13,7 @@ sub _code_dir { $_[0]->app->home->rel_dir('public') . '/code' }
 sub index {
 	my $self = shift;
 
-	$self->redirect_to('/data/columns') unless $self->session('columns');
+	return $self->redirect_to('/data/columns') unless $self->session('columns');
 	my $columns = { map { $_ => 1 } @{ $self->session('columns') } };
 
 	if ( $self->param('all_columns') ) {
@@ -49,7 +49,7 @@ sub remove {
 	if ( my $path = $self->param('path') ) {
 		unlink $self->_code_dir . '/' . $path;
 	}
-	$self->redirect_to('/code');
+	return $self->redirect_to('/code');
 }
 
 1;

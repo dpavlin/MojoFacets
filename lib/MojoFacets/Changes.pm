@@ -26,8 +26,7 @@ sub index {
 		$items = $MojoFacets::Data::loaded->{$on_path}->{data}->{items};
 		if ( ! $items ) {
 			warn "$on_path not loaded";
-			$self->redirect_to('/data/index?path=' . $on_path);
-			return;
+			return $self->redirect_to('/data/index?path=' . $on_path);
 		}
 		warn "using ", $#$items + 1, " items from $on_path\n";
 	}
@@ -119,7 +118,7 @@ sub remove {
 		unlink $self->_changes_path . '/' . $t;
 	}
 
-	$self->redirect_to('/changes');
+	return $self->redirect_to('/changes');
 }
 
 1;

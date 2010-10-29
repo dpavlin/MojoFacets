@@ -21,7 +21,7 @@ warn "XXX profile $profile\n";
 			system "nytprofhtml --file $path$profile --out $dir";
 			$self->stash( 'nytprof.disabled' => 1 );
 		}
-		$self->redirect_to("/profile/$profile/index.html");
+		return $self->redirect_to("/profile/$profile/index.html");
 	}
 
 
@@ -38,7 +38,7 @@ sub remove {
 		rmtree $self->app->home->rel_dir('public') . "/profile/$profile";
 	}
 
-	$self->redirect_to('/profile');
+	return $self->redirect_to('/profile');
 }
 
 1

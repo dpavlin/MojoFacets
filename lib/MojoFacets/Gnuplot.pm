@@ -12,8 +12,8 @@ use Text::Unaccent::PurePerl;
 sub index {
 	my $self = shift;
 
-	my $columns = $self->session('columns') || $self->redirect_to('/data/columns');
-	my $path    = $self->session('path')    || $self->redirect_to('/data/load');
+	my $columns = $self->session('columns') || return $self->redirect_to('/data/columns');
+	my $path    = $self->session('path')    || return $self->redirect_to('/data/load');
 
 #	my $name = join('.', 'items', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n } @$columns );
 	my $name = MojoFacets::Data::__export_path_name( $path, 'items', @$columns );
@@ -61,7 +61,7 @@ warn "gnuplot $g";
 
 		if ( -e "$dir/$url.png" ) {
 			warn "redirect $url.png";
-			$self->redirect_to( "$url.png" );
+			return $self->redirect_to( "$url.png" );
 		} else {
 			$self->render_text( "no $dir/$url.png" );
 		}
