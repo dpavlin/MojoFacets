@@ -79,7 +79,7 @@ timefmt: <input name=timefmt value="<%= $timefmt %>">
 <li>columns: <%= join(',',@$columns) %>
 <li>numeric: <%= dumper $numeric %>
 <li>order: <%= session('order') %> sort: <%= session('sort') %>
-<li>filters: <%= dumper $filters %>
+%#<li>filters: <%= dumper $filters %>
 </ul>
 
 <script type="text/javascript">
