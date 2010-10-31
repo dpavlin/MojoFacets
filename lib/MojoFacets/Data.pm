@@ -400,6 +400,9 @@ sub columns {
 		}
 
 		return $self->redirect_to('/data/items');
+
+	} elsif ( ! $self->session('header') ) {
+		return $self->redirect_to('/data/load');
 	}
 
 	if ( my $id = $self->param('id') ) {
