@@ -57,9 +57,13 @@ sub data {
 
 	my $delimiter = ',';
 
-	if ( $lines[0] !~ /;/ && $lines[1] =~ /;/ ) {
-		shift @lines; # FIXME ship non-header line
-		$delimiter = ';';
+	if ( $lines[0] !~ m/,/ ) {
+		if ( $lines[0] =~ m/;/ ) {
+			$delimiter = ';';
+		} elsif ( $lines[0] !~ /;/ && $lines[1] =~ /;/ ) {
+			shift @lines; # FIXME skip non-header line
+			$delimiter = ';';
+		}
 	}
 
 	warn "$path ", $#lines + 1, " lines encoding: $encoding delimiter:",dump($delimiter);
