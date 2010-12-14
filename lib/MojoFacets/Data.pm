@@ -19,6 +19,7 @@ use Digest::MD5;
 use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
 use MojoFacets::Import::CSV;
+use MojoFacets::Import::CouchDB;
 
 our $loaded;
 our $filters;
@@ -41,10 +42,7 @@ sub index {
 		} elsif ( -d $file && $file =~ m/\.html$/ ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
-		} elsif ( -f $file && $file =~ m/\.csv$/i ) {
-			$file =~ s/$data_dir\/*//;
-			push @files, $file;
-		} elsif ( -f $file && $file =~ m/\.storable/i ) {
+		} elsif ( -f $file && $file =~ m/\.(csv|storabe|couchdb)$/i ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
@@ -190,6 +188,8 @@ sub _load_path {
 	if ( -f $full_path ) {
 		if ( $full_path =~ m/.csv/i ) {
 			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
+		} elsif ( $full_path =~ m/.couchdb/i ) {
+			$data = MojoFacets::Import::CouchDB->new( full_path => $full_path )->data;
 		} elsif ( $full_path =~ m/.storable/ ) {
 			warn "open $full_path ", -s $full_path, " bytes";
 			open(my $pipe, "<", $full_path) || die $!;
