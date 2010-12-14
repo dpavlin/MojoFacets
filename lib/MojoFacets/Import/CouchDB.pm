@@ -50,6 +50,7 @@ sub data {
 
 	if ( ref $json->{rows} eq 'ARRAY' ) {
 		foreach my $doc ( @{$json->{rows}} ) {
+			next if $doc->{_id} =~ m{^_design/};
 			my $flat;
 			flatten( \$flat, $doc->{doc}, '' );
 			push @{ $data->{items} }, $flat;
