@@ -13,13 +13,32 @@ use Mojo::Client;
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
 
+sub flatten {
+	my ($flat,$data,$prefix) = @_;
+	if ( ref $data eq '' ) {
+		push @{ $$flat->{$prefix} }, $data;
+	} elsif ( ref $data eq 'HASH' ) {
+		foreach my $key ( keys %$data ) {
+			my $full_prefix = $prefix ? $prefix . '.' : '';
+			$full_prefix .= $key;
+			flatten( $flat, $data->{$key}, $full_prefix );
+		}
+	} elsif ( ref $data eq 'ARRAY' ) {
+		foreach my $el ( @$data ) {
+			flatten( $flat, $el, $prefix );
+		}
+	} elsif ( ref $data eq 'Mojo::JSON::_Bool' ) {
+		push @{ $$flat->{$prefix} }, $data;
+	} else {
+		die "unsupported ",ref($data)," from ",dump($data);
+	}
+}
+
 sub data {
 	my $self = shift;
 
 	my $path = $self->path;
 
-	# we could use Mojo::JSON here, but it's too slow
-#	$data = from_json read_file $path;
 	my $url = read_file $self->full_path;
 	$url =~ s{/\s*$}{}s;
 
@@ -31,7 +50,9 @@ sub data {
 
 	if ( ref $json->{rows} eq 'ARRAY' ) {
 		foreach my $doc ( @{$json->{rows}} ) {
-			push @{ $data->{items} }, $doc->{doc};
+			my $flat;
+			flatten( \$flat, $doc->{doc}, '' );
+			push @{ $data->{items} }, $flat;
 		}
 	}
 
