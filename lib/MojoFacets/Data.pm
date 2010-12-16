@@ -875,8 +875,14 @@ sub items {
 
 	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
-	my $code_depends = $self->param('code_depends')||
-	join(',', sort grep { $test_changed->{$_} == 0 } keys %$test_changed );
+#	my @changed_cols = join(',', sort grep { $test_changed->{$_} == 0 } keys %$test_changed );
+	my $depends_on;
+	my $tmp = $code; $tmp =~ s/\$row->{(['"]?)(\w+)\1/$depends_on->{$2}++/gse;
+	warn "# depends_on ",dump $depends_on;
+
+	my $code_depends = $self->param('code_depends')
+	|| join(',', keys %$depends_on);
+
 	my $code_description = $self->param('code_description') ||
 	join(',', @added_columns);
 
