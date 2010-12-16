@@ -19,7 +19,7 @@ sub flatten {
 		push @{ $$flat->{$prefix} }, $data;
 	} elsif ( ref $data eq 'HASH' ) {
 		foreach my $key ( keys %$data ) {
-			my $full_prefix = $prefix ? $prefix . '.' : '';
+			my $full_prefix = $prefix ? $prefix . '_' : '';
 			$full_prefix .= $key;
 			flatten( $flat, $data->{$key}, $full_prefix );
 		}
