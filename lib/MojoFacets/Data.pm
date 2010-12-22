@@ -1215,12 +1215,16 @@ sub __loaded_paths {
 		keys %$loaded;
 }
 
-sub unlink {
+sub remove {
 	my $self = shift;
 	my $path = $self->param('path');
-	if ( $path =~ m{^/tmp/mojo_facets.} ) {
+	if ( $path =~ m{^/tmp/mojo_facets\.} ) {
 		unlink $path;
 		warn "# unlink $path";
+		if ( my $name = $self->param('name') ) {
+			delete $loaded->{$name};
+			warn "# remove $name from memory";
+		}
 	} else {
 		warn "WARNING: $path unlink ignored";
 	}
