@@ -15,6 +15,9 @@ we all read as single data set, allowing easy analysys of search results, for ex
 CSV files with .csv extension are parsed using , as delimiter. Encoding is utf8
 and can be specified in filename, before extension like this: data.encoding.csv
 
+CouchDB data can be imported using files which contain full url to CouchDB database
+or url to CouchDB view to import. URL's filename should end in *.couchdb
+
 
 Start with:
 
