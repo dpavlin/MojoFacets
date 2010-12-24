@@ -41,19 +41,24 @@ sub data {
 
 	my $url = read_file $self->full_path;
 	$url =~ s{/\s*$}{}s;
+	$url .= '/_all_docs?include_docs=true' unless $url =~ m/\?/;
 
 	warn "# CouchDB URL: $url";
 
-	my $json = Mojo::Client->new->get( "$url/_all_docs?include_docs=true" )->res->json;
+	my $json = Mojo::Client->new->get($url)->res->json;
 
 	my $data;
 
 	if ( ref $json->{rows} eq 'ARRAY' ) {
 		foreach my $doc ( @{$json->{rows}} ) {
-			next if $doc->{id} =~ m{^_design/}; # $doc->{id} == $doc->{doc}->{_id}
-			my $flat;
-			flatten( \$flat, $doc->{doc}, '' );
-			push @{ $data->{items} }, $flat;
+			if ( exists $doc->{id} && exists $doc->{doc} ) {
+				next if $doc->{id} =~ m{^_design/}; # $doc->{id} == $doc->{doc}->{_id}
+				my $flat;
+				flatten( \$flat, $doc->{doc}, '' );
+				push @{ $data->{items} }, $flat;
+			} else {
+				push @{ $data->{items} }, $doc;
+			}
 		}
 	}
 
