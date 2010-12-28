@@ -10,12 +10,12 @@ use File::Slurp;
 use Data::Dump qw(dump);
 use Encode;
 
-__PACKAGE__->attr('path');
+__PACKAGE__->attr('full_path');
 
 sub data {
 	my $self = shift;
 
-	my $path = $self->path;
+	my $path = $self->full_path;
 
 	my $sql = read_file $path, { binmode => ':raw' }; # FIXME configurable!
 
