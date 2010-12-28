@@ -45,7 +45,7 @@ sub data {
 	warn "# got ", $sth->rows, " rows\n";
 
 	my $data = { items => [] };
-	$data->{header} = [ $sth->{NAME} ];
+	$data->{header} = $sth->{NAME};
 
 	while( my $row = $sth->fetchrow_hashref ) {
 		push @{ $data->{items} }, $row;
