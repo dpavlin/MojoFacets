@@ -20,6 +20,7 @@ use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
 use MojoFacets::Import::CSV;
 use MojoFacets::Import::CouchDB;
+use MojoFacets::Import::SQL;
 
 our $loaded;
 our $filters;
@@ -42,7 +43,7 @@ sub index {
 		} elsif ( -d $file && $file =~ m/\.html$/ ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
-		} elsif ( -f $file && $file =~ m/\.(csv|storabe|couchdb)$/i ) {
+		} elsif ( -f $file && $file =~ m/\.(csv|storabe|couchdb|sql)$/i ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
@@ -188,6 +189,8 @@ sub _load_path {
 	if ( -f $full_path ) {
 		if ( $full_path =~ m/.csv/i ) {
 			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
+		} elsif ( $full_path =~ m/.sql/i ) {
+			$data = MojoFacets::Import::SQL->new( full_path => $full_path )->data;
 		} elsif ( $full_path =~ m/.couchdb/i ) {
 			$data = MojoFacets::Import::CouchDB->new( full_path => $full_path )->data;
 		} elsif ( $full_path =~ m/.storable/ ) {
