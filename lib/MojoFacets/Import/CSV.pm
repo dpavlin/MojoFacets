@@ -9,8 +9,7 @@ use File::Slurp;
 use Data::Dump qw(dump);
 use Encode;
 
-__PACKAGE__->attr('path');
-__PACKAGE__->attr('full_path'); # FIXME remove full_path
+__PACKAGE__->attr('full_path');
 
 my $null = ''; # FIXME undef?
 
@@ -42,7 +41,7 @@ sub _split_line {
 sub data {
 	my $self = shift;
 
-	my $path = $self->full_path || $self->path;
+	my $path = $self->full_path;
 
 	my $data = read_file $path, { binmode => ':raw' }; # FIXME configurable!
 	my $encoding = 'utf-8';
