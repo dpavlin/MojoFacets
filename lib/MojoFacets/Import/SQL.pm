@@ -20,8 +20,8 @@ sub data {
 	my $sql = read_file $path, { binmode => ':raw' }; # FIXME configurable!
 
 	my $dsn    = $1 if $sql =~ s/--\s*(dbi:\S+)//;
-	my $user   = $1 if $sql =~ s/--\s*user:\s*(\S+)//;
-	my $passwd = $1 if $sql =~ s/--\s*passwd:\s*(\S+)//;
+	my $user   = $1 if $sql =~ s/--\s*user=\s*(\S+)//;
+	my $passwd = $1 if $sql =~ s/--\s*passwo?r?d=\s*(\S+)//;
 
 	warn "# $dsn $user/", '*' x length($passwd);
 
