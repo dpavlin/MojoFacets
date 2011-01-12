@@ -234,6 +234,10 @@ tr.skip {
 	background: #fcf;
 }
 
+tr.source-changed {
+	background: #cff;
+}
+
 tr.hidden {
 	display: none;
 }

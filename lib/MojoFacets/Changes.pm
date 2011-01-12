@@ -15,6 +15,15 @@ sub _changes_path {
 	$self->app->home->rel_dir('data') . '/' . $path . '.changes';
 }
 
+sub _hash_eq {
+	my ( $a_ref, $b_ref ) = @_;
+
+	warn "# _hash_eq ",dump($a_ref,$b_ref);
+
+	local $Storable::canonical = 1;
+	return Storable::freeze( $a_ref ) eq Storable::freeze( $b_ref );
+}
+
 sub index {
 	my ( $self ) = @_;
 	my $path = $self->param('path') || $self->session('path');
@@ -54,12 +63,16 @@ sub index {
 			}
 			$status = 'missing';
 			if ( my $i = $unique2id->{$pk}->{$id} ) {
-				$status = 'found';
-				if ( $commit ) {
-					my $column = $e->{column} or die "no column";
-					$items->[$i]->{$column} = $e->{new};
-					warn "# commit $i $column ",dump( $e->{new} );
-					$invalidate_columns->{$column}++;
+				if ( _hash_eq( $e->{old}, $items->[$i]->{$e->{column}} ) ) {
+					$status = 'found';
+					if ( $commit ) {
+						my $column = $e->{column} or die "no column";
+						$items->[$i]->{$column} = $e->{new};
+						warn "# commit $i $column ",dump( $e->{new} );
+						$invalidate_columns->{$column}++;
+					}
+				} else {
+					$status = 'source-changed';
 				}
 			}
 		} elsif ( my $code = $e->{code} ) {
