@@ -20,7 +20,7 @@ sub _split_line {
 		my $v;
 		if ( $line =~ s/^"// ) {
 			$line =~ s/""/_qq_/gc;
-			$line =~ s/^\s*([^"]+)\s*"\Q$delimiter\E?// || die "can't parse $line";
+			$line =~ s/^\s*([^"]*)\s*"\Q$delimiter\E?// || die "can't parse [$line] ",dump(@v);
 			$v = $1;
 		} elsif ( $line =~ s/^\s*([^\Q$delimiter\E]+)\s*\Q$delimiter\E?// ) {
 			$v = $1;
@@ -31,7 +31,9 @@ sub _split_line {
 		}
 
 		$v =~ s/^\s*(.+?)\s*$/$1/;
+		$v = $null if $v eq '_qq_'; # "" field which is not first one
 		$v =~ s/_qq_/"/g;
+		$v =~ s/_LF_/\n/g;
 		push @v, $v;
 	}
 
@@ -50,6 +52,11 @@ sub data {
 	}
 	warn "decoding ", length($data), " bytes using $encoding\n";
 	$data = decode($encoding, $data);
+
+	# multi-line strings
+	while ( $data =~ s/(,"[^"]*)[\n\r]+([^"]*)/$1_LF_$2/sg ) {
+		 warn "multi-line quoted CSV data found";
+	}
 
 	my @lines = split(/\r?\n/, $data);
 	$data = { items => [] };
