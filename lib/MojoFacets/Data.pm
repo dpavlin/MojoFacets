@@ -544,6 +544,12 @@ sub _filter_on_data {
 
 	#warn "# filter $name ",dump($filtered_items);
 
+	# invalidate filters on other datasets
+	foreach my $dataset ( grep { exists $loaded->{$_}->{filters}->{$name} } keys %$loaded ) {
+		delete $loaded->{$dataset}->{filters}->{$name};
+		delete $loaded->{$dataset}->{filtered};
+	}
+
 	$loaded->{$path}->{filters}->{$name} = $filtered_items;
 	warn "filter $name with ", scalar keys %$filtered_items, " items created\n";
 }
