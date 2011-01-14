@@ -21,7 +21,7 @@ $(document).ready( function() {
 });
 </script>
 % } else {
-<tt><%= session('path') %>
+<tt><%= session('path') %></tt>
 % }
 
 <a href="<%= url_for( controller => 'data', action => 'index', id => 0 ) %>">load</a>
