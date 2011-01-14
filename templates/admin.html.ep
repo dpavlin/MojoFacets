@@ -1,5 +1,29 @@
 <div class=admin>
 
+% if ( my $datasets = stash('datasets' ) ) {
+<form action=/data/load id="switch_dataset" style="display: inline">
+<select name="path">
+% foreach my $path ( @$datasets ) {
+<option <%= session('path') eq $path ? 'selected="selected"' : '' %> ><%= $path %></option>
+% }
+</select>
+% foreach my $path ( @$datasets ) {
+<input name=paths type=hidden value="<%= $path %>">
+% }
+</form>
+<script>
+$(document).ready( function() {
+	$('#switch_dataset').change( function() {
+		console.log( 'switch_dataset', this );
+		$(this).submit();
+	});
+	console.debug('installed switch_dataset' );
+});
+</script>
+% } else {
+<tt><%= session('path') %>
+% }
+
 <a href="<%= url_for( controller => 'data', action => 'index', id => 0 ) %>">load</a>
 <a href="<%= url_for( controller => 'data', action => 'columns', id => 0 ) %>">columns</a>
 &middot;

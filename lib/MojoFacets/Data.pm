@@ -626,8 +626,26 @@ sub __commit_path_code {
 	#warn "__commit_path_code $path $i ",dump( $update );
 }
 
+# uses templates/admin.html.ep
+sub _switch_dataset {
+	my $self = shift;
+
+	my $datasets;
+
+	foreach my $path ( keys %$loaded ) {
+		next unless exists $loaded->{$path}->{data};
+		push @$datasets, $path;
+	}
+
+	warn "# datasets ",dump($datasets);
+
+	$self->stash( 'datasets' => $datasets );
+}
+
 sub items {
 	my $self = shift;
+
+	$self->_switch_dataset;
 
 	if ( my $show = $self->param('id') ) {
 		$self->param('show', $show);
