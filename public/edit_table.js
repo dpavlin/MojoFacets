@@ -47,6 +47,9 @@ var cell_click = function(event) {
 		, event
 		, $(this).text()
 	);
+
+	if ( $(this).find('textarea').length ) return; // allready editing
+
 	var new_content = $(this).text() // we don't want para markup
 		.replace(/^[ \n\r]+/,'')
 		.replace(/[ \n\r]+$/,'')
