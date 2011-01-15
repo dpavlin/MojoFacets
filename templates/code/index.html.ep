@@ -21,7 +21,7 @@ column in this dataset
 %    my $have_deps = ! exists $no_deps->{$depends}->{$desc};
 <li>
 <form method=post action=/data/items>
-<input type=submit name=test value="<%= $have_deps ? 'Load and test' : 'Load' %>">
+<input type=submit name=<%= $have_deps ? 'test' : 'load' %> value="<%= $have_deps ? 'Load and test' : 'Load' %>">
 % my $path = "$depends.$desc.pl";
 <a target=code href="/code/<%= $path %>"><%= $desc %></a>
 % if ( $have_deps ) {

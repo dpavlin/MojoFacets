@@ -895,33 +895,39 @@ sub items {
 		warn "export $export_path ", -s $export_path, " bytes\n";
 	}
 
-	warn "# test_changed ",dump( $test_changed );
-	my $c = { map { $_ => 1 } @columns };
-	my @added_columns = sort grep { ! $c->{$_} } keys %$test_changed;
-	unshift @columns, @added_columns;
+	my ( $code_depends, $code_description );
 
-	warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
+	if ( $test ) {
 
-	my $depends_on;
-	my $tmp = $code; $tmp =~ s/\$row->{(['"]?)(\w+)\1/$depends_on->{$2}++/gse;
-	warn "# depends_on ",dump $depends_on;
+		warn "# test_changed ",dump( $test_changed );
+		my $c = { map { $_ => 1 } @columns };
+		my @added_columns = sort grep { ! $c->{$_} } keys %$test_changed;
+		unshift @columns, @added_columns;
 
-	my $test_added = Storable::dclone $test_changed;
-	delete $test_added->{$_} foreach keys %$depends_on;
+		warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
-	my $code_depends = $self->param('code_depends')
-	|| join(',', keys %$depends_on);
+		my $depends_on;
+		my $tmp = $code; $tmp =~ s/\$row->{(['"]?)(\w+)\1/$depends_on->{$2}++/gse;
+		warn "# depends_on ",dump $depends_on;
 
-	my $code_description = $self->param('code_description') ||
-	join(',', keys %$test_added);
+		my $test_added = Storable::dclone $test_changed;
+		delete $test_added->{$_} foreach keys %$depends_on;
 
-	$code_depends ||= $code_description; # self-modifing
-	if ( ! $code_depends && $out ) {
-		$code_depends = $key;
-		$code_description = $value;
-	}
+		$code_depends = $self->param('code_depends')
+		|| join(',', keys %$depends_on);
 
-	warn "# test_changed ",dump( $test_changed, $code_depends, $code_description );
+		$code_description = $self->param('code_description') ||
+		join(',', keys %$test_added);
+
+		$code_depends ||= $code_description; # self-modifing
+		if ( ! $code_depends && $out ) {
+			$code_depends = $key;
+			$code_description = $value;
+		}
+
+		warn "# test_changed ",dump( $test_changed, $code_depends, $code_description );
+
+	} # test?
 
 	$self->render(
 		order => $order,
