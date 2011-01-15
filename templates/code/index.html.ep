@@ -18,13 +18,16 @@ column in this dataset
 <h2><%= $depends %></h2>
 <ul>
 %   foreach my $desc ( keys %{ $snippets->{$depends} } ) {
+%    my $have_deps = ! exists $no_deps->{$depends}->{$desc};
 <li>
 <form method=post action=/data/items>
-<input type=submit name=test value="Load and test">
+<input type=submit name=test value="<%= $have_deps ? 'Load and test' : 'Load' %>">
 % my $path = "$depends.$desc.pl";
 <a target=code href="/code/<%= $path %>"><%= $desc %></a>
+% if ( $have_deps ) {
 <input type=hidden name=code_depends value="<%= $depends %>">
 <input type=hidden name=code_description value="<%= $desc %>">
+% }
 <a class=remove href="<%= url_for( action => 'remove' )->query( path => $path ) %>">remove</a>
 <br>
 % my $code = $snippets->{$depends}->{$desc};

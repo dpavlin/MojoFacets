@@ -23,6 +23,7 @@ sub index {
 	my $dir = $self->_code_dir;
 
 	my $snippets;
+	my $no_deps;
 
 	foreach my $full_path ( glob("$dir/*.pl") ) {
 		my $path = $full_path;
@@ -34,13 +35,19 @@ sub index {
 		my $found = -1;
 		$found += $columns->{$_} foreach @deps;
 warn "# depends $depends $found $#deps\n";
-		next unless $found == $#deps || $self->param('all_code');
+
+		if ( $found != $#deps ) {
+			$self->param('all_code') ? $no_deps->{$depends}->{$description}++ : next;
+		}
 
 		$snippets->{$depends}->{$description} = read_file $full_path, binmode => ':utf8';
 	}
 
+warn "# no_deps ",dump($no_deps);
+
 	$self->render(
 		snippets => $snippets,
+		no_deps => $no_deps,
 	);
 }
 
