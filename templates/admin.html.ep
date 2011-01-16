@@ -14,7 +14,7 @@
 <script>
 $(document).ready( function() {
 	$('#switch_dataset').change( function() {
-		console.log( 'switch_dataset', this );
+		console.debug( 'switch_dataset', this );
 		$(this).submit();
 	});
 	console.debug('installed switch_dataset' );
