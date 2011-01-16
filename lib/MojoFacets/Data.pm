@@ -907,7 +907,7 @@ sub items {
 		warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
 		my $depends_on;
-		my $tmp = $code; $tmp =~ s/\$row->{(['"]?)(\w+)\1/$depends_on->{$2}++/gse;
+		my $tmp = $code; $tmp =~ s/\$row->{(['"]?)([\w\s]+)\1/$depends_on->{$2}++/gse;
 		warn "# depends_on ",dump $depends_on;
 
 		my $test_added = Storable::dclone $test_changed;
