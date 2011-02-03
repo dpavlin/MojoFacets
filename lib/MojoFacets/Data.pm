@@ -103,7 +103,10 @@ sub __stats {
 
 	warn "__stats $nr_items\n";
 
-	foreach my $e ( @{ $_[0] } ) {
+#	foreach my $e ( @{ $_[0] } ) {
+	foreach my $i ( 0 .. $#{$_[0]} ) {
+		print STDERR " $i" if $i % 5000;
+		my $e = $_[0]->[$i];
 		foreach my $n ( keys %$e ) {
 			$stats->{$n}->{count}++;
 			my @v;
@@ -115,6 +118,11 @@ sub __stats {
 			}
 
 			foreach my $x ( @v ) {
+				if ( ! defined $x ) { # FIXME really null
+					$stats->{$n}->{empty}++;
+					next;
+				}
+
 				$stats->{$n}->{numeric}++
 					if $x =~ m/^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/;
 				$stats->{$n}->{empty}++
@@ -1024,7 +1032,7 @@ sub facet {
 
 	foreach my $i ( @$filtered ) {
 		my $item = $data->{items}->[$i];
-		if ( ! exists $item->{$name} ) {
+		if ( ! exists $item->{$name} || ! defined $item->{$name} ) {
 			$facet->{ _missing }++;
 		} elsif ( ref $item->{$name} eq 'ARRAY' ) {
 			$facet->{$_}++ foreach @{ $item->{$name} };
