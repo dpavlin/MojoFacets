@@ -48,13 +48,14 @@ sub index {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
-			warn "IGNORE: $file\n";
+			#warn "IGNORE: $file\n";
 		}
 	}, $data_dir);
 
 	no warnings qw(uninitialized); # mtime
 	@files = sort { $loaded->{$b}->{mtime} <=> $loaded->{$a}->{mtime} || lc $a cmp lc $b } @files,
- 			grep { defined $loaded->{$_}->{generated} } keys %$loaded;
+			grep { defined $loaded->{$_}->{generated} } keys %$loaded;
+
 	my $size;
 	$size->{$_} = -s "$data_dir/$_" foreach @files;
 
@@ -197,6 +198,7 @@ sub _load_path {
 	my $data;
 	if ( -f $full_path ) {
 		if ( $full_path =~ m/.storable$/ ) { # check storable first to catch files copied from /tmp/
+			$data->{generated}++;
 			warn "open $full_path ", -s $full_path, " bytes";
 			open(my $pipe, "<", $full_path) || die $!;
 			while ( my $o = eval { Storable::fd_retrieve $pipe } ) {
@@ -205,16 +207,15 @@ sub _load_path {
 					push @{ $data->{items} }, $o->{item};
 				} elsif ( exists $o->{data}->{items} ) {
 					# /tmp/mojofacets.*.storable
-					$data = $o->{data};
+					$data->{items} = $o->{data}->{items};
 					$data->{header} = $o->{header};
-					last;
+					delete $data->{generated};
 				} else {
 					warn "SKIP ",dump($o);
 				}
 			}
 			close($pipe);
 			warn "loaded ", $#{ $data->{items} } + 1, " items from $full_path\n";
-			$data->{generated}++;
 		} elsif ( $full_path =~ m/.csv/i ) {
 			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
 		} elsif ( $full_path =~ m/.sql/i ) {
