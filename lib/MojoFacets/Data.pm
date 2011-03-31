@@ -626,6 +626,49 @@ sub __all_filters {
 
 our ($out, $key,$value);
 
+our $lookup_path_col;
+our $on;
+
+sub __commit_begin {
+	warn "__commit_begin";
+	$lookup_path_col = undef;
+	$on = undef;
+}
+
+sub __commit_end {
+	warn "__commit_end";
+	$lookup_path_col = undef; # cleanup memory
+	$on = undef;
+}
+
+sub lookup {
+	warn "# lookup ",dump @_;
+	my ( $vals, $on_path, $on_col, $code ) = @_;
+	die "code is not sub{ ... } but ", dump $code unless ref $code eq 'CODE';
+	my $items = $loaded->{$on_path}->{data}->{items} || die "no items for $on_path";
+
+	if ( ! exists $lookup_path_col->{$on_path}->{$on_col} ) {
+		warn "create lookup_path_col $on_path $on_col";
+		foreach my $i ( 0 .. $#$items ) {
+			my $item = $items->[$i];
+			if ( exists $item->{$on_col} ) {
+				foreach my $v ( @{ $item->{$on_col} } ) {
+					push @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} }, $i;
+				}
+			}
+		}
+		warn dump $lookup_path_col->{$on_path}->{$on_col};
+	}
+
+	foreach my $v ( @$vals ) {
+		foreach my $i ( @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} } ) {
+			$on = $items->[$i];
+			warn "# lookup code $v $i ",dump $on;
+			$code->();
+		}
+	}
+}
+
 sub __commit_path_code {
 	my ( $path, $i, $code, $commit_changed ) = @_;
 
@@ -747,6 +790,7 @@ sub items {
 	my $test = $self->param('test');
 
 	my $commit_changed;
+	__commit_begin;
 
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
@@ -936,6 +980,8 @@ sub items {
 		warn "# test_changed ",dump( $test_changed, $code_depends, $code_description );
 
 	} # test?
+
+	__commit_end;
 
 	$self->render(
 		order => $order,
