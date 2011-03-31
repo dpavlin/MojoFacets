@@ -43,11 +43,11 @@ sub index {
 		} elsif ( -d $file && $file =~ m/\.html$/ ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
-		} elsif ( -f $file && $file =~ m/\.(csv|storabe|couchdb|sql)$/i ) {
+		} elsif ( -f $file && $file =~ m/\.(csv|storable|couchdb|sql)$/i ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
-			#warn "IGNORE: $file\n";
+			warn "IGNORE: $file\n";
 		}
 	}, $data_dir);
 
@@ -195,18 +195,18 @@ sub _load_path {
 
 	my $data;
 	if ( -f $full_path ) {
-		if ( $full_path =~ m/.csv/i ) {
-			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
-		} elsif ( $full_path =~ m/.sql/i ) {
-			$data = MojoFacets::Import::SQL->new( full_path => $full_path )->data;
-		} elsif ( $full_path =~ m/.couchdb/i ) {
-			$data = MojoFacets::Import::CouchDB->new( full_path => $full_path )->data;
-		} elsif ( $full_path =~ m/.storable/ ) {
+		if ( $full_path =~ m/.storable$/ ) { # check storable first to catch files copied from /tmp/
 			warn "open $full_path ", -s $full_path, " bytes";
 			open(my $pipe, "<", $full_path) || die $!;
 			while ( my $o = eval { Storable::fd_retrieve $pipe } ) {
-				if ( defined $o->{item} ) {
+				if ( exists $o->{item} ) {
+					# stream of storable objects
 					push @{ $data->{items} }, $o->{item};
+				} elsif ( exists $o->{data}->{items} ) {
+					# /tmp/mojofacets.*.storable
+					$data = $o->{data};
+					$data->{header} = $o->{header};
+					last;
 				} else {
 					warn "SKIP ",dump($o);
 				}
@@ -214,6 +214,12 @@ sub _load_path {
 			close($pipe);
 			warn "loaded ", $#{ $data->{items} } + 1, " items from $full_path\n";
 			$data->{generated}++;
+		} elsif ( $full_path =~ m/.csv/i ) {
+			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
+		} elsif ( $full_path =~ m/.sql/i ) {
+			$data = MojoFacets::Import::SQL->new( full_path => $full_path )->data;
+		} elsif ( $full_path =~ m/.couchdb/i ) {
+			$data = MojoFacets::Import::CouchDB->new( full_path => $full_path )->data;
 		} else {
 			$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
 		}
