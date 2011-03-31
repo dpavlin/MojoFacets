@@ -651,6 +651,14 @@ sub lookup {
 	warn "# lookup ",dump @_;
 	my ( $vals, $on_path, $on_col, $code ) = @_;
 	die "code is not sub{ ... } but ", dump $code unless ref $code eq 'CODE';
+
+	if ( ! exists $loaded->{$on_path} ) {
+		my @possible_paths = grep { /\Q$on_path\E/ } keys %$loaded;
+		die "more than one dataset available for '$on_path' ",dump @possible_paths if $#possible_paths > 0;
+		$on_path = shift @possible_paths;
+		warn "## fuzzy selected path $on_path";
+	}
+
 	my $items = $loaded->{$on_path}->{data}->{items} || die "no items for $on_path";
 
 	if ( ! exists $lookup_path_col->{$on_path}->{$on_col} ) {
