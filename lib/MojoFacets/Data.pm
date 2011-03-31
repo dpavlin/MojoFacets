@@ -658,8 +658,15 @@ sub lookup {
 		foreach my $i ( 0 .. $#$items ) {
 			my $item = $items->[$i];
 			if ( exists $item->{$on_col} ) {
-				foreach my $v ( @{ $item->{$on_col} } ) {
+				if ( ref $item->{$on_col} eq 'ARRAY' ) {
+					foreach my $v ( @{ $item->{$on_col} } ) {
+						push @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} }, $i;
+					}
+				} elsif ( ! ref $item->{$on_col} ) { # scalar
+					my $v = $item->{$on_col};
 					push @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} }, $i;
+				} else {
+					die "unknown type of ",dump $item->{$on_col};
 				}
 			}
 		}
