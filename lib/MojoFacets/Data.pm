@@ -685,7 +685,7 @@ sub lookup {
 	my $stat;
 	$stat = Statistics::Descriptive::Full->new() if $stat_code;
 
-	foreach my $v ( @$vals ) {
+	foreach my $v ( ref $vals eq 'ARRAY' ? @$vals : ( $vals ) ) {
 		foreach my $i ( @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} } ) {
 			$on = $items->[$i];
 			#warn "XXX lookup code $v $i ",dump $on;
