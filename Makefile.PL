@@ -12,6 +12,7 @@ requires 'JSON';
 requires 'HTML::TableExtract';
 requires 'File::Path';
 requires 'Text::Unaccent::PurePerl';
+requires 'Statistics::Descriptive';
 
 features(
 	'profile' => [

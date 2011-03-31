@@ -15,6 +15,7 @@ use Time::HiRes qw(time);
 use File::Path qw(mkpath);
 use Text::Unaccent::PurePerl;
 use Digest::MD5;
+use Statistics::Descriptive;
 
 use MojoFacets::Import::File;
 use MojoFacets::Import::HTMLTable;
@@ -649,7 +650,7 @@ sub __commit_end {
 
 sub lookup {
 	warn "# lookup ",dump @_;
-	my ( $vals, $on_path, $on_col, $code ) = @_;
+	my ( $vals, $on_path, $on_col, $code, $stat_code ) = @_;
 	die "code is not sub{ ... } but ", dump $code unless ref $code eq 'CODE';
 
 	if ( ! exists $loaded->{$on_path} ) {
@@ -681,12 +682,16 @@ sub lookup {
 		#warn "XXX ",dump $lookup_path_col->{$on_path}->{$on_col};
 	}
 
+	my $stat;
+	$stat = Statistics::Descriptive::Full->new() if $stat_code;
+
 	foreach my $v ( @$vals ) {
 		foreach my $i ( @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} } ) {
 			$on = $items->[$i];
 			#warn "XXX lookup code $v $i ",dump $on;
-			$code->();
+			$code->($stat);
 		}
+		$stat_code->( $stat ) if $stat_code;
 	}
 }
 
