@@ -678,13 +678,13 @@ sub lookup {
 				}
 			}
 		}
-		warn dump $lookup_path_col->{$on_path}->{$on_col};
+		#warn "XXX ",dump $lookup_path_col->{$on_path}->{$on_col};
 	}
 
 	foreach my $v ( @$vals ) {
 		foreach my $i ( @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} } ) {
 			$on = $items->[$i];
-			warn "# lookup code $v $i ",dump $on;
+			#warn "XXX lookup code $v $i ",dump $on;
 			$code->();
 		}
 	}
