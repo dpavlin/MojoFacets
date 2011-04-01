@@ -12,6 +12,7 @@ sub index {
 		MASTER
 		MAX_FACETS
 		PROFILE
+		DEBUG
 	));
 
 	foreach my $name ( @config ) {

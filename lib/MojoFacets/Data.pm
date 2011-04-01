@@ -680,7 +680,7 @@ sub lookup {
 				}
 			}
 		}
-		#warn "XXX ",dump $lookup_path_col->{$on_path}->{$on_col};
+		warn "XXX ",dump $lookup_path_col->{$on_path}->{$on_col} if $ENV{DEBUG};
 	}
 
 	my $stat;
@@ -689,7 +689,7 @@ sub lookup {
 	foreach my $v ( ref $vals eq 'ARRAY' ? @$vals : ( $vals ) ) {
 		foreach my $i ( @{ $lookup_path_col->{$on_path}->{$on_col}->{$v} } ) {
 			$on = $items->[$i];
-			#warn "XXX lookup code $v $i ",dump $on;
+			warn "XXX lookup code $v $i ",dump $on if $ENV{DEBUG};
 			$code->($stat);
 		}
 		$stat_code->( $stat ) if $stat_code;
