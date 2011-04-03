@@ -21,7 +21,7 @@ sub _hash_eq {
 	warn "# _hash_eq ",dump($a_ref,$b_ref);
 
 	local $Storable::canonical = 1;
-	return Storable::freeze( $a_ref ) eq Storable::freeze( $b_ref );
+	return eval { Storable::freeze( $a_ref ) } eq eval { Storable::freeze( $b_ref ) };
 }
 
 sub index {
