@@ -491,8 +491,11 @@ sub _param_scalar {
 
 	if ( ! defined $scalar ) {
 		$scalar = $default;
-		die "no default for $name" unless defined $scalar;
-		$self->session($name => $scalar);
+		if ( defined $scalar ) {
+			$self->session($name => $scalar);
+		} else {
+			warn "no default for $name";
+		}
 	}
 
 	warn "# _param_scalar $name ",dump $scalar;
