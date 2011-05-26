@@ -813,6 +813,9 @@ sub items {
 	$code =~ s{\r}{}gs;
 	$code =~ s{\n+$}{\n}s;
 
+	# XXX convert @row->{foo} into @{$row->{foo}}
+	$code =~ s|\@(row->{[^}]+})|\@{\$$1}|gs;
+
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
 
