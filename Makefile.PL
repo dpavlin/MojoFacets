@@ -13,6 +13,7 @@ requires 'HTML::TableExtract';
 requires 'File::Path';
 requires 'Text::Unaccent::PurePerl';
 requires 'Statistics::Descriptive';
+requires 'Text::CSV';
 
 features(
 	'profile' => [
