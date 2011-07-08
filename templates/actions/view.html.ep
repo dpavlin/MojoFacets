@@ -11,11 +11,10 @@
 % if ( my $master = $ENV{'MASTER'} ) {
 <input class=replication type=checkbox name="_master" value="<%= $master %>" title="replicate to <%= $master %>">
 % }
-% my $params = $change->{params};
 <ul>
-% while ( @$params ) {
-%	my $n = shift @$params;
-%	my $v = shift @$params;
+% while ( @$change ) {
+%	my $n = shift @$change;
+%	my $v = shift @$change;
 <li><label class=checkbox_to_text>
 <%= $n %>
 <span class=value title="double click to edit">

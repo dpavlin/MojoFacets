@@ -13,9 +13,9 @@
 <span title="unique">&#9997;</span>
 % }
 % if ( session('order') ne $n ) {
-<a href="<%= url_for( action => 'order' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
+<a href="<%= url_for( action => 'items' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
 % } else {
-<a href="<%= url_for( action => 'order' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
+<a href="<%= url_for( action => 'items' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
 <%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
 % }
 <div class="col_opts">

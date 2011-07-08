@@ -12,28 +12,29 @@ use Storable;
 use Time::HiRes qw(time);
 
 
-sub save_tx {
-	my ($self,$tx) = @_;
+sub save_action {
+	my ($self) = @_;
 #	warn "## before_dispatch req ",dump($tx->req->url, $tx->req->params);
-	my $parts = $tx->req->url->path->parts;
-	warn "# parts ",dump( $parts );
-	if ( $parts->[0] eq 'data' ) {
-		if ( my $params = $tx->req->params ) {
-
-			warn "# params ",dump($params);
+	my $path = $self->req->url->path;
+	if ( $path =~ m{/data/} ) {
+		if ( my $params = $self->req->params ) {
 
 			my $time = time();
 			if ( my $time_travel = $params->param('time') ) {
-				warn "# time-travel to $time_travel from ", $tx->remote_address;
+				warn "# time-travel to $time_travel\n";
 				$time = $time_travel;
 			}
 
-			my $path = '/tmp/actions/';
-			mkdir $path unless -e $path;
-			$path .= sprintf '%.4f.%s', $time, join('.', @$parts);
+			my $actions_path = '/tmp/actions/';
+			mkdir $actions_path unless -e $actions_path;
+			$path =~ s{/}{.}g;
+			$actions_path .= sprintf '%.4f%s', $time, $path;
 
-			store $params, $path;
-			warn "$path ", -s $path, " bytes\n";
+			my $array = $params->params;
+			if ( @$array ) {
+				store $array, $actions_path;
+				warn "SAVE $actions_path ", -s $actions_path, " bytes params = ", dump($array), $/;
+			}
 		}
 	}
 }
@@ -51,10 +52,9 @@ sub startup {
 #	$self->plugin( 'request_timer' );
 
 	$self->plugins->add_hook(
-			before_dispatch => sub {
-				my ($self, $c) = @_;
-				my $tx = $c->tx;
-				save_tx( $self, $tx );
+			after_dispatch => sub {
+				my ($self) = @_;
+				save_action( $self );
 			}
 	);
 	
