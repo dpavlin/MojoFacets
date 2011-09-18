@@ -1335,6 +1335,14 @@ sub __loaded_paths {
 		keys %$loaded;
 }
 
+sub reload {
+	my $self = shift;
+	$self->stash( reload => 1 );
+	$self->remove;
+#	$self->_load_path( $self->param('path') );
+	$self->redirect_to('/data/load?path=' . $self->param('path') );
+}
+
 sub remove {
 	my $self = shift;
 	my $path = $self->param('path');
@@ -1348,6 +1356,7 @@ sub remove {
 	} else {
 		warn "WARNING: $path unlink ignored";
 	}
+	return if $self->stash('reload');
 	return $self->redirect_to( '/data/load' );
 }
 

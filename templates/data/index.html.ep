@@ -19,7 +19,8 @@
 </td><td class=bytes><%= $size->{$n} %>
 </td><td class=bytes>
 % if ( my $size = -s $dump_path->{$n} ) {
-<a class="remove" title="remove" href="/data/remove?path=<%= $dump_path->{$n} %>;name=<%= $n %>"><%= $size %></a>
+%  my $action = -M $dump_path->{$n} > -M "data/$n" ? 'reload' : 'remove';
+<a class="<%= $action %>" title="<%= $action %>" href="/data/<%= $action %>?path=<%= $dump_path->{$n} %>;name=<%= $n %>"><%= $size %></a>
 % }
 </td><td align=right><%= defined $loaded->{$n}->{data} ? $#{ $loaded->{$n}->{data}->{items} } + 1 : '' %>
 </td><td align=right><%= defined $changes->{$n} ? $#{ $changes->{$n} } + 1 : '' %>
