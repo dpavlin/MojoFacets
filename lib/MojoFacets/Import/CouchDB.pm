@@ -8,7 +8,7 @@ use base 'Mojo::Base';
 use File::Slurp;
 use Data::Dump qw(dump);
 use JSON;
-use Mojo::Client;
+use Mojo::UserAgent;
 
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
@@ -45,7 +45,7 @@ sub data {
 
 	warn "# CouchDB URL: $url";
 
-	my $json = Mojo::Client->new->get($url)->res->json;
+	my $json = Mojo::UserAgent->new->get($url)->res->json;
 
 	my $data;
 
