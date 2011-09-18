@@ -14,6 +14,7 @@ sub index {
 
 	my $columns = $self->session('columns') || return $self->redirect_to('/data/columns');
 	my $path    = $self->session('path')    || return $self->redirect_to('/data/load');
+	my $with    = $self->param('with') || 'points';
 
 #	my $name = join('.', 'items', map { my $n = unac_string($_); $n =~ s/\W+/_/g; $n } @$columns );
 	my $name = MojoFacets::Data::__export_path_name( $path, 'items', @$columns );
@@ -28,7 +29,7 @@ sub index {
 		my @plot;
 		foreach ( 1 .. $#$columns ) {
 			my $n = $_ + 1;
-			push @plot, qq|"$dir/$url" using 1:$n title "$columns->[$_]" with points|;
+			push @plot, qq|"$dir/$url" using 1:$n title "$columns->[$_]" with $with|;
 		}
 
 		my $g = qq|
