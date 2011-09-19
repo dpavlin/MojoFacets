@@ -14,7 +14,7 @@
 use HTTP::Request::Common;
 use LWP::UserAgent;
 use JSON -support_by_pp;
-use Media::Type::Simple;
+#use Media::Type::Simple;
 
 use strict;
 
@@ -64,7 +64,8 @@ foreach my $file(@files) {
 	my $data = join("", <FILE>);
 	close FILE;
 
-	my $mime = type_from_ext(($file =~ m/([^.]+)$/)[0]);
+#	my $mime = type_from_ext(($file =~ m/([^.]+)$/)[0]);
+	my $mime = 'text/tab-separated-values';
 	
 	$ua -> default_header('Slug' => $file);
 
