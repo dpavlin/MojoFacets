@@ -7,7 +7,7 @@ sub register {
 	my ($self, $app) = @_;
 
 	# Start timer
-	$app->plugins->add_hook(
+	$app->hook(
 		before_dispatch => sub {
 			my ($self, $c) = @_;
 			return unless $ENV{PROFILE};
@@ -19,7 +19,7 @@ sub register {
 	);
 
 	# End timer
-	$app->plugins->add_hook(
+	$app->hook(
 		after_dispatch => sub {
 			my ($self, $c) = @_;
 			my $p = $ENV{PROFILE} || return;
