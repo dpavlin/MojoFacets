@@ -13,7 +13,7 @@ use File::Find;
 use Storable;
 use Time::HiRes qw(time);
 use File::Path qw(mkpath);
-use Text::Unaccent::PurePerl;
+use Text::Unaccent;
 use Digest::MD5;
 use Statistics::Descriptive;
 
@@ -364,7 +364,7 @@ sub _permanent_path {
 
 sub __unac {
 	my $n = shift;
-	$n = unac_string($n);
+	$n = unac_string('utf-8',$n);
 	$n =~ s/\W+/_/g;
 	return $n;
 }
