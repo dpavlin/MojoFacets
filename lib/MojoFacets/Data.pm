@@ -840,6 +840,8 @@ sub items {
 	my $code_path = $self->app->home->rel_dir('public') . "/code";
 	if ( $commit ) {
 
+		__path_modified( $path, 'commit' );
+
 		warn "# commit on ", $#$filtered + 1, " items:\n$code\n";
 		( $key, $value, $out ) = ( 'key', 'value' );
 		foreach ( 0 .. $#$filtered ) {
