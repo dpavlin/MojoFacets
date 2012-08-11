@@ -32,8 +32,7 @@ var cell_blur = function() {
 		if ( ! data ) {
 			data = new_content; // fallback to submited data for 304
 		} else {
-			if ( $('a.save_actions').length == 0 )
-			$('a.actions').before('<a class=save_actions href="/data/save">save</a>')
+			$('span.save_actions').show();
 		}
 		var vals = data.split('¶');
 		data = vals.join('<span class=d>¶</span>');
