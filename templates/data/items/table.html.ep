@@ -1,4 +1,3 @@
-%#<pre class=debug><%= dumper $cols_changed %></pre>
 <table border=1>
 
 <tr>

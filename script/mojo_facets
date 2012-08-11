@@ -1,23 +1,14 @@
 #!/usr/bin/env perl
+use Mojo::Base -strict;
 
-use strict;
-use warnings;
+use File::Basename 'dirname';
+use File::Spec::Functions qw(catdir splitdir);
 
-use FindBin;
+# Source directory has precedence
+my @base = (splitdir(dirname(__FILE__)), '..');
+my $lib = join('/', @base, 'lib');
+-e catdir(@base, 't') ? unshift(@INC, $lib) : push(@INC, $lib);
 
-use lib "$FindBin::Bin/../lib";
-use lib "$FindBin::Bin/../../lib";
-
-# Check if Mojo is installed
-eval 'use Mojolicious::Commands';
-die <<EOF if $@;
-It looks like you don't have the Mojo Framework installed.
-Please visit http://mojolicious.org for detailed installation instructions.
-
-EOF
-
-# Application
-$ENV{MOJO_APP} ||= 'MojoFacets';
-
-# Start commands
-Mojolicious::Commands->start;
+# Start commands for application
+require Mojolicious::Commands;
+Mojolicious::Commands->start_app('MojoFacets');

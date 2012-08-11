@@ -258,3 +258,7 @@ span.count span#column_selection {
 	position: absolute;
 	left: 15em;
 }
+
+.hide {
+	display: none;
+}

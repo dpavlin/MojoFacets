@@ -59,11 +59,13 @@ items:
 <a href="<%= url_for( controller => 'changes', action => 'index', id => 0 ) %>">changes</a>
 <a href="<%= url_for( controller => 'actions', action => 'index', id => 0 ) %>">actions</a>
 
-% if ( session('modified') ) {
-%  my $path = session('path');
+% my $visible_class = session('modified') ? '' : 'hide';
+% my $path = session('path');
+<span class="save_actions <%= $visible_class %>">
 &middot;
-<a class=save_actions title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save', id => $path ) %>">save</a>
-% }
+<a title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save' ) %>" >save</a>
+</span>
+
 </span>
 
 </div>
