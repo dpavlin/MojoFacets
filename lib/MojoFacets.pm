@@ -51,13 +51,13 @@ sub startup {
 
 #	$self->plugin( 'request_timer' );
 
-	$self->plugins->add_hook(
+	$self->hook(
 			after_dispatch => sub {
 				my ($self) = @_;
 				save_action( $self );
 			}
 	);
-	
+
 	eval 'use MojoFacets::Plugin::NYTProf';
 	if ( $@ ) {
 		warn "profile disabled: ",substr($@,0,40) if $@;
