@@ -16,7 +16,7 @@ sub data {
 	my $path = $self->full_path;
 
 	my $encoding = 'utf-8';
-	if ( $path =~ m/\.(\w+).csv/i ) {
+	if ( $path =~ m/\.([\w\-]+).csv/i ) {
 		$encoding = $1;
 	}
 
