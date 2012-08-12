@@ -267,8 +267,6 @@ sub _load_path {
 sub load {
 	my $self = shift;
 
- 	my $path = $self->param('path') || return $self->redirect_to( '/data/index' );
-
 	my @paths = $self->param('paths');
 	warn "# paths ", dump @paths;
 
@@ -279,6 +277,8 @@ sub load {
 	}
 
 	$self->_load_path( $_ ) foreach @paths;
+
+ 	my $path = $self->param('path') || $self->session('path') || @paths[0] || $self->redirect_to('/data/index');
 
 	warn "# path $path\n";
 	$self->_load_path( $path );
