@@ -42,7 +42,7 @@
 
 </form>
 
-%#<pre class=debug><%= dumper $changes %></pre>
-<pre class=debug><%= dumper $loaded %></pre>
-<pre class=debug><%= dumper $filters %></pre>
-<pre class=debug><%= dumper $dump_path %></pre>
+<pre class=debug><%#= dumper $changes %></pre>
+<pre class=debug><%#= dumper $loaded %></pre>
+<pre class=debug><%#= dumper $filters %></pre>
+<pre class=debug><%#= dumper $dump_path %></pre>
