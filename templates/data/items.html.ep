@@ -51,7 +51,7 @@ items
 <input type=checkbox name=export value=1 title="export" <%= $export ? 'checked' : '' %> >
 % my $timefmt = param('timefmt');
 % session('timefmt', $timefmt );
-timefmt: <input name=timefmt value="<%= $timefmt %>">
+timefmt: <input name=timefmt value="<%= $timefmt %>" placeholder="%d.%m.%Y %H:%M:%S">
 
 
 % if ( $export ) {
