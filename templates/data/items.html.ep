@@ -53,11 +53,14 @@ items
 % session('timefmt', $timefmt );
 timefmt: <input name=timefmt value="<%= $timefmt %>">
 
-</form>
 
 % if ( $export ) {
-<img id=gnuplot src="/gnuplot?timefmt=<%= $timefmt %>">
+with:
+%= select_field with => [qw( points dots lines steps )]
+<img id=gnuplot src="/gnuplot?timefmt=<%= $timefmt %>&with=<%= param('with') %>">
 % }
+
+</form>
 
 <%= include 'data/items/' . session('show') %>
 
@@ -92,6 +95,10 @@ $(document).ready( function(){
 		console.debug( 'export', this );
 		if ( this.checked )
 			$(this).closest('form').submit();
+	});
+	$('select[name=with]').change( function(){
+		console.debug( 'with', this );
+		$(this).closest('form').submit();
 	});
 });
 </script>
