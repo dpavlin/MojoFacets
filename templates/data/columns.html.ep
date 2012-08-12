@@ -35,7 +35,7 @@ Load view:
 
 <input type=submit value="Select">
 
-<%= include 'all_checkboxes' %>
+%= include 'all_checkboxes', add_class_to => 'parent()'
 
 <ul id="sortable">
 % foreach my $n ( @$columns ) {

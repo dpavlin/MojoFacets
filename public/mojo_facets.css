@@ -137,12 +137,12 @@ div.col_opts {
 	width: 100%;
 }
 
-label.included,
+.included,
 a#included {
 	color: #080;
 }
 
-label.excluded,
+.excluded,
 a#excluded {
 	color: #800;
 }

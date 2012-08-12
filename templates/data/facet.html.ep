@@ -18,7 +18,7 @@
 <span id=facet-count title="total"><%= $facet_count %></span>
 </span>
 
-<%= include 'all_checkboxes' %>
+%= include 'all_checkboxes', add_class_to => 'parent()'
 
 <%= include 'sorting' %>
 
