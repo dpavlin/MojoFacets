@@ -57,7 +57,18 @@ timefmt: <input name=timefmt value="<%= $timefmt %>" placeholder="%d.%m.%Y %H:%M
 % if ( $export ) {
 with:
 %= select_field with => [qw( points dots lines steps )]
-<img id=gnuplot src="/gnuplot?timefmt=<%= $timefmt %>&with=<%= param('with') %>">
+
+<div style="float: right">
+Hide from graph:
+<ul>
+%  foreach my $column ( @$columns ) {
+ <li><label><%= check_box gnuplot_hide => $column %><%= $column %></label></li>
+%  }
+</ul>
+</div>
+
+% my @hide = map { ( gnuplot_hide => $_ ) } param('gnuplot_hide');
+<img id=gnuplot src="<%= url_for( '/gnuplot' )->query( timefmt => $timefmt, @hide, with => param('with') ) %>">
 % }
 
 </form>
