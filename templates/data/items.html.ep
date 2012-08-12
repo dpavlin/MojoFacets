@@ -109,7 +109,11 @@ $(document).ready( function(){
 	});
 	$('select[name=with]').change( function(){
 		console.debug( 'with', this );
-		$(this).closest('form').submit();
+		$('img#gnuplot').attr( 'src', '/gnuplot?' + $('form.info').serialize() );
+	});
+	$('ul input[name=gnuplot_hide]').change( function(){
+		console.debug( 'gnuplot_hide', this );
+		$('img#gnuplot').attr( 'src', '/gnuplot?' + $('form.info').serialize() );
 	});
 });
 </script>
