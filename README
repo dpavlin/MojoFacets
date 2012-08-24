@@ -18,6 +18,8 @@ and can be specified in filename, before extension like this: data.encoding.csv
 CouchDB data can be imported using files which contain full url to CouchDB database
 or url to CouchDB view to import. URL's filename should end in *.couchdb
 
+lsblk .pairs format is basically shell variables in form NAME="value"
+
 
 Start with:
 
