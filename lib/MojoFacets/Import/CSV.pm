@@ -39,6 +39,11 @@ sub data {
 		$sep_char = shift @sep_by_usage;
 	}
 
+	while ( $sep_char =~ m/^\"$/ ) {
+		warn "## skip quote separator ",dump($sep_char);
+		$sep_char = shift @sep_by_usage;
+	}
+
 	warn "sep_char = [$sep_char] for $path\n";
 
 	my $csv = Text::CSV->new ( { binary => 1, eol => $/, sep_char => $sep_char } )
