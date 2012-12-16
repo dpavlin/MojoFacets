@@ -34,6 +34,8 @@ sub import_module {
 
 #	warn "# import_module $full_path\n";
 
+	return if $full_path =~ m/\.columns$/;
+
 	foreach my $ext ( keys %{ $imports->{file} } ) {
 		if ( -f $full_path && $full_path =~ m/$ext/i ) {
 			return $imports->{file}->{$ext};
