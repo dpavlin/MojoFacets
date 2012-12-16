@@ -9,6 +9,8 @@ use Data::Dump qw(dump);
 
 __PACKAGE__->attr('full_path');
 
+sub ext { '.pairs' }
+
 sub data {
 	my $self = shift;
 

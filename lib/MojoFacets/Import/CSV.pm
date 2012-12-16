@@ -10,6 +10,8 @@ use Data::Dump qw(dump);
 
 __PACKAGE__->attr('full_path');
 
+sub ext { '.csv' };
+
 sub data {
 	my $self = shift;
 

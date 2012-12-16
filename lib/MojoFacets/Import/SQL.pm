@@ -12,6 +12,8 @@ use Encode;
 
 __PACKAGE__->attr('full_path');
 
+sub ext { '.sql' }
+
 sub data {
 	my $self = shift;
 

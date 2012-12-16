@@ -9,7 +9,9 @@ use HTML::TableExtract;
 use File::Slurp;
 use Data::Dump qw(dump);
 
-__PACKAGE__->attr('dir');
+__PACKAGE__->attr('full_path');
+
+sub ext { '\.html$' => 'directory' }
 
 sub __normalize_header {
 	map {
@@ -27,7 +29,7 @@ sub data {
 	my $stats;
 	my @header;
 
-	foreach my $file ( glob $self->dir . '/*.html' ) {
+	foreach my $file ( glob $self->full_path . '/*.html' ) {
 		warn "# file $file\n";
 		my $te = HTML::TableExtract->new(
 			keep_headers => 1,

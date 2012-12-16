@@ -17,12 +17,37 @@ use Text::Unaccent;
 use Digest::MD5;
 use Statistics::Descriptive;
 
-use MojoFacets::Import::File;
-use MojoFacets::Import::HTMLTable;
-use MojoFacets::Import::CSV;
-use MojoFacets::Import::CouchDB;
-use MojoFacets::Import::SQL;
-use MojoFacets::Import::Pairs;
+our $imports;
+foreach my $module ( glob('lib/MojoFacets/Import/*.pm') ) {
+	$module =~ s{lib/(\w+)/(\w+)/(.*)\.pm}{$1::$2::$3};
+	eval "use $module";
+	die "$module: $!" if $!;
+	my ( $ext, $priority ) = $module->ext;
+	$imports->{$priority || 'file'}->{$ext} = $module;
+	warn "# import $ext $module\n";
+}
+
+warn "# import loaded ",dump( $imports );
+
+sub import_module {
+	my $full_path = shift;
+
+#	warn "# import_module $full_path\n";
+
+	foreach my $ext ( keys %{ $imports->{file} } ) {
+		if ( -f $full_path && $full_path =~ m/$ext/i ) {
+			return $imports->{file}->{$ext};
+			last;
+		}
+	}
+
+	foreach my $ext ( keys %{ $imports->{directory} } ) {
+		if ( -f $full_path && $full_path =~ m/$ext/i ) {
+			return $imports->{directory}->{$ext};
+			last;
+		}
+	}
+}
 
 our $loaded;
 our $filters;
@@ -35,17 +60,12 @@ sub index {
 
 	my @files;
 	my $changes;
+
 	find( sub {
 		my $file = $File::Find::name;
-		if ( -f $file && $file =~ m/\.(js(on)?|txt)$/ ) {
-			$file =~ s/$data_dir\/*//;
-			push @files, $file;
-		} elsif ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+\.\d+.+)/ ) {
+		if ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+\.\d+.+)/ ) {
 			push @{ $changes->{$1} }, $2
-		} elsif ( -d $file && $file =~ m/\.html$/ ) {
-			$file =~ s/$data_dir\/*//;
-			push @files, $file;
-		} elsif ( -f $file && $file =~ m/\.(csv|storable|couchdb|sql|pairs)$/i ) {
+		} elsif ( import_module( $file ) ) {
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
 		} else {
@@ -197,39 +217,8 @@ sub _load_path {
 	}
 
 	my $data;
-	if ( -f $full_path ) {
-		if ( $full_path =~ m/.storable$/ ) { # check storable first to catch files copied from /tmp/
-			$data->{generated}++;
-			warn "open $full_path ", -s $full_path, " bytes";
-			open(my $pipe, "<", $full_path) || die $!;
-			while ( my $o = eval { Storable::fd_retrieve $pipe } ) {
-				if ( exists $o->{item} ) {
-					# stream of storable objects
-					push @{ $data->{items} }, $o->{item};
-				} elsif ( exists $o->{data}->{items} ) {
-					# /tmp/mojofacets.*.storable
-					$data->{items} = $o->{data}->{items};
-					$data->{header} = $o->{header};
-					delete $data->{generated};
-				} else {
-					warn "SKIP ",dump($o);
-				}
-			}
-			close($pipe);
-			warn "loaded ", $#{ $data->{items} } + 1, " items from $full_path\n";
-		} elsif ( $full_path =~ m/.csv/i ) {
-			$data = MojoFacets::Import::CSV->new( full_path => $full_path )->data;
-		} elsif ( $full_path =~ m/.sql/i ) {
-			$data = MojoFacets::Import::SQL->new( full_path => $full_path )->data;
-		} elsif ( $full_path =~ m/.couchdb/i ) {
-			$data = MojoFacets::Import::CouchDB->new( full_path => $full_path )->data;
-		} elsif ( $full_path =~ m/.pairs/i ) {
-			$data = MojoFacets::Import::Pairs->new( full_path => $full_path )->data;
-		} else {
-			$data = MojoFacets::Import::File->new( full_path => $full_path, path => $path )->data;
-		}
-	} elsif ( -d $full_path && $full_path =~ m/.html/ ) {
-		$data = MojoFacets::Import::HTMLTable->new( dir => $full_path )->data;
+	if ( my $module = import_module( $full_path ) ) {
+		$data = $module->new( full_path => $full_path )->data;
 	} else {
 		die "can't load $full_path";
 	}
@@ -281,7 +270,7 @@ sub load {
 
 	$self->_load_path( $_ ) foreach @paths;
 
- 	my $path = $self->param('path') || $self->session('path') || @paths[0] || $self->redirect_to('/data/index');
+ 	my $path = $self->param('path') || $self->session('path') || $paths[0] || $self->redirect_to('/data/index');
 
 	warn "# path $path\n";
 	$self->_load_path( $path );

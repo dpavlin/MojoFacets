@@ -6,9 +6,11 @@ use warnings;
 use Test::More tests => 5;
 use Test::Mojo;
 
+use lib 'lib';
+
 use_ok('MojoFacets');
 
 # Test
-my $t = Test::Mojo->new(app => 'MojoFacets');
-$t->get_ok('/')->status_is(200)->content_type_is('text/html')
+my $t = Test::Mojo->new('MojoFacets');
+$t->get_ok('/')->status_is(200)->content_type_is('text/html;charset=UTF-8')
   ->content_like(qr/Mojo/i);

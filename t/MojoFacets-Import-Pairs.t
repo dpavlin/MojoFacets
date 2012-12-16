@@ -13,7 +13,7 @@ use_ok('MojoFacets::Import::Pairs');
 my $path = $ARGV[0] || (glob 'data/lsblk/*.pairs')[0];
 diag "using $path";
 
-ok( my $o = MojoFacets::Import::Pairs->new( path => $path ), 'new' );
+ok( my $o = MojoFacets::Import::Pairs->new( full_path => $path ), 'new' );
 
 ok( my $data = $o->data, 'data' );
 diag dump($data);

@@ -13,6 +13,8 @@ use JSON;
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
 
+sub ext { '\.(js(on)?|txt)$' }
+
 sub data {
 	my $self = shift;
 
@@ -23,7 +25,7 @@ sub data {
 	my $data = read_file $self->full_path;
 	warn "# data snippet: ", substr($data,0,200);
 	my @header;
-	if ( $path =~ m/\.js/ ) {
+	if ( $path =~ m/\.js(on)?/ ) {
 		Encode::_utf8_on($data);
 		$data = from_json $data;
 	} elsif ( $path =~ m/\.txt/ ) {
