@@ -10,6 +10,8 @@ use Data::Dump qw(dump);
 
 __PACKAGE__->attr('full_path');
 
+sub ext { '.csv' };
+
 sub data {
 	my $self = shift;
 
@@ -36,6 +38,11 @@ sub data {
 	my $sep_char = shift @sep_by_usage;
 	while ( $sep_char =~ m/^\s$/ ) {
 		warn "## skip whitespace separator ",dump($sep_char);
+		$sep_char = shift @sep_by_usage;
+	}
+
+	while ( $sep_char =~ m/^\"$/ ) {
+		warn "## skip quote separator ",dump($sep_char);
 		$sep_char = shift @sep_by_usage;
 	}
 

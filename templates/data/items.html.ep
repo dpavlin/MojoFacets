@@ -49,15 +49,29 @@ items
 % my $export = param('export');
 % session('export', $export );
 <input type=checkbox name=export value=1 title="export" <%= $export ? 'checked' : '' %> >
-% my $timefmt = param('timefmt');
+% my $timefmt = param('timefmt') || session("timefmt");
 % session('timefmt', $timefmt );
-timefmt: <input name=timefmt value="<%= $timefmt %>">
+timefmt: <input name=timefmt value="<%= $timefmt %>" placeholder="%d.%m.%Y %H:%M:%S">
 
-</form>
 
 % if ( $export ) {
-<img id=gnuplot src="/gnuplot?timefmt=<%= $timefmt %>">
+with:
+%= select_field with => [qw( points dots lines steps )]
+
+<div style="float: right">
+Hide from graph:
+<ul>
+%  foreach my $column ( @$columns ) {
+ <li><label><%= check_box gnuplot_hide => $column %><%= $column %></label></li>
+%  }
+</ul>
+</div>
+
+% my @hide = map { ( gnuplot_hide => $_ ) } param('gnuplot_hide');
+<img id=gnuplot src="<%= url_for( '/gnuplot' )->query( timefmt => $timefmt, @hide, with => param('with') ) %>">
 % }
+
+</form>
 
 <%= include 'data/items/' . session('show') %>
 
@@ -92,6 +106,14 @@ $(document).ready( function(){
 		console.debug( 'export', this );
 		if ( this.checked )
 			$(this).closest('form').submit();
+	});
+	$('select[name=with]').change( function(){
+		console.debug( 'with', this );
+		$('img#gnuplot').attr( 'src', '/gnuplot?' + $('form.info').serialize() );
+	});
+	$('ul input[name=gnuplot_hide]').change( function(){
+		console.debug( 'gnuplot_hide', this );
+		$('img#gnuplot').attr( 'src', '/gnuplot?' + $('form.info').serialize() );
 	});
 });
 </script>

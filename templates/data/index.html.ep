@@ -1,4 +1,4 @@
-% layout 'default';
+% layout 'ui';
 % my $path = session('path');
 
 <h2>Select data file to load</h2>
@@ -6,6 +6,8 @@
 <form method=post action=/data/load >
 
 <input type=submit value="Load">
+
+%= include 'all_checkboxes', add_class_to => 'parent().parent()'
 
 <table>
 <tr><th rowspan=2>name</th><th colspan=2>size</th><th rowspan=2>items</th><th rowspan=2>changes</th><th rowspan=2 title="loaded in memory">m</th><th colspan=2>columns</th></tr>
@@ -40,7 +42,7 @@
 
 </form>
 
-%#<pre class=debug><%= dumper $changes %></pre>
-<pre class=debug><%= dumper $loaded %></pre>
-<pre class=debug><%= dumper $filters %></pre>
-<pre class=debug><%= dumper $dump_path %></pre>
+<pre class=debug><%#= dumper $changes %></pre>
+<pre class=debug><%#= dumper $loaded %></pre>
+<pre class=debug><%#= dumper $filters %></pre>
+<pre class=debug><%#= dumper $dump_path %></pre>

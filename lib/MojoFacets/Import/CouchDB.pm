@@ -13,6 +13,8 @@ use Mojo::UserAgent;
 __PACKAGE__->attr('path');
 __PACKAGE__->attr('full_path');
 
+sub ext { '.couchdb' };
+
 sub flatten {
 	my ($flat,$data,$prefix) = @_;
 	if ( ref $data eq '' ) {

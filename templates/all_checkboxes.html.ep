@@ -38,7 +38,7 @@ function update_checked_count(full) {
 	var count = $('#checked-count');
 	var nr = -1;
 	if ( full ) {
-		nr = $("label input[type='checkbox']:checked").length;
+		nr = $("input[type='checkbox']:checked").length;
 	} else {
 		nr = parseInt( count.text() );
 		if ( this.checked ) {
@@ -57,31 +57,34 @@ var toggle_checkbox = function() {
 };
 
 $('a#included').click( function(){
-    $("label.included input[type='checkbox']:not([disabled='disabled'])").each( toggle_checkbox );
+    $(".included input[type='checkbox']:not([disabled='disabled'])").each( toggle_checkbox );
 	update_checked_count(1);
 });
 
 $('a#excluded').click( function(){
-    $("label.excluded input[type='checkbox']:not([disabled='disabled'])").each( toggle_checkbox );
+    $(".excluded input[type='checkbox']:not([disabled='disabled'])").each( toggle_checkbox );
 	update_checked_count(1);
 });
 
 
 // regex for column names
 
+var last_user_regex = '';
+
 var filter_regex = function(user_regex) {
 
-	if ( user_regex == '' ) return false;
+	if ( user_regex == '' || user_regex == last_user_regex ) return false;
+	last_user_regex = user_regex;
 
 	var r = new RegExp( user_regex,'i');
 	var included = 0;
 	var excluded = 0;
     $("input[type='checkbox']:not([disabled='disabled'])").each( function(i,element){
 		if ( r.test( this.value ) ) {
-			$(this).parent().removeClass('excluded').addClass('included');
+			$(this).<%= $add_class_to %>.removeClass('excluded').addClass('included');
 			included++;
 		} else {
-			$(this).parent().removeClass('included').addClass('excluded');
+			$(this).<%= $add_class_to %>.removeClass('included').addClass('excluded');
 			excluded++;
 		}
 	});
@@ -89,7 +92,7 @@ var filter_regex = function(user_regex) {
 	$('a#included').text(included).show();
 	$('a#excluded').text(excluded).show();
 
-	console.debug('filter_regex',included,excluded);
+	console.debug('filter_regex',user_regex,included,excluded, last_user_regex);
 };
 
 $('input[name=filter_regex]')

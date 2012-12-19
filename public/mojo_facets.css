@@ -74,7 +74,7 @@ a.remove {
 	color: #000;
 }
 
-li label:hover, td label:hover {
+li label:hover, tr:hover td {
 	background: #ff8;
 }	
 
@@ -137,12 +137,12 @@ div.col_opts {
 	width: 100%;
 }
 
-label.included,
+.included,
 a#included {
 	color: #080;
 }
 
-label.excluded,
+.excluded,
 a#excluded {
 	color: #800;
 }
