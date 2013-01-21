@@ -13,8 +13,13 @@ var cell_blur = function() {
 */
 	var _row_id = $(this).parent().parent().attr('title');
 
-	var x = $(this).parent().attr('cellIndex');
-	var y = $(this).parent().parent().attr('rowIndex');
+	var x = $(this).parent().index();
+	var y = $(this).parent().parent().index();
+
+	if ( ! x || ! y ) {
+		console.error('no x ', x, ' or y ', y, ' defined');
+		return;
+	}
 
 	var new_content = $(this).val();
 //	$(this).replaceWith( new_content );
