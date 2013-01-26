@@ -42,12 +42,23 @@ sub data {
 	my $path = $self->path;
 
 	my $url = read_file $self->full_path;
-	$url =~ s{/\s*$}{}s;
+
+	$url =~ s{/?\s*$}{}s;
 	$url .= '/_all_docs?include_docs=true' unless $url =~ m/\?/;
 
 	warn "# CouchDB URL: $url";
 
-	my $json = Mojo::UserAgent->new->get($url)->res->json;
+	# fix "Maximum message size exceeded"
+	$ENV{MOJO_MAX_MESSAGE_SIZE} = 64 * 1024 * 1024;
+
+	my $tx = Mojo::UserAgent->new->get($url);
+	my ( $res, $json );
+
+	if ( my $res = $tx->success) {
+		$json = $res->json;
+	} else {
+		die $tx->error;
+	}
 
 	my $data;
 
@@ -62,6 +73,8 @@ sub data {
 				push @{ $data->{items} }, $doc;
 			}
 		}
+	} else {
+		die "can't find rows in ",dump( $res->body );
 	}
 
 	return $data;
