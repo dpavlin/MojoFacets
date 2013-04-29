@@ -46,6 +46,11 @@ sub data {
 		$sep_char = shift @sep_by_usage;
 	}
 
+	if ( $sep_char !~ m/,/ && $possible_delimiters->{','} && $path =~ m/\.csv/i ) {
+		$sep_char = ',';
+		warn "## csv file detected so prefer , as separator";
+	}
+
 	warn "sep_char = [$sep_char] for $path\n";
 
 	my $csv = Text::CSV->new ( { binary => 1, eol => $/, sep_char => $sep_char } )
