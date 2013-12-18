@@ -19,6 +19,10 @@ sub data {
 	my $self = shift;
 
 	my $path = $self->path;
+	if ( ! $path ) {
+		$path = $self->full_path || die "no path or full_path";
+		$path =~ s{^.+/([^/]+)$}{$1};
+	}
 
 	# we could use Mojo::JSON here, but it's too slow
 #	$data = from_json read_file $path;
