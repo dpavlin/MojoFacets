@@ -5,7 +5,11 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-use Data::Dump qw(dump);
+#use Data::Dump qw(dump); # broken with Mojo::JSON, see https://rt.cpan.org/Public/Bug/Display.html?id=86592
+use Data::Dumper;
+use subs 'dump';
+sub dump { Dumper(@_) };
+
 use File::Slurp;
 use Encode;
 use locale;
