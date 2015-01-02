@@ -265,7 +265,7 @@ sub _load_path {
 sub load {
 	my $self = shift;
 
-	my @paths = $self->param('paths');
+	my @paths = $self->every_param('paths');
 	warn "# paths ", dump @paths;
 
 	foreach my $p ( keys %$loaded ) {
