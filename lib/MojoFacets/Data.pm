@@ -459,7 +459,7 @@ sub columns {
 sub _param_array {
     my ($self,$name) = @_;
 
-	my @array = $self->param($name);
+	my @array = @{ $self->every_param($name) };
 	my $path  = $self->session('path');
 
 	if ( @array ) {
