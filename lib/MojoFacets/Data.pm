@@ -504,7 +504,7 @@ sub filter {
 	my $self = shift;
 
 	my $name = $self->param('filter_name') || die "name?";
-	my @vals = $self->param('filter_vals');
+	my @vals = @{ $self->every_param('filter_vals') };
 
 	$self->_remove_filter( $name );
 	if ( @vals ) {
