@@ -30,10 +30,10 @@ sub save_action {
 			$path =~ s{/}{.}g;
 			$actions_path .= sprintf '%.4f%s', $time, $path;
 
-			my $array = $params->params;
-			if ( @$array ) {
-				store $array, $actions_path;
-				warn "SAVE $actions_path ", -s $actions_path, " bytes params = ", dump($array), $/;
+			my $hash = $params->to_hash;
+			if ( $hash ) {
+				store $hash, $actions_path;
+				warn "SAVE $actions_path ", -s $actions_path, " bytes params = ", dump($hash), $/;
 			}
 		}
 	}

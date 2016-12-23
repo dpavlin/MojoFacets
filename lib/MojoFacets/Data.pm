@@ -17,7 +17,7 @@ use File::Find;
 use Storable;
 use Time::HiRes qw(time);
 use File::Path qw(mkpath);
-use Text::Unaccent;
+use Text::Unaccent::PurePerl;
 use Digest::MD5;
 use Statistics::Descriptive;
 
@@ -815,7 +815,7 @@ sub items {
 	$code =~ s{\n+$}{\n}s;
 
 	# XXX convert @row->{foo} into @{$row->{foo}}
-	$code =~ s|\@(row->{[^}]+})|\@{\$$1}|gs;
+	$code =~ s|\@(row->\{[^}]+\})|\@{\$$1}|gs;
 
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
@@ -826,7 +826,7 @@ sub items {
 	if ( $code && ( $test || $commit ) ) {
 		# XXX find columns used in code snippet and show them to user
 		my $order = 0;
-		foreach my $column ( $code =~ m/\$row->{([^}]+)}/g ) {
+		foreach my $column ( $code =~ m/\$row->\{([^}]+)\}/g ) {
 			if ( $column =~ s/^(['"])// ) {
 				$column =~ s/$1$//;
 			}
@@ -992,7 +992,7 @@ sub items {
 		warn "# sorted_items ", $#$sorted_items + 1, " offset $offset limit $limit order $sort";
 
 		my $depends_on;
-		my $tmp = $code; $tmp =~ s/\$row->{(['"]?)([\w\s]+)\1/$depends_on->{$2}++/gse;
+		my $tmp = $code; $tmp =~ s/\$row->\{(['"]?)([\w\s]+)\1/$depends_on->{$2}++/gse;
 		warn "# depends_on ",dump $depends_on;
 
 		my $test_added = Storable::dclone $test_changed;

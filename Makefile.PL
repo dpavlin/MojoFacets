@@ -11,7 +11,7 @@ requires 'File::Slurp';
 requires 'JSON';
 requires 'HTML::TableExtract';
 requires 'File::Path';
-requires 'Text::Unaccent';
+requires 'Text::Unaccent::PurePerl';
 requires 'Statistics::Descriptive';
 requires 'Text::CSV';
 
