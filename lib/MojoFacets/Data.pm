@@ -69,7 +69,7 @@ sub index {
 
 	find( sub {
 		my $file = $File::Find::name;
-		if ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+\.\d+.+)/ ) {
+		if ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+[\.,]\d+.+)/ ) {
 			push @{ $changes->{$1} }, $2
 		} elsif ( import_module( $file ) ) {
 			$file =~ s/$data_dir\/*//;
