@@ -16,7 +16,7 @@ var cell_blur = function() {
 	var x = $(this).parent().index();
 	var y = $(this).parent().parent().index();
 
-	if ( ! x || ! y ) {
+	if ( x == null || y == null ) {
 		console.error('no x ', x, ' or y ', y, ' defined');
 		return;
 	}
