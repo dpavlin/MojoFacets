@@ -28,7 +28,7 @@ sub index {
 	warn "# name $name\n";
 
 	my $url = "/export/$path/$name";
-	my $dir = $self->app->home->rel_dir('public');
+	my $dir = $self->app->home->rel_file('public');
 
 	if ( -e "$dir/$url" ) {
 

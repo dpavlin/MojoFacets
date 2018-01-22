@@ -12,7 +12,7 @@ use MojoFacets::Data;
 sub _changes_path {
 	my $self = shift;
 	my $path = $self->param('path') || $self->session('path');
-	$self->app->home->rel_dir('data') . '/' . $path . '.changes';
+	$self->app->home->rel_file('data') . '/' . $path . '.changes';
 }
 
 sub _hash_eq {

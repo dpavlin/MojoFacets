@@ -8,7 +8,7 @@ use base 'Mojolicious::Controller';
 use Data::Dump qw(dump);
 use File::Slurp;
 
-sub _code_dir { $_[0]->app->home->rel_dir('public') . '/code' }
+sub _code_dir { $_[0]->app->home->rel_file('public') . '/code' }
 
 sub index {
 	my $self = shift;

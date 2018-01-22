@@ -61,7 +61,7 @@ our $filters;
 sub index {
 	my $self = shift;
 
-	my $data_dir = $self->app->home->rel_dir('data');
+	my $data_dir = $self->app->home->rel_file('data');
 	die "no data dir $data_dir" unless -d $data_dir;
 
 	my @files;
@@ -98,7 +98,7 @@ sub index {
 
 sub _dump_path {
 	my ( $self, $name ) = @_;
-	my $dir = $self->app->home->rel_dir('data');
+	my $dir = $self->app->home->rel_file('data');
 	$name =~ s/^$dir//;
 	$name =~ s/\/+/_/g;
 	return '/tmp/mojo_facets.' . $name . '.storable';
@@ -357,7 +357,7 @@ sub _checked {
 sub _permanent_path {
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
-	$self->app->home->rel_dir('data') . '/' . join('.', $path, @_);
+	$self->app->home->rel_file('data') . '/' . join('.', $path, @_);
 }
 
 sub __unac {
@@ -383,7 +383,7 @@ sub _export_path {
 		warn "no path in param or session";
 		return;
 	}
-	my $dir = $self->app->home->rel_dir('public') . "/export/$path";
+	my $dir = $self->app->home->rel_file('public') . "/export/$path";
 	mkpath $dir unless -e $dir;
 	my $name = __export_path_name( $path, @_ );
 	my $full = $dir . '/' . $name;
@@ -835,7 +835,7 @@ sub items {
 		}
 	}
 
-	my $code_path = $self->app->home->rel_dir('public') . "/code";
+	my $code_path = $self->app->home->rel_file('public') . "/code";
 	if ( $commit ) {
 
 		__path_modified( $path, 'commit' );
@@ -1295,7 +1295,7 @@ sub save {
 sub export {
 	my $self = shift;
 
-	my $dir = $self->app->home->rel_dir('public');
+	my $dir = $self->app->home->rel_file('public');
 
 	if ( my $import = $self->param('import') ) {
 

@@ -15,7 +15,7 @@ sub index {
 
 	if ( my $profile = $self->param('profile') ) {
 warn "XXX profile $profile\n";
-		my $dir = $self->app->home->rel_dir('public') . "/profile/$profile";
+		my $dir = $self->app->home->rel_file('public') . "/profile/$profile";
 		if ( ! -e $dir ) {
 			mkpath $dir unless -d $dir;
 			system "nytprofhtml --file $path$profile --out $dir";
@@ -35,7 +35,7 @@ sub remove {
 
 	if ( my $profile = $self->param('profile') ) {
 		unlink "/tmp/MojoFacets.profile.$profile";
-		rmtree $self->app->home->rel_dir('public') . "/profile/$profile";
+		rmtree $self->app->home->rel_file('public') . "/profile/$profile";
 	}
 
 	return $self->redirect_to('/profile');
