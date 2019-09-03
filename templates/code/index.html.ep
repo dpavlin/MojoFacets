@@ -14,7 +14,7 @@ column in this dataset
 % }
 </form>
 
-% foreach my $depends ( keys %$snippets ) {
+% foreach my $depends ( sort { lc $a cmp lc $b } keys %$snippets ) {
 <h2><%= $depends %></h2>
 <ul>
 %   foreach my $desc ( keys %{ $snippets->{$depends} } ) {
