@@ -60,6 +60,7 @@ sub data {
 	while ( my $row = $csv->getline( $fh ) ) {
 		if ( ! @header ) {
 			@header = @$row;
+			$header[0] =~ s/^#// if $path =~ m/\.tsv/i; # remove hash from 1st column
 			next;
 		}
 		my $item;
