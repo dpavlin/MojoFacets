@@ -10,7 +10,7 @@ use Data::Dump qw(dump);
 
 __PACKAGE__->attr('full_path');
 
-sub ext { '.csv' };
+sub ext { '\.[ct]sv$' };
 
 sub data {
 	my $self = shift;
@@ -18,7 +18,7 @@ sub data {
 	my $path = $self->full_path;
 
 	my $encoding = 'utf-8';
-	if ( $path =~ m/\.([\w\-]+).csv/i ) {
+	if ( $path =~ m/\.([\w\-]+).[ct]sv/i ) {
 		$encoding = $1;
 	}
 
@@ -37,6 +37,7 @@ sub data {
 	my @sep_by_usage = sort { $possible_delimiters->{$b} <=> $possible_delimiters->{$a} } keys %$possible_delimiters;
 	my $sep_char = shift @sep_by_usage;
 	while ( $sep_char =~ m/^\s$/ ) {
+		last if $sep_char eq "\t" && $path =~ m/\.tsv$/i;
 		warn "## skip whitespace separator ",dump($sep_char);
 		$sep_char = shift @sep_by_usage;
 	}
