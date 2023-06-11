@@ -32,10 +32,16 @@ sub index {
 
 	if ( -e "$dir/$url" ) {
 
+		my $timefmt = $self->param('timefmt');
+
+		my $spaces = $timefmt;
+		$spaces =~ s/\S//g;
+		$spaces = length( $spaces );
+
 		my @plot;
 		foreach ( 1 .. $#$columns ) {
 			my $title = $columns->[$_];
-			my $n = $_ + 1;
+			my $n = $_ + 1 + $spaces;
 			push @plot, qq|"$dir/$url" using 1:$n title "$title" with $with| unless $hide_columns->{ $title };
 		}
 
@@ -46,7 +52,7 @@ set output '$dir/$url.png'
 
 		|;
 
-		if ( my $timefmt = $self->param('timefmt') ) {
+		if ( $timefmt ) {
 			$g .= qq|
 
 set xdata time
