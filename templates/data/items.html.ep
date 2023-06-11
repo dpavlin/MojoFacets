@@ -61,7 +61,8 @@ with:
 <div style="float: right">
 Hide from graph:
 <ul>
-%  foreach my $column ( @$columns ) {
+%  my @hide_columns = @$columns; shift @hide_columns;
+%  foreach my $column ( @hide_columns ) {
  <li><label><%= check_box gnuplot_hide => $column %><%= $column %></label></li>
 %  }
 </ul>
