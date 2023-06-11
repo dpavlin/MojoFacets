@@ -41,6 +41,7 @@ sub index {
 		my @plot;
 		foreach ( 1 .. $#$columns ) {
 			my $title = $columns->[$_];
+			$title =~ s/_/ /g;
 			my $n = $_ + 1 + $spaces;
 			push @plot, qq|"$dir/$url" using 1:$n title "$title" with $with| unless $hide_columns->{ $title };
 		}
