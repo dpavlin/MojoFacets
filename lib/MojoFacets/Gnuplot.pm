@@ -39,8 +39,10 @@ sub index {
 		$timefmt_x =~ s/[ T]%H/\\n%H/;
 
 		my $spaces = $timefmt;
-		$spaces =~ s/\S//g;
+		$spaces =~ s/\S+//g;
+warn "# spaces: [$spaces]",dump( $spaces );
 		$spaces = length( $spaces );
+warn "# spaces: $spaces";
 
 		my @plot;
 		foreach ( 1 .. $#$columns ) {
@@ -79,7 +81,7 @@ set format x "$timefmt_x"
 		$g .= "\n\nplot " . join(',', @plot) . "\n";
 		$g =~ s/\n\n+/\n/sg;
 
-#warn "gnuplot $g";
+warn "gnuplot $g";
 
 		open(my $gnuplot, '|-', 'gnuplot') || die "gnuplot $!";
 		print $gnuplot $g;
