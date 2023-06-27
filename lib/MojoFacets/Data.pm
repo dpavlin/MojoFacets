@@ -264,10 +264,6 @@ sub _load_path {
 	$loaded->{ $path } = $info;
 	$self->_save( $path ) unless $info->{generated};
 
-	my $timefmt_path = $self->_permanent_path( 'timefmt' );
-	if ( -e $timefmt_path ) {
-		$self->session( 'timefmt', read_file $timefmt_path );
-	}
 
 }
 
@@ -292,6 +288,13 @@ sub load {
 	$self->_load_path( $path );
 
 	$self->session( 'path' => $path );
+
+	my $timefmt_path = $self->_permanent_path( 'timefmt' );
+	if ( -e $timefmt_path ) {
+		my $timefmt = read_file $timefmt_path;
+		$self->session( 'timefmt', $timefmt );
+		warn "timefmt = ", $timefmt;
+	}
 
 	my $redirect_to = '/data/items';
 
@@ -429,6 +432,7 @@ sub columns {
 		return $self->redirect_to('/data/items');
 
 	} elsif ( ! $self->session('header') ) {
+		return $self->redirect_to('/');
 		return $self->redirect_to('/data/load');
 	}
 
