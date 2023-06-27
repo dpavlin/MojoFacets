@@ -69,6 +69,9 @@ sub index {
 
 	find( sub {
 		my $file = $File::Find::name;
+
+		next if $file =~ m/.timefmt$/;
+
 		if ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+[\.,]\d+.+)/ ) {
 			push @{ $changes->{$1} }, $2
 		} elsif ( import_module( $file ) ) {
@@ -260,6 +263,11 @@ sub _load_path {
 
 	$loaded->{ $path } = $info;
 	$self->_save( $path ) unless $info->{generated};
+
+	my $timefmt_path = $self->_permanent_path( 'timefmt' );
+	if ( -e $timefmt_path ) {
+		$self->session( 'timefmt', read_file $timefmt_path );
+	}
 
 }
 
@@ -733,6 +741,14 @@ sub items {
 	my $self = shift;
 
 	$self->_switch_dataset;
+
+	if ( my $timefmt = $self->param('timefmt') ) {
+		$self->session('timefmt', $timefmt);
+		warn "session store timefmt $timefmt\n";
+		my $timefmt_path = $self->_permanent_path( 'timefmt' );
+		write_file $timefmt_path, $timefmt;
+		warn "## $timefmt_path $timefmt"
+	}
 
 	if ( my $show = $self->param('id') ) {
 		$self->param('show', $show);
