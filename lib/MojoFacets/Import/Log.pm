@@ -20,7 +20,7 @@ sub data {
 	my $need_header = 1;
 
 	my @header;
-	@header = qw(Filesystem 1K-blocks Used Available Use% Mounted-on) if $path =~ m/date-df/;
+	@header = qw(timestamp Filesystem 1K-blocks Used Available Use% Mounted-on) if $path =~ m/date-df/;
 
 	open(my $fh, $path) || die "$path: $!";
 	while(<$fh>) {
