@@ -72,8 +72,10 @@ sub index {
 		if ( -f $file && $file =~ m/([^\/]+)\.changes\/(\d+[\.,]\d+.+)/ ) {
 			push @{ $changes->{$1} }, $2
 		} elsif ( import_module( $file ) ) {
+			my $mtime = (stat($file))[9]; # mtime
 			$file =~ s/$data_dir\/*//;
 			push @files, $file;
+			$loaded->{$file}->{mtime} ||= $mtime;
 		} else {
 			#warn "IGNORE: $file\n";
 		}
