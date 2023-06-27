@@ -35,6 +35,9 @@ sub index {
 
 		my $timefmt = $self->param('timefmt');
 
+		my $timefmt_x = $timefmt;
+		$timefmt_x =~ s/[ T]%H/\\n%H/;
+
 		my $spaces = $timefmt;
 		$spaces =~ s/\S//g;
 		$spaces = length( $spaces );
@@ -44,13 +47,17 @@ sub index {
 			my $title = $columns->[$_];
 			next if $hide_columns->{$title};
 			$title =~ s/_/ /g;
+ 			next if $hide_columns->{ $title };
+
 			my $n = $_ + 1 + $spaces;
-			push @plot, qq|"$dir/$url" using 1:$n title "$title" with $with| unless $hide_columns->{ $title };
+			push @plot, qq|"$dir/$url" using 1:$n notitle with $with lc $_|,
+						qq|NaN lc $_ title "$title" with lines|
+			;
 		}
 
 		my $g = qq|
 
-set terminal png
+set terminal png size 1000,400
 set output '$dir/$url.png'
 
 		|;
@@ -60,7 +67,8 @@ set output '$dir/$url.png'
 
 set xdata time
 set timefmt "$timefmt"
-set format x "$timefmt"
+#set format x "$timefmt"
+set format x "$timefmt_x"
 
 			|;
 		}
