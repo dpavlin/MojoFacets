@@ -58,7 +58,7 @@ timefmt: <input name=timefmt value="<%= $timefmt %>" placeholder="%d.%m.%Y %H:%M
 with:
 %= select_field with => [qw( points dots lines steps )]
 
-<div style="float: right">
+<div style="float: right; max-height: 25em; overflow-y:auto">
 Hide from graph:
 <ul>
 %  my @hide_columns = @$columns; shift @hide_columns;
