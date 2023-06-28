@@ -52,7 +52,7 @@ warn "# spaces: $spaces";
  			next if $hide_columns->{ $title };
 
 			my $n = $_ + 1 + $spaces;
-			push @plot, qq|"$dir/$url" using 1:$n notitle with $with lc $_|,
+			push @plot, qq|"$dir/$url" using 1:$n notitle with $with lc $_ pt 7 ps 0.5|, # pt 7 - circle, ps 2 - size 2
 						qq|NaN lc $_ title "$title" with lines|
 			;
 		}
