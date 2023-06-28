@@ -60,7 +60,7 @@ with:
 
 <div style="float: right; max-height: 25em; overflow-y:auto">
 Hide from graph:
-<ul>
+<ul style="list-style-type: none; padding-left: 0">
 %  my @hide_columns = @$columns; shift @hide_columns;
 %  foreach my $column ( @hide_columns ) {
  <li><label><%= check_box gnuplot_hide => $column %><%= $column %></label></li>
