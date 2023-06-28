@@ -36,7 +36,8 @@ sub index {
 		my $timefmt = $self->param('timefmt');
 
 		my $timefmt_x = $timefmt;
-		$timefmt_x =~ s/[ T]%H/\\n%H/;
+		$timefmt_x =~ s/[ T]%H/\\n%H/; # wrap to two lines
+		$timefmt_x =~ s/%Y/%y/; # short year
 
 		my $spaces = $timefmt;
 		$spaces =~ s/\S+//g;
