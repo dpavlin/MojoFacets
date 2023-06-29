@@ -21,6 +21,7 @@ sub data {
 
 	my @header;
 	@header = qw(timestamp Filesystem 1K-blocks Used Available Use% Mounted-on) if $path =~ m/date-df/;
+	@header = qw(timestamp percent current voltage) if $path =~ m/battery/;
 
 	open(my $fh, $path) || die "$path: $!";
 	while(<$fh>) {
