@@ -20,8 +20,10 @@ sub data {
 	my $need_header = 1;
 
 	my @header;
+	# FIXME dpavlin -- this should really be read from files
 	@header = qw(timestamp Filesystem 1K-blocks Used Available Use% Mounted-on) if $path =~ m/date-df/;
 	@header = qw(timestamp percent current voltage) if $path =~ m/battery/;
+	@header = qw(timestamp ok incorrect expired) if $path =~ m/radius-count/;
 
 	open(my $fh, $path) || die "$path: $!";
 	while(<$fh>) {
