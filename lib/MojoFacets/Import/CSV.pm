@@ -12,6 +12,32 @@ __PACKAGE__->attr('full_path');
 
 sub ext { '\.[ct]sv$' };
 
+sub sn_to_dec {
+    my $num = shift;
+
+    if ($num =~ /^([+-]?)(\d*)(\.?)(\d*)[Ee]([-+]?\d+)$/) {
+        my ($sign, $int, $period, $dec, $exp) = ($1, $2, $3, $4, $5);
+
+        if ($exp < 0) {
+            my $len = 1 - $exp;
+            $int = ('0' x ($len - length $int)) . $int if $len > length $int;
+            substr $int, $exp, 0, '.';
+            return $sign.$int.$dec;
+
+        } elsif ($exp > 0) {
+            $dec .= '0' x ($exp - length $dec) if $exp > length $dec;
+            substr $dec, $exp, 0, '.' if $exp < length $dec;
+            return $sign.$int.$dec;
+
+        } else {
+            return $sign.$int.$period.$dec;
+        }
+    }
+
+    return $num;
+}
+
+
 sub data {
 	my $self = shift;
 
@@ -65,7 +91,7 @@ sub data {
 		}
 		my $item;
 		foreach my $i ( 0 .. $#{$row} ) {
-			$item->{ $header[$i] || "f_$i" } = [ $row->[$i] ];
+			$item->{ $header[$i] || "f_$i" } = [ sn_to_dec $row->[$i] ];
 		}
 		push @{ $data->{items} }, $item;
 	}
