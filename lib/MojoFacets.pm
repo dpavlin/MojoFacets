@@ -59,7 +59,8 @@ sub startup {
     $r->get('/data/columns/:id')->to('data#columns', id => 0)->name('data_columns');
     $r->post('/data/columns/:id')->to('data#columns', id => 0);
     $r->get('/data/items/:id')->to('data#items', id => 'table')->name('data_items');
-    $r->get('/data/facet/:id')->to('data#facet', id => 0)->name('data_facet');
+    $r->get('/data/facet/:name')->to('data#facet')->name('data_facet');
+    $r->get('/data/facet')->to('data#facet')->name('data_facet');
     $r->post('/data/filter')->to('data#filter')->name('data_filter');
     $r->get('/data/export/:id')->to('data#export', id => 0)->name('data_export');
     $r->any('/data/stats/:id')->to('data#stats', id => 0);
