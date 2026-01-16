@@ -10,7 +10,7 @@ use lib 'lib';
 
 use_ok('MojoFacets::Import::CSV');
 
-my $csv = $ARGV[0] || (glob 'data/*.csv')[0];
+my $csv = $ARGV[0] || (glob 'data/*/*.csv')[0] || (glob 'data/*.csv')[0];
 diag "using $csv";
 
 ok( my $o = MojoFacets::Import::CSV->new( full_path => $csv ), 'new' );

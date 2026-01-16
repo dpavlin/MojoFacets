@@ -3,12 +3,12 @@ package MojoFacets::Code;
 use strict;
 use warnings;
 
-use base 'Mojolicious::Controller';
+use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dump qw(dump);
 use File::Slurp;
 
-sub _code_dir { $_[0]->app->home->rel_file('public') . '/code' }
+sub _code_dir { $_[0]->app->home->child('public')->to_string . '/code' }
 
 sub index {
 	my $self = shift;

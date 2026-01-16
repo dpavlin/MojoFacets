@@ -12,16 +12,16 @@
 <span title="unique">&#9997;</span>
 % }
 % if ( session('order') ne $n ) {
-<a href="<%= url_for( action => 'items' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
+<a href="<%= url_for( 'data_items' )->query( order => $n, sort => 'a' ) %>"><%= $n %></a>
 % } else {
-<a href="<%= url_for( action => 'items' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
+<a href="<%= url_for( 'data_items' )->query( order => $n, sort => session('sort') eq 'a' ? 'd' : 'a' ) %>"><%= $n %></a>
 <%== session('sort') eq 'a' ? '&uarr;' : '&darr;' %>
 % }
 <div class="col_opts">
-<a title="filter by this facet" href="<%= url_for( action => 'facet' )->query( name => $n, all => 0 ) %>">
+<a title="filter by this facet" href="<%= url_for( 'data_facet' )->query( name => $n, all => 0 ) %>">
 % if ( defined $filters->{$n} ) {
 <%= $#{ $filters->{$n} } + 1 %></a>&nbsp;
-<a title="show all values" href="<%= url_for( action => 'facet' )->query( name => $n, all => 1 ) %>">all
+<a title="show all values" href="<%= url_for( 'data_facet' )->query( name => $n, all => 1 ) %>">all
 % } else {
 filter
 % }

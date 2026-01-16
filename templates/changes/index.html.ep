@@ -29,7 +29,7 @@
 <input type=submit name=commit value="Commit changes">
 %  } elsif ( param('commit') ) {
 <b>
-Changes commited to <a href="<%= url_for( controller => 'data', action => 'items' )->query( path => $on_path ) %>"><%= $on_path %></a>
+Changes commited to <a href="<%= url_for( 'data_items' )->query( path => $on_path ) %>"><%= $on_path %></a>
 </b>
 <pre><%= dumper stash('commit_changed') %></pre>
 %  }
@@ -62,11 +62,11 @@ Changes commited to <a href="<%= url_for( controller => 'data', action => 'items
 %  if ( my $status = $e->{_status} ) {
 %   if ( defined $e->{unique} ) {
 %    my ( $pk, $id ) = %{ $e->{unique} };
-<a href="<%= url_for( controller => 'data', action => 'filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
+<a href="<%= url_for( 'data_filter' )->query( filter_name => $pk, filter_vals => $id ) %>"><%= $id %></a>
 %   }
 <%= $status %>
 %  }
-<a class=remove href="<%= url_for( action => 'remove' )->query( time => $e->{time} ) %>">remove</a>
+<a class=remove href="<%= url_for( 'changes_remove' )->query( time => $e->{time} ) %>">remove</a>
 
 % if ( defined $e->{new} ) {
 </td><td><%== defined $e->{old} && join('<span class=d>&para;</span>', @{$e->{old}}) %>

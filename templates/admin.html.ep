@@ -24,28 +24,28 @@ $(document).ready( function() {
 <tt><%= session('path') %></tt>
 % }
 
-<a href="<%= url_for( controller => 'data', action => 'index', id => 0 ) %>">load</a>
-<a href="<%= url_for( controller => 'data', action => 'columns', id => 0 ) %>">columns</a>
+<a href="<%= url_for( 'data_index', id => 0 ) %>">load</a>
+<a href="<%= url_for( 'data_columns', id => 0 ) %>">columns</a>
 &middot;
 items:
 % foreach my $show ( glob 'templates/data/items/*.html.ep' ) {
 %  $show =~ s{^.+/([^/]+)\.html\.ep$}{$1};
 %  my $class = session('show') eq $show ? 'class=active' : '';
-<a href="<%= url_for( controller => 'data', action => 'items', id => $show ) %>" <%= $class %>><%= $show %></a>
+<a href="<%= url_for( 'data_items', id => $show ) %>" <%= $class %>><%= $show %></a>
 % }
 
 % if ( $self->can('_export_path') && glob $self->_export_path('*') ) {
 &middot;
-<a href="<%= url_for( controller => 'data', action => 'export', id => 0 ) %>">export</a>
+<a href="<%= url_for( 'data_export', id => 0 ) %>">export</a>
 % }
 
 &middot;
-<a id=code href="<%= url_for( controller => 'code', action => 'index', id => 0 ) %>">code</a>
+<a id=code href="<%= url_for( 'code_index', id => 0 ) %>">code</a>
 <a id=console href="#" style="display:none">console</a>
 
 % if ( my $id = stash('nytprof.id') ) {
 &middot;
-<a href="<%= url_for( controller => 'profile', action => 'index', id => 0 ) %>">profile</a>
+<a href="<%= url_for( 'profile_index', id => 0 ) %>">profile</a>
 % }
 
 <span class=middle>
@@ -53,17 +53,17 @@ items:
 
 <span class=right>
 
-<a href="<%= url_for( controller => 'config', action => 'index', id => 0 ) %>">config</a>
+<a href="<%= url_for( 'config_index', id => 0 ) %>">config</a>
 &middot;
 
-<a href="<%= url_for( controller => 'changes', action => 'index', id => 0 ) %>">changes</a>
-<a href="<%= url_for( controller => 'actions', action => 'index', id => 0 ) %>">actions</a>
+<a href="<%= url_for( 'changes_index', id => 0 ) %>">changes</a>
+<a href="<%= url_for( 'actions_index', id => 0 ) %>">actions</a>
 
 % my $visible_class = session('modified') ? '' : 'hide';
 % my $path = session('path');
 <span class="save_actions <%= $visible_class %>">
 &middot;
-<a title="<%= $path %>" href="<%= url_for( controller => 'data', action => 'save' ) %>" >save</a>
+<a title="<%= $path %>" href="<%= url_for( 'data_save' ) %>" >save</a>
 </span>
 
 </span>

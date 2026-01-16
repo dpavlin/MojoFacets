@@ -3,7 +3,7 @@ package MojoFacets::Changes;
 use strict;
 use warnings;
 
-use base 'Mojolicious::Controller';
+use Mojo::Base 'Mojolicious::Controller';
 
 use Storable;
 use Data::Dump qw(dump);
@@ -12,7 +12,7 @@ use MojoFacets::Data;
 sub _changes_path {
 	my $self = shift;
 	my $path = $self->param('path') || $self->session('path');
-	$self->app->home->rel_file('data') . '/' . $path . '.changes';
+	$self->app->home->child('data')->to_string . '/' . $path . '.changes';
 }
 
 sub _hash_eq {

@@ -1,30 +1,23 @@
-use inc::Module::Install;
+use strict;
+use warnings;
+use ExtUtils::MakeMaker;
 
-name 'MojoFacets';
-version_from 'lib/MojoFacets.pm';
-author 'Dobrica Pavlinusic <dpavlin@rot13.org>';
-license 'dual';
-
-requires 'Mojolicious' => '6.66';
-requires 'Data::Dump';
-requires 'File::Slurp';
-requires 'JSON';
-requires 'HTML::TableExtract';
-requires 'File::Path';
-requires 'Text::Unaccent::PurePerl';
-requires 'Statistics::Descriptive';
-requires 'Text::CSV';
-
-features(
-	'profile' => [
-		-default => 0,
-		'Time::HiRes',
-		'Devel::NYTProf',
-	],
+WriteMakefile(
+  NAME         => 'MojoFacets',
+  VERSION_FROM => 'lib/MojoFacets.pm',
+  AUTHOR       => 'Dobrica Pavlinusic <dpavlin@rot13.org>',
+  PREREQ_PM    => {
+    'Mojolicious' => '9.00',
+    'Data::Dump' => 0,
+    'File::Slurp' => 0,
+    'JSON' => 0,
+    'HTML::TableExtract' => 0,
+    'File::Path' => 0,
+    'Text::Unaccent::PurePerl' => 0,
+    'Statistics::Descriptive' => 0,
+    'Text::CSV' => 0,
+    'DBI' => 0,
+    'DBD::SQLite' => 0,
+  },
+  test         => {TESTS => 't/*.t'},
 );
-
-build_requires 'Test::More';
-
-auto_install;
-
-WriteAll;

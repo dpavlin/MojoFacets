@@ -3,15 +3,15 @@ package MojoFacets::Import::File;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
+use Mojo::Base -base;
 
 use HTML::TableExtract;
 use File::Slurp;
 use Data::Dump qw(dump);
 use JSON;
 
-__PACKAGE__->attr('path');
-__PACKAGE__->attr('full_path');
+has 'path';
+has 'full_path';
 
 sub ext { '\.(js(on)?|txt)$' }
 

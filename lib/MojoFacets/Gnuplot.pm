@@ -3,7 +3,7 @@ package MojoFacets::Gnuplot;
 use warnings;
 use strict;
 
-use base 'Mojolicious::Controller';
+use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dump qw(dump);
 use Digest::MD5 qw(md5_hex);
@@ -17,7 +17,7 @@ sub index {
 	my $path    = $self->session('path')    || return $self->redirect_to('/data/load');
 	my $with    = $self->param('with') || 'points';
 
-	my $gnuplot_hide = $self->every_param('gnuplot_hide');
+	my $gnuplot_hide = $self->req->every_param('gnuplot_hide');
 	warn "## gnuplot_hide=",dump( $gnuplot_hide );
 	my $hide_columns;
 	$hide_columns->{$_}++ foreach @$gnuplot_hide;
@@ -29,7 +29,7 @@ sub index {
 	warn "# name $name\n";
 
 	my $url = "/export/$path/$name";
-	my $dir = $self->app->home->rel_file('public');
+	my $dir = $self->app->home->child('public')->to_string;
 
 	if ( -e "$dir/$url" ) {
 

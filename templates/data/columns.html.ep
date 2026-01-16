@@ -60,7 +60,7 @@ Load view:
 
 <input type=text name=view placeholder="save view">
 
-<a href="<%= url_for( action => 'stats' ) %>">rebuild stats</a>
+<a href="<%= url_for( 'data_stats' ) %>">rebuild stats</a>
 
 </form>
 

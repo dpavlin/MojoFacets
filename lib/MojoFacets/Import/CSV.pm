@@ -3,12 +3,12 @@ package MojoFacets::Import::CSV;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
+use Mojo::Base -base;
 
 use Text::CSV;
 use Data::Dump qw(dump);
 
-__PACKAGE__->attr('full_path');
+has 'full_path';
 
 sub ext { '\.[ct]sv$' };
 
@@ -86,6 +86,12 @@ sub data {
 	while ( my $row = $csv->getline( $fh ) ) {
 		if ( ! @header ) {
 			@header = @$row;
+			foreach my $h ( @header ) {
+				next unless defined $h;
+				$h =~ s/^\x{FEFF}//; # remove BOM
+				$h =~ s/^["']+//;    # remove leading quotes
+				$h =~ s/["']+$//;    # remove trailing quotes
+			}
 			$header[0] =~ s/^#// if $path =~ m/\.tsv/i; # remove hash from 1st column
 			next;
 		}

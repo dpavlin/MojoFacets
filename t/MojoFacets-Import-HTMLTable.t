@@ -10,7 +10,7 @@ use lib 'lib';
 
 use_ok('MojoFacets::Import::HTMLTable');
 
-ok( my $o = MojoFacets::Import::HTMLTable->new( dir => 'data/isi-citedref.html' ), 'new' );
+ok( my $o = MojoFacets::Import::HTMLTable->new( full_path => 'data/html' ), 'new' );
 
 ok( my $data = $o->data, 'data' );
 diag dump($data);

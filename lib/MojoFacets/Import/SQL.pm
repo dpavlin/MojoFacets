@@ -3,14 +3,14 @@ package MojoFacets::Import::SQL;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
+use Mojo::Base -base;
 
 use DBI;
 use File::Slurp;
 use Data::Dump qw(dump);
 use Encode;
 
-__PACKAGE__->attr('full_path');
+has 'full_path';
 
 sub ext { '.sql' }
 

@@ -22,7 +22,7 @@
 </td><td class=bytes>
 % if ( my $size = -s $dump_path->{$n} ) {
 %  my $action = -M $dump_path->{$n} > -M "data/$n" ? 'reload' : 'remove';
-<a class="<%= $action %>" title="<%= $action %>" href="<%= url_for( action => $action )->query([ path => $dump_path->{$n}, name => $n ]) %>"><%= $size %></a>
+<a class="<%= $action %>" title="<%= $action %>" href="<%= url_for( "data_$action" )->query([ path => $dump_path->{$n}, name => $n ]) %>"><%= $size %></a>
 % }
 </td><td align=right><%= defined $loaded->{$n}->{data} ? $#{ $loaded->{$n}->{data}->{items} } + 1 : '' %>
 </td><td align=right><%= defined $changes->{$n} ? $#{ $changes->{$n} } + 1 : '' %>

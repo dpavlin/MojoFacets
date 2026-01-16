@@ -3,15 +3,15 @@ package MojoFacets::Import::CouchDB;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
+use Mojo::Base -base;
 
 use File::Slurp;
 use Data::Dump qw(dump);
 use JSON;
 use Mojo::UserAgent;
 
-__PACKAGE__->attr('path');
-__PACKAGE__->attr('full_path');
+has 'path';
+has 'full_path';
 
 sub ext { '.couchdb' };
 
@@ -54,10 +54,10 @@ sub data {
 	my $tx = Mojo::UserAgent->new->get($url);
 	my ( $res, $json );
 
-	if ( my $res = $tx->success) {
-		$json = $res->json;
+	if ( ! $tx->error ) {
+		$json = $tx->res->json;
 	} else {
-		die $tx->error;
+		die $tx->error->{message};
 	}
 
 	my $data;

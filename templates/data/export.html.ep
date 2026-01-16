@@ -9,7 +9,7 @@
 <a target="<%= $path %>" href="/export/<%= $path %>"><%= $path %></a>
 </tt>
 <%= -s $e %> bytes
-<a class=remove href="<%= url_for( action => 'export' )->query( 'remove' => $path ) %>">remove</a>
+<a class=remove href="<%= url_for( 'data_export' )->query( 'remove' => $path ) %>">remove</a>
 %  if ( $path =~ m/\/filter/ ) {
 <a href="?import=<%= $path %>">import</a>
 %  }

@@ -28,7 +28,7 @@ column in this dataset
 <input type=hidden name=code_depends value="<%= $depends %>">
 <input type=hidden name=code_description value="<%= $desc %>">
 % }
-<a class=remove href="<%= url_for( action => 'remove' )->query( path => $path ) %>">remove</a>
+<a class=remove href="<%= url_for( 'code_remove' )->query( path => $path ) %>">remove</a>
 <br>
 % my $code = $snippets->{$depends}->{$desc};
 % my $rows = scalar split(/\n/,$code);

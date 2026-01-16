@@ -3,7 +3,7 @@ package MojoFacets::Data;
 use strict;
 use warnings;
 
-use base 'Mojolicious::Controller';
+use Mojo::Base 'Mojolicious::Controller';
 
 #use Data::Dump qw(dump); # broken with Mojo::JSON, see https://rt.cpan.org/Public/Bug/Display.html?id=86592
 use Data::Dumper;
@@ -25,7 +25,7 @@ our $imports;
 foreach my $module ( glob('lib/MojoFacets/Import/*.pm') ) {
 	$module =~ s{lib/(\w+)/(\w+)/(.*)\.pm}{$1::$2::$3};
 	eval "use $module";
-	die "$module: $!" if $!;
+	die "$module: $@" if $@;
 	my ( $ext, $priority ) = $module->ext;
 	$imports->{$priority || 'file'}->{$ext} = $module;
 	warn "# import $ext $module\n";
@@ -61,7 +61,7 @@ our $filters;
 sub index {
 	my $self = shift;
 
-	my $data_dir = $self->app->home->rel_file('data');
+	my $data_dir = $self->app->home->child('data')->to_string;
 	die "no data dir $data_dir" unless -d $data_dir;
 
 	my @files;
@@ -103,7 +103,7 @@ sub index {
 
 sub _dump_path {
 	my ( $self, $name ) = @_;
-	my $dir = $self->app->home->rel_file('data');
+	my $dir = $self->app->home->child('data')->to_string;
 	$name =~ s/^$dir//;
 	$name =~ s/\/+/_/g;
 	return '/tmp/mojo_facets.' . $name . '.storable';
@@ -211,7 +211,7 @@ sub _load_path {
 
 	return if defined $loaded->{$path}->{generated};
 
-	my $full_path = $self->app->home->rel_file( 'data/' . $path );
+	my $full_path = $self->app->home->child('data', $path)->to_string;
 	return $self->redirect_to('/data/index') unless -r $full_path;
 
 	my $dump_path = $self->_dump_path( $path );
@@ -271,7 +271,7 @@ sub _load_path {
 sub load {
 	my $self = shift;
 
-	my @paths = @{ $self->every_param('paths') };
+	my @paths = @{ $self->req->every_param('paths') };
 	warn "# paths ", dump @paths;
 
 	foreach my $p ( keys %$loaded ) {
@@ -370,7 +370,7 @@ sub _checked {
 sub _permanent_path {
 	my $self = shift;
 	my $path = $self->_param_or_session('path');
-	$self->app->home->rel_file('data') . '/' . join('.', $path, @_);
+	$self->app->home->child('data')->to_string . '/' . join('.', $path, @_);
 }
 
 sub __unac {
@@ -396,7 +396,7 @@ sub _export_path {
 		warn "no path in param or session";
 		return;
 	}
-	my $dir = $self->app->home->rel_file('public') . "/export/$path";
+	my $dir = $self->app->home->child('public')->to_string . "/export/$path";
 	mkpath $dir unless -e $dir;
 	my $name = __export_path_name( $path, @_ );
 	my $full = $dir . '/' . $name;
@@ -473,7 +473,7 @@ sub columns {
 sub _param_array {
     my ($self,$name) = @_;
 
-	my @array = @{ $self->every_param($name) };
+	my @array = @{ $self->req->every_param($name) };
 	my $path  = $self->session('path');
 
 	if ( @array ) {
@@ -518,7 +518,7 @@ sub filter {
 	my $self = shift;
 
 	my $name = $self->param('filter_name') || die "name?";
-	my @vals = @{ $self->every_param('filter_vals') };
+	my @vals = @{ $self->req->every_param('filter_vals') };
 
 	$self->_remove_filter( $name );
 	if ( @vals ) {
@@ -857,7 +857,7 @@ sub items {
 		}
 	}
 
-	my $code_path = $self->app->home->rel_file('public') . "/code";
+	my $code_path = $self->app->home->child('public')->to_string . "/code";
 	if ( $commit ) {
 
 		__path_modified( $path, 'commit' );
@@ -1317,7 +1317,7 @@ sub save {
 sub export {
 	my $self = shift;
 
-	my $dir = $self->app->home->rel_file('public');
+	my $dir = $self->app->home->child('public')->to_string;
 
 	if ( my $import = $self->param('import') ) {
 

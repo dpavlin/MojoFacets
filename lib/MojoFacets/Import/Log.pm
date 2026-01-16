@@ -3,11 +3,11 @@ package MojoFacets::Import::Log;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
+use Mojo::Base -base;
 
 use Data::Dump qw(dump);
 
-__PACKAGE__->attr('full_path');
+has 'full_path';
 
 sub ext { '.log' }
 

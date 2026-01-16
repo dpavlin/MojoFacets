@@ -18,7 +18,7 @@
 <tr><th>action</th><th>timestamp</th></tr>
 % foreach my $action ( @$actions ) {
 <tr><td>
-<a class="view" href="<%= url_for( controller => 'actions', action => 'view' )->query( uid => $action->{uid} ) %>"><%= $action->{action} %></a>
+<a class="view" href="<%= url_for( 'actions_view' )->query( uid => $action->{uid} ) %>"><%= $action->{action} %></a>
 </td><td>
 <tt class=ts><%= $action->{t} %></tt>
 </td></tr>
@@ -26,7 +26,7 @@
 </table>
 
 % my $more = ( $#$actions ) * 10;
-Show <a href="<%= url_for( controller => 'actions', action => 'index' )->query( max => $more ) %>"><%= $more %> actions</a>
+Show <a href="<%= url_for( 'actions_index' )->query( max => $more ) %>"><%= $more %> actions</a>
 
 <script type="text/javascript" src="/js/date_pretty.js"></script>
 <script type="text/javascript">

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Storable;
-use Mojo::Client;
+use Mojo::UserAgent;
 use Data::Dump qw(dump);
 
 my $url = 'http://localhost:3000/data/edit';
@@ -12,7 +12,7 @@ my $max = 1;
 
 my @actions = @ARGV;
 
-my $t = Mojo::Client->new;
+my $t = Mojo::UserAgent->new;
 $t->max_redirects( 1 );
 
 my $stats;
@@ -26,19 +26,20 @@ foreach my $c ( sort {
 	print "# $c\n";
 
 	my $params = retrieve $c;
-	my $hash = $params->to_hash;
+	my $hash = ref $params eq 'Mojo::Parameters' ? $params->to_hash : $params;
 	$hash->{time} = $1 if $c =~ m{/(\d+\.\d+)\.data\.edit};
 
 	warn "# hash ",dump($hash);
 
-	my $tx = $t->post_form( $url => $hash );
-	if ( my $res = $tx->success) {
+	my $tx = $t->post( $url => form => $hash );
+	if ( ! $tx->error ) {
+		my $res = $tx->res;
 		my $code = $res->code;
 		$stats->{$code}++;
 		print $code, ' ', $res->body
 	} else {
-		my ($code, $message) = $tx->error;
-		die "Error: $message";
+		my $err = $tx->error;
+		die "Error: " . $err->{message};
 	}
 
 #	last if $max-- == 0;

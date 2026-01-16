@@ -3,13 +3,13 @@ package MojoFacets::Import::DBF;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
+use Mojo::Base -base;
 
 use XBase;
 
 use Data::Dump qw(dump);
 
-__PACKAGE__->attr('full_path');
+has 'full_path';
 
 sub ext { '.dbf' };
 
