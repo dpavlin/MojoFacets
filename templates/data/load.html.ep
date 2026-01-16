@@ -1,0 +1,8 @@
+% layout 'default';
+% title 'Load File';
+
+<form action="/data/load" method="post">
+  <label for="path">File Path:</label>
+  <input type="text" name="path" id="path">
+  <input type="submit" value="Load">
+</form>
