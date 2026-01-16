@@ -69,22 +69,25 @@ sub startup {
     $r->any('/data/reload/:id')->to('data#reload', id => 0);
     $r->any('/data/order/:id')->to('data#order', id => 0);
 
+    # Explicit index route for data controller
+    $r->get('/data/index')->to('data#index')->name('data_index');
+
     # Other controllers
     $r->any('/profile/remove/:id')->to('profile#remove', id => 0);
-    $r->any('/profile/:id')->to('profile#index', id => 0);
+    $r->any('/profile/:id')->to('profile#index', id => 0)->name('profile_index');
 
     $r->any('/changes/remove/:id')->to('changes#remove', id => 0);
-    $r->any('/changes/:id')->to('changes#index', id => 0);
+    $r->any('/changes/:id')->to('changes#index', id => 0)->name('changes_index');
 
     $r->any('/code/remove/:id')->to('code#remove', id => 0);
-    $r->any('/code/:id')->to('code#index', id => 0);
+    $r->any('/code/:id')->to('code#index', id => 0)->name('code_index');
 
-    $r->any('/config/:id')->to('config#index', id => 0);
+    $r->any('/config/:id')->to('config#index', id => 0)->name('config_index');
 
     $r->any('/actions/view/:id')->to('actions#view', id => 0);
-    $r->any('/actions/:id')->to('actions#index', id => 0);
+    $r->any('/actions/:id')->to('actions#index', id => 0)->name('actions_index');
 
-    $r->any('/gnuplot/:id')->to('gnuplot#index', id => 0);
+    $r->any('/gnuplot/:id')->to('gnuplot#index', id => 0)->name('gnuplot_index');
 
 #	$self->plugin( 'request_timer' );
 
