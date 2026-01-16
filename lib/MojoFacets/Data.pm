@@ -716,8 +716,44 @@ sub __commit_path_code {
 
 	my $items = $loaded->{$path}->{data}->{items} || die "no items for $path";
 	my $row = $items->[$i];
+	
+	# clone original for comparison
+	my $orig = { %$row }; # shallow copy enough for scalar comparison?
+	# deeper copy if array refs used?
+	# MojoFacets items usually have array refs for values.
+	# So we need safer copy.
+	# But checking Storable::dclone vs performance?
+	# Let's just capture keys and values before eval?
+	# No, dclone is safer if user modifies internal structure.
+	# But strictly, $items->[$i] IS the row. 
+	# If we want to detect changes, we should have cloned BEFORE eval?
+	# Currently $row points to LIVE data.
+	# So $orig should be a COPY of LIVE data *before* eval.
+	
+	my $orig_copy = Storable::dclone($row);
+
 	my $update;
 	eval $code;
+	
+	# Detect direct changes
+	foreach my $k ( keys %$row ) {
+		my $v_new = $row->{$k};
+		my $v_old = $orig_copy->{$k};
+
+		# normalize array refs for comparison
+		$v_new = join(',', @$v_new) if ref $v_new eq 'ARRAY';
+		$v_old = join(',', @$v_old) if ref $v_old eq 'ARRAY';
+
+		# handle undef
+		$v_new = '' unless defined $v_new;
+		$v_old = '' unless defined $v_old;
+
+		if ( $v_new ne $v_old ) {
+			$$commit_changed->{$k}++;
+			# No need to assign back to $row as it is already modified in-place
+		}
+	}
+
 	foreach ( keys %$update ) {
 		$$commit_changed->{$_}++;
 		$loaded->{$path}->{data}->{items}->[$i]->{$_} = $update->{$_};
@@ -977,6 +1013,25 @@ sub items {
 					$row->{$_} = $update->{$_};
 				}
 			}
+			
+			# Detect direct changes to $row
+			my $orig = $data->{items}->[ $id ];
+			foreach my $k ( keys %$row ) {
+				my $v_new = $row->{$k};
+				my $v_old = $orig->{$k};
+				
+				# normalize array refs for comparison
+				$v_new = join(',', @$v_new) if ref $v_new eq 'ARRAY';
+				$v_old = join(',', @$v_old) if ref $v_old eq 'ARRAY';
+				
+				# handle undef
+				$v_new = '' unless defined $v_new;
+				$v_old = '' unless defined $v_old;
+				
+				if ( $v_new ne $v_old ) {
+					$test_changed->{$k}++;
+				}
+			}
 		}
 		$row->{_row_id} ||= $id;
 		push @$sorted_items, $row;
@@ -1048,6 +1103,7 @@ sub items {
 		offset => $offset,
 		limit => $limit,
 		sorted => $sorted_items,
+		cols_changed => $test_changed,
 		columns => [ @columns ],
 		rows => $#$filtered + 1,
 		numeric => { map { $_, $self->_is_numeric($_) } @columns },
