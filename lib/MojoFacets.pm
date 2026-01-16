@@ -53,7 +53,7 @@ sub startup {
     $r->get('/')->to('data#index')->name('index');
 
     # Data controller
-    $r->post('/data/load')->to('data#load')->name('data_load');
+    $r->any('/data/load')->to('data#load')->name('data_load');
     $r->any('/data/remove')->to('data#remove')->name('data_remove');
     $r->any('/data/save')->to('data#save')->name('data_save');
     $r->get('/data/columns/:id')->to('data#columns', id => 0)->name('data_columns');

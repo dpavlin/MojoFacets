@@ -1379,7 +1379,7 @@ sub remove {
 		warn "WARNING: $path unlink ignored";
 	}
 	return if $self->stash('reload');
-	return $self->redirect_to( '/data/load' );
+	return $self->redirect_to( '/data/index' );
 }
 
 1;
