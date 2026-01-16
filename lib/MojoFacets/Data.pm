@@ -839,6 +839,11 @@ sub items {
 	# XXX convert @row->{foo} into @{$row->{foo}}
 	$code =~ s|\@(row->\{[^}]+\})|\@{\$$1}|gs;
 
+	# rewrite $row->{foo} into $row->{foo}->[0] if user treats is as scalar
+	$code =~ s|(\$row->\{['"]?[^}]+['"]?\})(?!->)|$1\->[0]|gs;
+
+
+
 	my $commit = $self->param('commit');
 	my $test = $self->param('test');
 
