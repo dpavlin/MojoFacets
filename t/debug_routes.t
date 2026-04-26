@@ -15,7 +15,7 @@ $t->get_ok('/data/columns')->status_is(302);
 $t->get_ok('/data/items')->status_is(302); # Expect redirect if params missing, but not 404
 $t->get_ok('/data/facet/test')->status_is(302); # Should redirect if no path, but not 500
 $t->get_ok('/data/facet?name=test')->status_is(302); # Query param should also work
-$t->get_ok('/data/load')->status_is(404); # It's POST only according to routes, let's check
+$t->get_ok('/data/load')->status_is(302); # It's ANY now according to routes, redirects if no path
 $t->post_ok('/data/load')->status_is(302); # Should work
 
 # Verify /data/index exists (used by data_index named route)

@@ -14,7 +14,7 @@ my $t = Test::Mojo->new('MojoFacets');
 my $path = 'george/converted_HR2424020063202824748_2025-01-01_2025-12-31.csv';
 # Ensure it's loaded
 # Ensure it's loaded by calling the index first (GET)
-$t->get_ok("/data/items?path=$path&limit=1")->status_is(200);
+$t->get_ok("/data/items?path=$path&limit=1&columns=Iznos")->status_is(200);
 
 # Wait for potential lazy loading if async? No, synchronous.
 # However, the controller might redirect if 'columns' are not established.
