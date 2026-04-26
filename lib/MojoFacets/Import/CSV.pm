@@ -14,6 +14,16 @@ sub ext { '\.[ct]sv$' };
 
 sub sn_to_dec {
     my $num = shift;
+    return $num unless defined $num;
+
+    $num =~ s/\x{2212}/-/g;
+
+    if ($num =~ /^[+-]?\d{1,3}(?:\.\d{3})*,\d+$/) {
+        $num =~ s/\.//g;
+        $num =~ s/,/./;
+    } elsif ($num =~ /^[+-]?\d+,\d+$/) {
+        $num =~ s/,/./;
+    }
 
     if ($num =~ /^([+-]?)(\d*)(\.?)(\d*)[Ee]([-+]?\d+)$/) {
         my ($sign, $int, $period, $dec, $exp) = ($1, $2, $3, $4, $5);
