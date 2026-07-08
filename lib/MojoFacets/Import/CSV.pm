@@ -10,7 +10,7 @@ use Data::Dump qw(dump);
 
 has 'full_path';
 
-sub ext { '\.[ct]sv$' };
+sub ext { '\.([ct]sv|tab)$' };
 
 sub sn_to_dec {
     my $num = shift;
@@ -73,7 +73,7 @@ sub data {
 	my @sep_by_usage = sort { $possible_delimiters->{$b} <=> $possible_delimiters->{$a} } keys %$possible_delimiters;
 	my $sep_char = shift @sep_by_usage;
 	while ( $sep_char =~ m/^\s$/ ) {
-		last if $sep_char eq "\t" && $path =~ m/\.tsv$/i;
+		last if $sep_char eq "\t" && $path =~ m/\.(tsv|tab)$/i;
 		warn "## skip whitespace separator ",dump($sep_char);
 		$sep_char = shift @sep_by_usage;
 	}
@@ -102,7 +102,7 @@ sub data {
 				$h =~ s/^["']+//;    # remove leading quotes
 				$h =~ s/["']+$//;    # remove trailing quotes
 			}
-			$header[0] =~ s/^#// if $path =~ m/\.tsv/i; # remove hash from 1st column
+			$header[0] =~ s/^#// if $path =~ m/\.(tsv|tab)/i; # remove hash from 1st column
 			next;
 		}
 		my $item;
